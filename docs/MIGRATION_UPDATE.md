@@ -1,177 +1,250 @@
-# Migration Update Document: Frontend → Base App Integration
+# RenovAIte — MIGRATION_UPDATE.md  
+**Objective:** Merge the Frontend System into the Base App, remove Gemini, and implement a fully local, deterministic, rule-driven architecture with high visual fidelity and AI reasoning.
 
-**Objective:** Transform the base app from Gemini-dependent to a fully local, privacy-focused application with structured design capture, deterministic parsing, and professional-grade 3D rendering.
-
-**Coder AI Instructions:**
-- Work step-by-step from this document only.
-- After each step: mark as DONE, explain what was changed, and how it was validated. Then proceed to the next step.
-- Do not proceed to the next step until the current one is marked DONE with validation.
-- Use the provided todo list as reference but execute through this document's structure.
-- All changes must maintain backward compatibility with existing Canvas3D renderer.
-
----
-
-## 1. Repo Prep and Safety
-
-**Goal:** Ensure safe development environment with version control and CI protection.
-
-**Steps:**
-1. Create a new git branch: `git checkout -b feature/frontend-integration`
-2. Tag current state: `git tag v1.0-pre-integration`
-3. Verify CI passes on main branch before proceeding
-4. Set up local development environment with Ollama running Qwen 2.5 7B
-5. Create backup of current state.json and verify app loads
-
-**Validation:** Branch created, CI green, app runs locally.
+**Execution Mode (Mandatory):**  
+- Follow this document **step by step only.**  
+- After each step:  
+  1. Mark it **DONE**  
+  2. Add a **Change Log paragraph** describing edits  
+  3. Add a **Validation Note** explaining how the result was verified  
+- Do **not** continue until validation is complete.  
+- Work directly in this document as the single source of truth.  
 
 ---
 
-## 2. State/Schema Setup
+## Phase 0 — Program Guardrails
 
-**Goal:** Implement frame/slot JSON system with AJV validation.
+### Outcomes
+Safe branching, reproducible builds, and immutable step tracking.
 
-**Steps:**
-1. Create `schema/floorplan.schema.json` with base structure and `if/then/else` conditionals for style-specific requirements
-2. Install AJV: `npm install ajv ajv-formats`
-3. Create `src/state/frame.ts` with frame JSON management functions (apply, validate, listMissing)
-4. Update `src/types.ts` to include frame JSON interfaces
-5. Create unit tests for schema validation with different styles
+### Steps
+- Create branch `feature/frontend-integration`  
+- Tag baseline: `git tag v1.0-pre-integration`  
+- Enable CI checks (typecheck, unit, E2E)  
+- Add this file as `/docs/MIGRATION_UPDATE.md`  
+- Pin Node, PNPM/NPM, and Three.js versions in `package.json`
 
-**Validation:** Schema validates sample frame JSON, AJV throws errors for invalid data, tests pass.
-
----
-
-## 3. Rulebooks
-
-**Goal:** Set up data catalogs for SKUs and finishes.
-
-**Steps:**
-1. Create `src/catalog/skuSpecs.json` with exact dimensions and clearances for appliance models
-2. Create `src/catalog/finishes.json` mapping finish enums to KTX2 paths and glTF variants
-3. Create `src/lib/nkba.ts` with compliance checking functions for aisles (42"/48") and clearances
-4. Add TypeScript interfaces for catalog data in `src/types/catalog.ts`
-
-**Validation:** JSON files parse correctly, NKBA functions return expected warnings/errors for test cases.
+### DoD
+✅ CI green on `main`  
+✅ App boots locally and reproduces baseline render
 
 ---
 
-## 4. LLM Client Swap
+## Phase 1 — Shared Contract: Frame + Scene
 
-**Goal:** Replace Gemini with local Ollama service for conversation guidance.
+### Outcomes
+Unified `Frame` JSON driving dialog logic; `Scene` JSON preserved for render pipeline.
 
-**Steps:**
-1. Create `src/services/ollamaService.ts` with OpenAI-compatible API calls to localhost:11434/v1
-2. Implement next-question selection logic based on frame completion status
-3. Update `src/services/geminiService.ts` imports to use new service (maintain interface compatibility)
-4. Add error handling for Ollama unavailability with fallback to basic prompts
+### Steps
+- Create `schema/floorplan.schema.json`  
+  - Use **if/then/else** or **oneOf** keyed by `{ roomType, style }`  
+  - Validate each turn with **AJV**
+- Implement `src/state/frame.ts` with:
+  - `apply(fills)`
+  - `validateWithAjv()`
+  - `listMissingOrLowConfidence()`
+- Preserve renderer contract: `Scene = { room, objects[] }`
+- Add AJV tests for `{kitchen|bath} × {modern|traditional}` conditionals
 
-**Validation:** Service responds to test prompts, maintains conversation state, handles API errors gracefully.
-
----
-
-## 5. Parser + Scene-Builder Wiring
-
-**Goal:** Integrate deterministic parser and scene building pipeline.
-
-**Steps:**
-1. Create `src/nlp/` directory with `lexicon.ts`, `measure.ts`, `parse.ts` (copy and adapt from frontend)
-2. Create `src/services/scene/sceneBuilder.ts` to convert placement specs + SKU dims to scene JSON
-3. Wire parser output to fill frame JSON slots
-4. Integrate NKBA checks in scene builder before final JSON output
-5. Update conversation flow to route placement commands through parser
-
-**Validation:** Test commands like "put fridge on wall 1 left" correctly fill frame JSON, scene builder produces valid scene JSON with NKBA compliance.
+### DoD
+✅ Invalid frames fail fast  
+✅ Valid frames pass all style/room combos  
+✅ Frame → Scene linkage confirmed via AJV validation
 
 ---
 
-## 6. Renderer Registry Swap (TSX Cabinets + GLB)
+## Phase 2 — Rulebooks (Hard Rules + Style Preferences)
 
-**Goal:** Implement component routing and enhanced rendering.
+### Outcomes
+Deterministic, machine-readable rules externalized; LLM only reasons.
 
-**Steps:**
-1. Create `src/render/registry.ts` for routing cabinet_* to TSX, others to GLB
-2. Create `src/components/cabinets/` with parametric TSX components (BaseCabinet, WallCabinet, etc.)
-3. Create `src/components/glb/` with GLB loading components using `useGLTF` and variant support
-4. Update `src/components/Canvas3D.tsx` to use registry for component selection
-5. Implement finish switching via `KHR_materials_variants` in GLB components
+### Files
+- `/rules/rulebook.master.json`  
+- `/catalog/skuSpecs.json`  
+- `/rules/compileEffectiveRules.ts`  
+- `/docs/RULEBOOKS.md`
 
-**Validation:** Cabinets render parametrically, GLB models load with correct finishes, no console errors.
+### Engine Logic
+- `mergeRules(roomType, style, skuRefs)` → effectiveRules  
+- `placementValidator(spec, effectiveRules)` → `{ ok | alt, reason }`
 
----
-
-## 7. Asset Loaders (KTX2/Draco)
-
-**Goal:** Set up high-performance 3D asset loading.
-
-**Steps:**
-1. Create `src/loaders/threeLoaders.ts` with GLTFLoader + DRACO + KTX2 initialization
-2. Copy GLB files from `frontend/public/models/Appliances/` and `frontend/public/models/Sinks/` to `public/models/`
-3. Add KTX2 texture files to `public/textures/` (generate or placeholder)
-4. Update Vite config to handle GLB/GLTF loading
-5. Implement `useGLTF.preload()` for hot assets in registry
-
-**Validation:** GLB files load without errors, textures display correctly, performance improved vs baseline.
+### DoD
+✅ NKBA, ADA, Universal Design rules compiled  
+✅ `placementValidator()` returns deterministic alternatives + cause text  
+✅ `compileEffectiveRules()` successfully produces JSON and XML subsets  
 
 ---
 
-## 8. App-to-App Merge (Folders, Deps, Env)
+## Phase 3 — LLM Swap (Local, Reasoning-Only)
 
-**Goal:** Integrate frontend components and dependencies.
+### Outcomes
+Local LLM (Ollama + Qwen 2.5 7B) handles conversational flow only.
 
-**Steps:**
-1. Merge necessary dependencies from frontend package.json (three.js loaders, AJV, etc.)
-2. Update `.env.local` with Ollama configuration
-3. Copy static style images to `public/style-images/`
-4. Update import paths for moved components
-5. Resolve any TypeScript path mapping conflicts
+### Steps
+- Remove `services/geminiService.ts`  
+- Add `services/llm/ollamaClient.ts` (OpenAI API-compatible, `/v1/chat/completions`)  
+- Add `services/llm/reasoner.ts`:
+  - `selectNextQuestion(frameMin, missing[], effectiveRules, styleHints)`  
+  - `paraphraseToCNL(text)` (optional for parser fallback)
+- Keep temperature ≤ 0.3 and context ≤ 8k  
 
-**Validation:** App builds successfully, no missing dependencies, environment variables load correctly.
-
----
-
-## 9. Tests (Schema, Parser, Renderer, E2E)
-
-**Goal:** Comprehensive testing of all new components.
-
-**Steps:**
-1. Test schema validation with style-conditional requirements using AJV
-2. Test dialog completion workflows by style with frame validation
-3. Test parser/sceneBuilder deterministic JSON output with NKBA checks
-4. Test renderer finish switching via `KHR_materials_variants` on appliances
-5. Test KTX2 texture loading performance with `useGLTF.preload()`
-6. Run E2E tests for complete design workflow
-
-**Validation:** All tests pass, coverage meets requirements, E2E scenarios complete successfully.
+### DoD
+✅ One LLM call per turn  
+✅ Questions materially reduce `missing[]` fields  
+✅ No object placement performed by LLM  
 
 ---
 
-## 10. High-Level Docs Generation
+## Phase 4 — Deterministic Parser → Scene Builder
 
-**Goal:** Update documentation for new architecture.
+### Outcomes
+Parser fills Frame slots; Scene Builder emits final renderable JSON instantly.
 
-**Steps:**
-1. Update `README.md` with new architecture overview
-2. Create `docs/ARCHITECTURE.md` explaining frame JSON, parser/LLM hybrid, renderer registry
-3. Document NKBA compliance features
-4. Update API documentation for new services
+### Steps
+- Extend parser modules:
+  - `/nlp/lexicon.ts`, `/nlp/measure.ts`, `/nlp/parse.ts`
+- Add `/services/scene/sceneBuilder.ts`:
+  - Converts parser output → Scene JSON
+  - Integrates Rulebook & NKBA checks
+  - Validates Scene JSON with AJV before render
 
-**Validation:** Docs build successfully, links work, architecture clearly explained.
-
----
-
-## 11. Sign-Off Checklist
-
-**Goal:** Final validation before merge.
-
-**Steps:**
-1. Run full test suite
-2. Performance benchmark vs baseline
-3. Manual testing of complete design workflow
-4. Code review checklist completion
-5. Update CHANGELOG.md with migration details
-
-**Validation:** All items checked, PR created with comprehensive description.
+### DoD
+✅ Parser generates valid Scene JSON  
+✅ NKBA/ADA violations trigger structured alternatives + warnings  
+✅ Scene renders instantly (no async LLM placement)
 
 ---
 
-**Final Step:** After completing all sections, create PR and request review. The migration is complete when the PR is merged and deployed successfully.
+## Phase 5 — Renderer Registry + Assets
+
+
+### Outcomes
+
+TSX for cabinets; JSX-wrapped GLB components for appliances and fixtures; all support runtime finish variants, SKU sizing, and editable materials while maintaining GLB caching efficiency.
+
+### Steps
+
+-Registry Routing
+    -Create /render/registry.ts:
+        -cabinet_* → parametric TSX components
+        -Other objects → GLTFJSX components that internally load their .glb files via useGLTF
+-Generate JSX Components from GLBs
+    -For every appliance or fixture that may need finish or dimension changes:
+    npx gltfjsx public/models/<model>.glb --transform --types --keepnames
+    -This produces Model.tsx + a transformed GLB.
+    -Move Model.tsx to src/components/glb/ and commit both artifacts.
+    -Inside the generated component:
+        -Keep the useGLTF('/public/models/<model>.glb') call.
+        -Add material or variant switching logic as needed.
+-Finishes + Variants
+    -Store finish options inside GLBs with KHR_materials_variants.
+    -Add helper in /render/variantSwitcher.ts to swap active variant or material map at runtime.
+-Texture Pipeline
+    -Serve KTX2 compressed textures for all finishes.
+    -Initialize KTX2Loader + DRACOLoader once in /loaders/threeLoaders.ts.
+    -Link KTX2 files under /public/textures/.
+-Performance + Preload
+    -Preload hot models with useGLTF.preload('/public/models/<model>.glb').
+    -Verify GLB and KTX2 assets load asynchronously without blocking UI.
+
+### DoD
+
+✅ Cabinets resize via width/height/depth props
+✅ All JSX-converted models expose node/material access for finish and SKU customization
+✅ Appliances and fixtures switch finishes at runtime through KHR_materials_variants
+✅ KTX2 textures load and reduce VRAM usage
+✅ Renderer maintains baseline FPS and identical scene output
+
+---
+
+## Phase 6 — App-to-App Merge
+
+### Outcomes
+Frontend merged into Base App; unified structure and deps.
+
+### Steps
+- Consolidate into:
+  ```
+  nlp/
+  services/
+  render/
+  loaders/
+  rules/
+  catalog/
+  schema/
+  state/
+  ```
+- Merge deps in `package.json`  
+- Update `.env.local` with `LLM_ENDPOINT=http://localhost:11434/v1`  
+- Move assets:
+  - GLBs → `/public/models/`
+  - KTX2 → `/public/textures/`
+  - Style previews → `/public/style-images/`
+- Keep `Canvas3D` API intact
+
+### DoD
+✅ App builds from root  
+✅ No broken imports  
+✅ Identical baseline scene  
+
+---
+
+## Phase 7 — Test Matrix + Quality Gates
+
+### Outcomes
+Full verification of schemas, parsers, and rendering.
+
+### Tests
+- **Schema/AJV:** Validate all {roomType, style} combos  
+- **Dialog Loop:** Verify turns-to-completion  
+- **Parser/Scene:** Deterministic outputs match gold corpus  
+- **Renderer:** KTX2 + variants load without hitch  
+- **E2E:** Full kitchen/bath workflows
+
+### DoD
+✅ All tests green  
+✅ No regressions  
+✅ Perf ≥ baseline  
+
+---
+
+## Phase 8 — Documentation + Handover
+
+### Outcomes
+Comprehensive documentation and audit-ready state.
+
+### Artifacts
+- `/docs/ARCHITECTURE.md` — Frame/Scene loop + LLM/Parser roles  
+- `/docs/RENDERING.md` — Registry, TSX/GLB variants, KTX2/Draco stack  
+- `/docs/RULEBOOKS.md` — Rule hierarchy, citations, SKU expansion  
+- `/docs/DEVELOPER_GUIDE.md` — local setup, testing, profiling  
+- `/CHANGELOG.md` — migration summary
+
+### DoD
+✅ All docs render correctly in repo  
+✅ Links verified  
+✅ Review sign-off by Integration Lead  
+
+---
+
+## RACI
+| Role | Responsibility |
+|------|----------------|
+| **Accountable** | Integration Lead |
+| **Responsible** | Coder AI executing `MIGRATION_UPDATE.md` |
+| **Consulted** | Standards Owner (NKBA/ADA), Rendering Lead |
+| **Informed** | Product, QA |
+
+---
+
+## Risks + Mitigation
+
+| Risk | Mitigation |
+|------|-------------|
+| **LLM drift** | Frame JSON + Rulebooks enforce deterministic contract |
+| **Asset bloat** | Use KTX2 compression + JSX only for editable models |
+| **Schema creep** | Centralized AJV validation in CI |
+
+---
+
+**End of MIGRATION_UPDATE.md**
