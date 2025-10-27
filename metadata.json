@@ -1,0 +1,5 @@
+{
+  "name": "AI 3D Floor Plan Generator",
+  "description": "Generate and edit high-quality 3D floor plans for kitchens and bathrooms from a simple text description using AI. The floorplan is fully editable in a 3D space.",
+  "requestFramePermissions": []
+}

@@ -1,0 +1,188 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "EG3 Qwen Commands Response",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "commands": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/Command" }
+    },
+    "warnings": { "type": "array", "items": { "type": "string" } },
+    "meta": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "units": { "type": "string", "enum": ["in", "ft", "m"] }
+      },
+      "required": ["units"]
+    }
+  },
+  "required": ["commands", "warnings", "meta"],
+  "definitions": {
+    "WallEnum": { "type": "string", "enum": ["north", "south", "east", "west"] },
+    "SwingEnum": { "type": "string", "enum": ["in_east", "in_west", "out_east", "out_west"] },
+    "ApplianceEnum": { "type": "string", "enum": ["fridge", "range", "dishwasher", "microwave", "oven", "hood", "sink"] },
+    "Point": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": { "x": { "type": "number" }, "y": { "type": "number" } },
+      "required": ["x", "y"]
+    },
+    "Gaps": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "offset_center_in": { "type": "number" },
+        "width_in": { "type": "number" }
+      },
+      "required": ["offset_center_in", "width_in"]
+    },
+    "Command": {
+      "type": "object",
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "type": { "const": "ADD_ROOM" },
+            "payload": {
+              "type": "object",
+              "additionalProperties": true,
+              "properties": {
+                "width_ft": { "type": "number" },
+                "height_ft": { "type": "number" },
+                "ceiling_ft": { "type": "number" }
+              },
+              "required": ["width_ft", "height_ft"]
+            }
+          },
+          "required": ["type", "payload"]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "type": { "const": "ADD_WALL" },
+            "payload": {
+              "type": "object",
+              "additionalProperties": true,
+              "properties": {
+                "start": { "$ref": "#/definitions/Point" },
+                "end": { "$ref": "#/definitions/Point" },
+                "thickness_in": { "type": "number" }
+              },
+              "required": ["start", "end"]
+            }
+          },
+          "required": ["type", "payload"]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "type": { "const": "ADD_DOOR" },
+            "payload": {
+              "type": "object",
+              "additionalProperties": true,
+              "properties": {
+                "wall": { "$ref": "#/definitions/WallEnum" },
+                "width_in": { "type": "number" },
+                "swing": { "$ref": "#/definitions/SwingEnum" },
+                "offset_center_in": { "type": "number" }
+              },
+              "required": ["wall", "width_in", "offset_center_in"]
+            }
+          },
+          "required": ["type", "payload"]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "type": { "const": "ADD_WINDOW" },
+            "payload": {
+              "type": "object",
+              "additionalProperties": true,
+              "properties": {
+                "wall": { "$ref": "#/definitions/WallEnum" },
+                "width_in": { "type": "number" },
+                "height_in": { "type": "number" },
+                "sill_in": { "type": "number" },
+                "offset_center_in": { "type": "number" }
+              },
+              "required": ["wall", "width_in", "height_in", "sill_in", "offset_center_in"]
+            }
+          },
+          "required": ["type", "payload"]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "type": { "const": "ADD_CABINET_RUN" },
+            "payload": {
+              "type": "object",
+              "additionalProperties": true,
+              "properties": {
+                "wall": { "$ref": "#/definitions/WallEnum" },
+                "category": { "type": "string", "enum": ["base", "wall"] },
+                "module_width_in": { "type": "number" },
+                "bottom_in": { "type": "number" },
+                "height_in": { "type": "number" },
+                "skip_openings": { "type": "boolean" },
+                "gaps": { "type": "array", "items": { "$ref": "#/definitions/Gaps" } }
+              },
+              "required": ["wall", "category", "module_width_in", "skip_openings"]
+            }
+          },
+          "required": ["type", "payload"]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "type": { "const": "PLACE_APPLIANCE" },
+            "payload": {
+              "type": "object",
+              "additionalProperties": true,
+              "properties": {
+                "kind": { "$ref": "#/definitions/ApplianceEnum" },
+                "wall": { "$ref": "#/definitions/WallEnum" },
+                "center_offset_in": { "type": "number" },
+                "width_in": { "type": "number" },
+                "depth_in": { "type": "number" }
+              },
+              "required": ["kind", "wall", "center_offset_in"]
+            }
+          },
+          "required": ["type", "payload"]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "type": { "const": "PLACE_OBJECT" },
+            "payload": {
+              "type": "object",
+              "additionalProperties": true,
+              "properties": {
+                "kind": { "type": "string" },
+                "size_in": { "type": "array", "items": { "type": "number" }, "minItems": 2, "maxItems": 2 },
+                "center_in": { "type": "array", "items": { "type": "number" }, "minItems": 2, "maxItems": 2 },
+                "wall": { "$ref": "#/definitions/WallEnum" },
+                "offset_center_in": { "type": "number" }
+              },
+              "anyOf": [
+                { "required": ["center_in"] },
+                { "required": ["wall", "offset_center_in"] }
+              ]
+            }
+          },
+          "required": ["type", "payload"]
+        }
+      ]
+    }
+  }
+}
+

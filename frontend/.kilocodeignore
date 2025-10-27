@@ -1,0 +1,65 @@
+﻿# deps, builds, caches
+**/node_modules/**
+**/dist/**
+**/build/**
+**/.turbo/**
+**/.vite/**
+**/.cache/**
+**/.next/**
+**/out/**
+
+# compiled/bundled JS and sourcemaps (we'll keep TS/TSX/JSX code only)
+**/*.js
+**/*.map
+**/*bundle*.js
+**/*.min.js
+**/*.cjs
+**/*.mjs
+
+# heavy runtimes & binaries
+**/*.wasm
+**/*.exe
+**/*.node
+**/*.data
+
+# 3D/media assets
+**/*.glb
+**/*.gltf
+**/*.bin
+**/*.fbx
+**/*.obj
+**/*.mtl
+**/*.ply
+**/*.stl
+**/*.usdz
+**/*.dae
+**/*.3ds
+**/*.png
+**/*.jpg
+**/*.jpeg
+**/*.gif
+**/*.webp
+**/*.svg
+**/*.ico
+**/*.mp4  **/*.mov  **/*.mp3  **/*.wav
+
+# tests/coverage/noise
+**/__tests__/**
+**/__snapshots__/**
+**/*.test.*
+**/*.spec.*
+**/coverage/**
+**/types/generated/**
+**/*.stories.*
+**/*.story.*
+**/*.lock
+**/*.log
+
+# docs (uncomment to skip docs too)
+# **/*.md   **/*.mdx
+
+# data/config (uncomment if you don't need JSON)
+# **/*.json
+
+# styles (uncomment if not needed)
+# **/*.css  **/*.scss  **/*.less

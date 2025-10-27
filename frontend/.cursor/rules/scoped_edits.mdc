@@ -1,0 +1,10 @@
+---
+description: This rule limits the scope of changes made during coding tasks to avoid unintended modifications across files. It is helpful for maintaining control over large projects.
+globs: **/*.{ts,tsx,js,jsx}
+alwaysApply: false
+---
+Avoid making sweeping changes across files unless explicitly requested.
+
+Confirm with the user before proceeding with large edits or refactoring tasks.
+
+Focus on solving one issue or implementing one feature at a time to maintain clarity and control.

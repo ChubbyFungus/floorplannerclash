@@ -1,0 +1,42 @@
+Stateful Placement Migration Tracker
+===================================
+
+Overall status: Stage 3 complete — analytics, telemetry, and NLRC delegation now consume RoomStateManager snapshots end-to-end. Stage 4 can begin focusing on downstream consumers.
+
+Stage 1 – Plumbing (✅ Completed)
+- Instantiated RoomStateManager/StatefulNormalizer, threaded them through ModernBlueprint3D → Blueprint3D/createCtx, and mirrored add-room/add-wall/add-object commands.
+- Exposed getRoomState() for JSON inspection to confirm wiring without altering UI behaviour.
+
+Stage 2 – Mutation Mirror & History (✅ Completed)
+- Extended snapshot mirroring to doors, windows, updates, deletes, openings, and drag commits.
+- Patched Blueprint3D history to store RoomStateManager snapshots so undo/redo operates on canonical JSON.
+- Added schema guardrails to keep command pipeline aligned with room-state definitions.
+
+Stage 3 – Reconciliation & Delegation (✅ Completed)
+Highlights: canonical snapshot adapter adopted across analytics + telemetry, backend ingest surfaces command metrics, and NLRC intent flows rely on RoomState geometry with logging for any legacy fallbacks.
+
+Workstreams
+- Analytics Sync (Owner: FE platform) ✅
+  - Diffed StatefulNormalizer output against legacy analytics payloads and codified the `legacyAnalyticsAdapter` snapshot contract.
+  - Normalised units/origins, added UUID/timestamp parity, and exposed `RoomStateManager.getLegacyAnalyticsSnapshot()` for downstreams.
+  - Placement engine + state manager clients now read analytics straight from RoomStateManager snapshots.
+- Telemetry Plumbing (Owner: Product analytics) ✅
+  - Post-command analytics now emit RoomState snapshots via `emitCommandTelemetry` and hit `/analytics/commands` end-to-end.
+  - Backend commandAnalyticsService aggregates feature-flag routing + command mix; migration stats expose telemetry summary for dashboards.
+  - Migration dashboard surfaces command telemetry metrics and recent events alongside migration stats.
+- NLRC Delegation (Owner: NLRC engineering) ✅
+  - intentSolver, solver, and ModernBlueprint3D/Wizard scenes prefer RoomState walls; fallbacks log mesh usage for triage but are no longer primary paths.
+  - Telemetry regression ensures mixed object/opening commands still emit snapshots without legacy-only mutations.
+
+Acceptance Criteria & Risk Checks
+- Analytics collectors never read mutable mesh state after async edits (drag/undo) and honour snapshot timestamps. ✅ via snapshot adapter
+- RoomStateManager history pruning stays aligned with legacy analytics buffer sizes (UUID/timestamp parity verified). ✅ adapter tests cover ID/timestamp parity
+- NLRC post-processors (e.g. wallSnapPostPass.ts) mutate only through RoomStateManager APIs, preventing silent array mutations. ✅ enforced via snapshot-backed telemetry test
+- Rare flows (bulk catalog replacements, imported layouts, auto-door generation) are confirmed to emit snapshots. ✅ regression covers mixed commands; migration logging captures any residual edge cases
+- Backend placement replay receives a single payload format even when the feature flag toggles mid-session. ✅ analytics ingest normalises payloads for summary + recent event endpoints
+- Unit coverage expanded: RoomStateManager schema tests include analytics-required fields; StatefulNormalizer parity specs compare legacy vs stateful outputs; NLRC pipeline tests assert snapshot-driven command deltas. ✅ `legacyAnalyticsAdapter.spec.ts` + existing schema tests
+- Integration coverage updated: Snapshot adapter tests + command telemetry integration test cover analytics emission; backend service metrics validated via unit tests and migration stats summary. ✅
+- Manual verification: designer walkthrough with add/modify/delete & undo/redo while watching analytics dashboard; NLRC voice/text edits; legacy layout import under flag toggle. ▶️ Recommended regression checklist before GA
+
+Stage 4 – Canonical Consumers (🚀 Ready to start)
+- Migrate exports, validation overlays, and downstream services to canonical JSON snapshots; expand end-to-end coverage and retire migration bridge logging once parity verified.

@@ -1,0 +1,671 @@
+apps/frontend/src
+(0tqq (BAGENTS.md
+(0tqq (BApp.jsx
+(0tqq (B__tests__
+(0x   tqq (BModernBlueprint3D.test.jsx
+(0x   tqq (BruleEngine.computable.test.ts
+(0x   tqq (BruleEngine.fridge-across-aisle.test.ts
+(0x   mqq (BruleEngine.landing-spans.test.ts
+(0tqq (B_legacy
+(0x   tqq (BREADME.md
+(0x   tqq (Bbackups
+(0x   x   tqq (BBlueprint3D.js.bak
+(0x   x   tqq (BBlueprint3D.js.bak.md
+(0x   x   tqq (BChatBox.tsx.backup
+(0x   x   tqq (BChatBox.tsx.backup.md
+(0x   x   mqq (BREADME.md
+(0x   tqq (Bcomponents
+(0x   x   mqq (BREADME.md
+(0x   tqq (Btests
+(0x   x   mqq (BREADME.md
+(0x   mqq (Butilities
+(0x       mqq (BREADME.md
+(0tqq (Bagents
+(0x   tqq (BAgentProcessor.js
+(0x   tqq (BBaseAgent.js
+(0x   tqq (Bindex.js
+(0x   mqq (Bspecialized
+(0x       tqq (BDesignAgent.js
+(0x       tqq (BEstimationAgent.js
+(0x       tqq (BFlowAgent.js
+(0x       tqq (BFurnitureAgent.js
+(0x       mqq (BMeasurementAgent.js
+(0tqq (Bcomponents
+(0x   tqq (BAICanvasAnnotation.jsx
+(0x   tqq (BAICommandHelp.jsx
+(0x   tqq (BAIConversationUI.jsx
+(0x   tqq (BAIDisambiguationPrompt.jsx
+(0x   tqq (BAIFocusIndicator.jsx
+(0x   tqq (BAIPreferencePanel.jsx
+(0x   tqq (BAITutorialMode.jsx
+(0x   tqq (BAnimatedSpatialGuide.jsx
+(0x   tqq (BCanvasCommandExecutor.jsx
+(0x   tqq (BFloorplanDisplay.jsx
+(0x   tqq (BIFCDemo.jsx
+(0x   tqq (BIFCViewer.jsx
+(0x   tqq (BOperationConfirmation.jsx
+(0x   tqq (BOperationFeedback.jsx
+(0x   tqq (BWallLayer.jsx
+(0x   tqq (Bai
+(0x   x   tqq (BAIFloorplanPreview.jsx
+(0x   x   tqq (BFloorplanImageUploader.jsx
+(0x   x   tqq (BProcessingIndicator.jsx
+(0x   x   mqq (BQwenDebugPanel.jsx
+(0x   tqq (Bauth
+(0x   x   tqq (BForgotPasswordForm.jsx
+(0x   x   tqq (BLoginForm.jsx
+(0x   x   tqq (BRegisterForm.jsx
+(0x   x   tqq (BRequireAuth.jsx
+(0x   x   mqq (BResetPasswordForm.jsx
+(0x   tqq (Bchat
+(0x   x   tqq (BChatInterface.jsx
+(0x   x   tqq (BSimpleChatInterface.jsx
+(0x   x   tqq (Bagents
+(0x   x   x   tqq (BAgentManager.jsx
+(0x   x   x   tqq (BAgentManagerUtils.js
+(0x   x   x   tqq (BBaseAgent.js
+(0x   x   x   tqq (BDesignAgent.js
+(0x   x   x   tqq (BFloorplanAgent.jsx
+(0x   x   x   tqq (BSuggestionAgent.js
+(0x   x   x   tqq (Bhooks
+(0x   x   x   x   mqq (BuseAgentManager.js
+(0x   x   x   mqq (BuseAgentManager.js
+(0x   x   mqq (Bindex.js
+(0x   tqq (Beditor
+(0x   x   tqq (BAICommandDialog.jsx
+(0x   x   tqq (BAIFloorPlanner.jsx
+(0x   x   tqq (BAIFloorplanningAssistant.jsx
+(0x   x   tqq (BAISuggestionsDialog.jsx
+(0x   x   tqq (BActions
+(0x   x   x   mqq (BDeleteButton.jsx
+(0x   x   tqq (BBACKEND_INTEGRATION_SUMMARY.md
+(0x   x   tqq (BBlueprint3D
+(0x   x   x   tqq (BBlueprint3DObject.js
+(0x   x   x   tqq (BCameraController.js
+(0x   x   x   tqq (BEnvironmentManager.js
+(0x   x   x   tqq (BMaterialSystem.js
+(0x   x   x   tqq (BModelLoader.js
+(0x   x   x   tqq (BREFACTOR_TODO.md
+(0x   x   x   tqq (B__tests__
+(0x   x   x   x   tqq (Bfallback.spec.js
+(0x   x   x   x   mqq (Bsnapping.cornerAlignment.spec.ts
+(0x   x   x   tqq (BassetContract.js
+(0x   x   x   tqq (Bcasework
+(0x   x   x   x   mqq (Bindex.js
+(0x   x   x   tqq (BcatalogResolver.js
+(0x   x   x   tqq (Bcore
+(0x   x   x   x   tqq (Bcommands.js
+(0x   x   x   x   mqq (Bctx.js
+(0x   x   x   tqq (BcornerLabeling.js
+(0x   x   x   tqq (Bcountertops
+(0x   x   x   x   mqq (Bgenerate.js
+(0x   x   x   tqq (Benvironment.js
+(0x   x   x   tqq (Bhooks
+(0x   x   x   x   tqq (Bindex.js
+(0x   x   x   x   tqq (BuseCameraController.js
+(0x   x   x   x   tqq (BuseEnvironment.js
+(0x   x   x   x   mqq (BuseMaterialSystem.js
+(0x   x   x   tqq (Binput
+(0x   x   x   x   tqq (Bevents.js
+(0x   x   x   x   tqq (Bselection.js
+(0x   x   x   x   mqq (BselectionApi.js
+(0x   x   x   tqq (Binputs.js
+(0x   x   x   tqq (Bitems
+(0x   x   x   x   mqq (Bindex.js
+(0x   x   x   tqq (BkitchenGoldenSets.js
+(0x   x   x   tqq (Bmaterials
+(0x   x   x   x   tqq (Bapply.js
+(0x   x   x   x   mqq (Bpresets.js
+(0x   x   x   tqq (Bmeasurements.js
+(0x   x   x   tqq (Bmigration-bridge.js
+(0x   x   x   tqq (Bmodel
+(0x   x   x   x   mqq (Bhistory.js
+(0x   x   x   tqq (Bparametrics.js
+(0x   x   x   tqq (Bplacement-debug.js
+(0x   x   x   tqq (Bplacement-engine.js
+(0x   x   x   tqq (Bplacement-v2.js
+(0x   x   x   tqq (Bsnapping.js
+(0x   x   x   tqq (Bstrangler-delegate.js
+(0x   x   x   tqq (Bthree
+(0x   x   x   x   mqq (Bsetup.js
+(0x   x   x   tqq (Bwall-lanes.js
+(0x   x   x   mqq (Bwalls
+(0x   x   x       tqq (Bcore.js
+(0x   x   x       mqq (Bopenings.js
+(0x   x   tqq (BBlueprint3D.js.backup
+(0x   x   tqq (BBlueprint3D.jsx
+(0x   x   tqq (BBlueprint3D.md
+(0x   x   tqq (BBlueprint3D.zip
+(0x   x   tqq (BBlueprint3DDebugger.jsx
+(0x   x   tqq (BBlueprint3DErrorBoundary.jsx
+(0x   x   tqq (BBlueprint3DPlaywrightHarness.tsx
+(0x   x   tqq (BCompass.tsx
+(0x   x   tqq (BDimensionDisplay.tsx
+(0x   x   tqq (BDimensionForm.jsx
+(0x   x   tqq (BDragDropHandler.jsx
+(0x   x   tqq (BEditorDebug.jsx
+(0x   x   tqq (BElevationPopup.jsx
+(0x   x   tqq (BImageUploadPanel.jsx
+(0x   x   tqq (BIssuesModal.jsx
+(0x   x   tqq (BIssuesModal.module.css
+(0x   x   tqq (BItemCatalog.jsx
+(0x   x   tqq (BKITCHEN_BOUNDARY_README.md
+(0x   x   tqq (BKitchenBoundaryDefinition.jsx
+(0x   x   tqq (BLayerPanel.jsx
+(0x   x   tqq (BLightingConfiguration.tsx
+(0x   x   tqq (BModelPreview.jsx
+(0x   x   tqq (BModernBlueprint3D.jsx
+(0x   x   tqq (BNavigationControls.tsx
+(0x   x   tqq (BNlrcDevPanel.jsx
+(0x   x   tqq (BObjectContextMenu.jsx
+(0x   x   tqq (BObjectTagger.jsx
+(0x   x   tqq (BPointCloudCanvas.jsx
+(0x   x   tqq (BPointCloudViewer3D.jsx
+(0x   x   tqq (BPointCloudViewer3D_TEST.jsx
+(0x   x   tqq (BPropertiesPanel.jsx
+(0x   x   tqq (BRoomShapesCatalog.jsx
+(0x   x   tqq (BRoomTemplateSelector.jsx
+(0x   x   tqq (BRunPipelineButton.jsx
+(0x   x   tqq (BScaleObjectModal.jsx
+(0x   x   tqq (BScaleRotateGizmo.jsx
+(0x   x   tqq (BTemplateSelector.jsx
+(0x   x   tqq (BTestComponent.jsx
+(0x   x   tqq (BThumbnailStudio.jsx
+(0x   x   tqq (BToolbar.jsx
+(0x   x   tqq (BToolbarButton.jsx
+(0x   x   tqq (BViewModes.tsx
+(0x   x   tqq (BViewSynchronization.tsx
+(0x   x   tqq (BViewToggle.jsx
+(0x   x   tqq (BWallContextMenu.jsx
+(0x   x   tqq (B__tests__
+(0x   x   x   tqq (BCabinetRun.skipOpenings.int.test.jsx
+(0x   x   x   tqq (BModernBlueprint3D.yawCompat.int.test.jsx
+(0x   x   x   mqq (Bunits.test.ts
+(0x   x   tqq (BcabinetOptions.js
+(0x   x   tqq (Bcatalog.glb
+(0x   x   tqq (Bcatalog.glb.ts
+(0x   x   tqq (BcatalogData.js
+(0x   x   tqq (BcatalogData.spec.ts
+(0x   x   tqq (BcatalogDimensions.js
+(0x   x   tqq (BcatalogScaleFactors.js
+(0x   x   tqq (BcatalogStrictMap.js
+(0x   x   tqq (Bdebug.css
+(0x   x   tqq (Bgrid
+(0x   x   x   mqq (BGridManager.js
+(0x   x   tqq (Bstandards.js
+(0x   x   tqq (Btools
+(0x   x   x   tqq (BDoorTool.tsx
+(0x   x   x   tqq (BFurnitureTool.tsx
+(0x   x   x   tqq (BMaterialTool.tsx
+(0x   x   x   tqq (BMeasurementTool.tsx
+(0x   x   x   tqq (BRoomLabelTool.tsx
+(0x   x   x   tqq (BRoomTool.js
+(0x   x   x   tqq (BWallMergeTool.jsx
+(0x   x   x   tqq (BWallSplitTool.jsx
+(0x   x   x   mqq (BWindowTool.tsx
+(0x   x   tqq (Bunits.ts
+(0x   x   mqq (Bvalidators
+(0x   x       mqq (BroomStateValidator.js
+(0x   tqq (Blayout
+(0x   x   tqq (BFooter.jsx
+(0x   x   tqq (BHeader.jsx
+(0x   x   tqq (BLayout.jsx
+(0x   x   tqq (BMainLayout.jsx
+(0x   x   tqq (BSidebar.jsx
+(0x   x   mqq (BSidebarPanel.jsx
+(0x   tqq (Bllm
+(0x   x   tqq (BChatBox.tsx
+(0x   x   tqq (BLLMStatusWidget.tsx
+(0x   x   mqq (BStatusBadge.tsx
+(0x   tqq (Bmigration
+(0x   x   tqq (BMigrationDashboard.jsx
+(0x   x   tqq (BMigrationMetrics.jsx
+(0x   x   mqq (BMigrationWizard.jsx
+(0x   tqq (Bprofile
+(0x   x   tqq (BChangePasswordForm.jsx
+(0x   x   mqq (BProfileForm.jsx
+(0x   tqq (Bprojects
+(0x   x   tqq (BCreateProjectForm.jsx
+(0x   x   tqq (BProjectCard.jsx
+(0x   x   tqq (BProjectList.jsx
+(0x   x   tqq (BProjectShareModal.jsx
+(0x   x   mqq (BREADME.md
+(0x   tqq (Brules
+(0x   x   mqq (BRuleViolationsPanel.jsx
+(0x   tqq (Bshared
+(0x   x   tqq (BApiConnectionTest.jsx
+(0x   x   tqq (BApiErrorDisplay.jsx
+(0x   x   tqq (BApiStatusIndicator.jsx
+(0x   x   tqq (BApiTest.jsx
+(0x   x   tqq (BErrorBoundary.jsx
+(0x   x   mqq (BKeyboardShortcutsHelp.jsx
+(0x   tqq (Bui
+(0x   x   tqq (Bbadge.jsx
+(0x   x   tqq (Bbutton.jsx
+(0x   x   tqq (Bcard.jsx
+(0x   x   tqq (Bprovider.jsx
+(0x   x   tqq (Bseparator.jsx
+(0x   x   mqq (Btabs.jsx
+(0x   tqq (Bviewer
+(0x   x   tqq (BCameraResetButton.jsx
+(0x   x   tqq (BCanvas3D.jsx
+(0x   x   tqq (BCounterTops.jsx
+(0x   x   tqq (BScene3D.jsx
+(0x   x   mqq (BViewControls.jsx
+(0x   mqq (Bwizard
+(0x       mqq (BWizardModal.jsx
+(0tqq (Bconfig
+(0x   tqq (BapiConfig.js
+(0x   mqq (BlocalConfig.js
+(0tqq (Bconstants
+(0x   mqq (BroomTypes.js
+(0tqq (Bcontexts
+(0x   tqq (BAuthContext.jsx
+(0x   tqq (BEditorContext.jsx
+(0x   tqq (BLayerContext.jsx
+(0x   tqq (BProjectContext.jsx
+(0x   tqq (BThemeContext.jsx
+(0x   mqq (Bcontext-objects.js
+(0tqq (Bcore
+(0x   tqq (Bindex.js
+(0x   mqq (Boperations
+(0x       mqq (BSequentialOperationManager.js
+(0tqq (Bdata
+(0x   tqq (BfurnitureLibrary.js
+(0x   tqq (BroomTemplates.js
+(0x   mqq (Btemplates
+(0x       tqq (Bbathrooms.js
+(0x       mqq (Bkitchens.js
+(0tqq (Bhooks
+(0x   tqq (BuseApiError.js
+(0x   tqq (BuseAuth.js
+(0x   tqq (BuseCameraController.js
+(0x   tqq (BuseEditor.js
+(0x   tqq (BuseEnvironment.js
+(0x   tqq (BuseFeatureFlags.js
+(0x   tqq (BuseLLM.ts
+(0x   tqq (BuseMaterialSystem.js
+(0x   tqq (BuseProject.js
+(0x   tqq (BuseProjects.js
+(0x   tqq (BuseSpeechToText.ts
+(0x   mqq (BuseTheme.js
+(0tqq (Bicons
+(0x   tqq (BMoonIcon.jsx
+(0x   tqq (BSunIcon.jsx
+(0x   mqq (BTrashIcon.jsx
+(0tqq (Blib
+(0x   tqq (Banalytics
+(0x   x   tqq (B__tests__
+(0x   x   x   tqq (BcommandTelemetry.integration.test.ts
+(0x   x   x   mqq (BlegacyAnalyticsAdapter.spec.ts
+(0x   x   tqq (BcommandTelemetry.ts
+(0x   x   mqq (BlegacyAnalyticsAdapter.ts
+(0x   tqq (Bcanvas
+(0x   x   tqq (BCanvasSyncManager.ts
+(0x   x   tqq (BREADME.md
+(0x   x   tqq (B__tests__
+(0x   x   x   mqq (BCanvasSyncManager.test.ts
+(0x   x   tqq (Bexamples
+(0x   x   x   tqq (BBasicUsageExample.ts
+(0x   x   x   mqq (BSimpleUsageExample.js
+(0x   x   mqq (Bintegration
+(0x   x       mqq (BBlueprint3DIntegration.ts
+(0x   tqq (Bcatalog
+(0x   x   mqq (Bmeta.ts
+(0x   tqq (BcatalogResolver.cjs
+(0x   tqq (BcommandTranslator.spec.ts
+(0x   tqq (BcommandTranslator.ts
+(0x   tqq (Bcomparison
+(0x   x   tqq (BREADME.md
+(0x   x   tqq (BStateComparator.ts
+(0x   x   tqq (Bbenchmark.ts
+(0x   x   tqq (Bexamples.ts
+(0x   x   mqq (Bindex.ts
+(0x   tqq (Bconstraints
+(0x   x   tqq (BConstraintResolver.ts
+(0x   x   tqq (BREADME.md
+(0x   x   tqq (Bindex.ts
+(0x   x   tqq (Bintegration-examples.ts
+(0x   x   mqq (Btypes.ts
+(0x   tqq (Bexport
+(0x   x   tqq (BExportManager.ts
+(0x   x   tqq (BREADME.md
+(0x   x   mqq (Bintegration-examples.ts
+(0x   tqq (Bfeedback
+(0x   x   tqq (BREADME.md
+(0x   x   tqq (BValidationFeedbackManager.ts
+(0x   x   mqq (Bintegration-example.ts
+(0x   tqq (Bgeometry
+(0x   x   tqq (B__tests__
+(0x   x   x   mqq (Bfaces.spec.ts
+(0x   x   tqq (Bfaces.spec.ts
+(0x   x   tqq (Bfaces.test.ts
+(0x   x   mqq (Bfaces.ts
+(0x   tqq (Bhistory
+(0x   x   tqq (BHistoryManager.ts
+(0x   x   tqq (BHistoryUI.tsx
+(0x   x   tqq (BREADME.md
+(0x   x   mqq (Bexamples.ts
+(0x   tqq (Bintent
+(0x   x   tqq (Badapter.test.ts
+(0x   x   tqq (Badapter.ts
+(0x   x   tqq (BgoldenAdapter.ts
+(0x   x   mqq (Bintent.ts
+(0x   tqq (Blayout
+(0x   x   tqq (BREADME.md
+(0x   x   tqq (BStatefulNormalizer.ts
+(0x   x   tqq (BStatefulNormalizerExamples.ts
+(0x   x   tqq (BgridPlacement.js
+(0x   x   tqq (BnormalizeCommandsGrid.js
+(0x   x   mqq (BnormalizeKitchen.js
+(0x   tqq (Bllm.ts
+(0x   tqq (BllmClient.ts
+(0x   tqq (Bnlp
+(0x   x   tqq (BContextualInterpreter.spec.ts
+(0x   x   tqq (BContextualInterpreter.ts
+(0x   x   tqq (BContextualInterpreterExamples.ts
+(0x   x   tqq (BContextualInterpreterREADME.md
+(0x   x   tqq (BDeterministicParser.spec.ts
+(0x   x   tqq (BDeterministicParser.ts
+(0x   x   tqq (BREADME.md
+(0x   x   mqq (Btest-fixed-parser.js
+(0x   tqq (Bnlrc
+(0x   x   tqq (B__tests__
+(0x   x   x   tqq (BengineCompat.spec.ts
+(0x   x   x   tqq (BintentFlow.integration.spec.ts
+(0x   x   x   tqq (BintentPerf.spec.ts
+(0x   x   x   tqq (BintentSolver.spec.ts
+(0x   x   x   tqq (BnoResnap.spec.ts
+(0x   x   x   tqq (BschemaGate.inches-meters.spec.ts
+(0x   x   x   tqq (Bsolve.spec.ts
+(0x   x   x   mqq (BwallSnapPostPass.spec.ts
+(0x   x   tqq (BcabinetRunMath.js
+(0x   x   tqq (BcommandTransforms.ts
+(0x   x   tqq (BengineCompat.ts
+(0x   x   tqq (BforwardOverrides.ts
+(0x   x   tqq (BintentSolver.ts
+(0x   x   tqq (BruleEngine.ts
+(0x   x   tqq (Brules.json
+(0x   x   tqq (BschemaGate.js
+(0x   x   tqq (BschemaGate.spec.js
+(0x   x   tqq (Bsolve.ts
+(0x   x   tqq (Btests
+(0x   x   x   tqq (BschemaGate-normalization.spec.ts
+(0x   x   x   mqq (BschemaGate.inches-meters.spec.ts
+(0x   x   mqq (BwallSnapPostPass.ts
+(0x   tqq (Bparser
+(0x   x   tqq (Bcardinals.spec.ts
+(0x   x   tqq (Bcardinals.ts
+(0x   x   tqq (Bintegration-test.ts
+(0x   x   tqq (BparseCommandsToSolverIR.spec.ts
+(0x   x   mqq (BparseCommandsToSolverIR.ts
+(0x   tqq (Bperformance
+(0x   x   tqq (BBatchProcessor.ts
+(0x   x   tqq (BLazyLoader.ts
+(0x   x   tqq (BPerformanceManager.ts
+(0x   x   tqq (BPerformanceOptimizer.ts
+(0x   x   tqq (BREADME.md
+(0x   x   tqq (Bindex.ts
+(0x   x   tqq (Bintegration-examples.ts
+(0x   x   mqq (Btypes.ts
+(0x   tqq (Bpipeline
+(0x   x   mqq (Bgatekeeper.spec.ts
+(0x   tqq (Bplacement
+(0x   x   tqq (BIntelligentPlacementResolver.ts
+(0x   x   tqq (BREADME.md
+(0x   x   mqq (Bintegration-examples.ts
+(0x   tqq (BplanRules.ts
+(0x   tqq (BrepairPlan.ts
+(0x   tqq (Broom
+(0x   x   tqq (BREADME.md
+(0x   x   tqq (BRoomStateManager.ts
+(0x   x   tqq (B__tests__
+(0x   x   x   tqq (Bhistory-compat.spec.ts
+(0x   x   x   mqq (Bplacement-validation.spec.ts
+(0x   x   tqq (Bindex.ts
+(0x   x   tqq (BroomUtils.ts
+(0x   x   mqq (BschemaValidator.ts
+(0x   tqq (Bsession
+(0x   x   tqq (BREADME.md
+(0x   x   tqq (BSessionManager.ts
+(0x   x   tqq (BSessionManagerExample.tsx
+(0x   x   mqq (BuseSessionManager.ts
+(0x   tqq (Bsolver
+(0x   x   tqq (B__tests__
+(0x   x   x   tqq (Bclearance.spec.ts
+(0x   x   x   tqq (Bclearance.test.ts
+(0x   x   x   mqq (Bsolve.spec.ts
+(0x   x   tqq (Bclearance.prop.spec.ts
+(0x   x   tqq (Bclearance.spec.ts
+(0x   x   tqq (Bclearance.ts
+(0x   x   tqq (Bdeterminism.spec.ts
+(0x   x   tqq (BgoldenL.integration.spec.ts
+(0x   x   tqq (Bindex.ts
+(0x   x   tqq (Bnear_corner.spec.ts
+(0x   x   tqq (Bpivot_reconcile.spec.ts
+(0x   x   tqq (Bsolve.core.spec.ts
+(0x   x   tqq (Bsolve.prop.spec.ts
+(0x   x   tqq (Bsolve.ts
+(0x   x   mqq (BsolveIntents.ts
+(0x   tqq (Btest
+(0x   x   mqq (BtestUtils.ts
+(0x   tqq (Btesting
+(0x   x   tqq (BREADME.md
+(0x   x   tqq (Bci
+(0x   x   x   tqq (BCIConfiguration.ts
+(0x   x   x   mqq (BTestPipeline.ts
+(0x   x   tqq (Bcore
+(0x   x   x   tqq (BPerformanceTester.ts
+(0x   x   x   tqq (BRegressionTester.ts
+(0x   x   x   tqq (BTestDataManager.ts
+(0x   x   x   tqq (BTestRunner.ts
+(0x   x   x   mqq (BTestingSuite.ts
+(0x   x   tqq (Bfixtures
+(0x   x   x   tqq (BMockData.ts
+(0x   x   x   tqq (BTestFixtures.ts
+(0x   x   x   mqq (BTestScenarios.ts
+(0x   x   tqq (Bindex.ts
+(0x   x   tqq (Breporting
+(0x   x   x   tqq (BCoverageAnalyzer.ts
+(0x   x   x   tqq (BPerformanceReporter.ts
+(0x   x   x   mqq (BTestReporter.ts
+(0x   x   tqq (Brun-tests.ts
+(0x   x   tqq (Bsuites
+(0x   x   x   tqq (BE2ETestSuite.ts
+(0x   x   x   tqq (BIntegrationTestSuite.ts
+(0x   x   x   tqq (BPerformanceTestSuite.ts
+(0x   x   x   mqq (BUnitTestSuite.ts
+(0x   x   tqq (Btypes
+(0x   x   x   tqq (BCoverageTypes.ts
+(0x   x   x   tqq (BPerformanceTypes.ts
+(0x   x   x   mqq (BTestTypes.ts
+(0x   x   mqq (Butils
+(0x   x       tqq (BMockFactory.ts
+(0x   x       tqq (BPerformanceUtils.ts
+(0x   x       tqq (BTestAssertions.ts
+(0x   x       mqq (BTestUtils.ts
+(0x   tqq (Bthree
+(0x   x   tqq (Bloaders.ts
+(0x   x   mqq (BmodelUrl.ts
+(0x   tqq (Bunits.ts
+(0x   tqq (BvalidatePlan.ts
+(0x   mqq (Bvalidation
+(0x       tqq (BCommandValidator.ts
+(0x       tqq (BEnhancedValidator.ts
+(0x       tqq (BREADME.md
+(0x       tqq (Bindex.ts
+(0x       tqq (Bintegration-example.ts
+(0x       mqq (Btypes.ts
+(0tqq (Bllm
+(0x   mqq (BollamaClient.ts
+(0tqq (Bmain.jsx
+(0tqq (Bpages
+(0x   tqq (BAuthPage.jsx
+(0x   tqq (BBlankPage.tsx
+(0x   tqq (BBlueprint3DPlaywrightPage.tsx
+(0x   tqq (BHomePage.jsx
+(0x   tqq (BIntakeWizard.jsx
+(0x   tqq (BLLMDemoPage.tsx
+(0x   tqq (BModelOrientationTest.jsx
+(0x   tqq (BProfilePage.jsx
+(0x   tqq (BProjectDetailPage.jsx
+(0x   tqq (BProjectsPage.jsx
+(0x   tqq (BTestCatalogPage.jsx
+(0x   tqq (BTestPage.jsx
+(0x   tqq (BWizardV3.tsx
+(0x   mqq (Bindex.jsx
+(0tqq (Brules
+(0x   tqq (BkitchenRuleEngine.js
+(0x   mqq (Btests
+(0x       tqq (Bfixtures.js
+(0x       mqq (BrunRuleEngineTests.js
+(0tqq (Bservices
+(0x   tqq (BLoggingService.js
+(0x   tqq (BaiApiClient.js
+(0x   tqq (BaiService.js
+(0x   tqq (BanalyticsAPI.js
+(0x   tqq (Bapi.js
+(0x   tqq (Bauth.js
+(0x   tqq (BcanvasAiApi.ts
+(0x   tqq (Bchat.js
+(0x   tqq (BcommandAnalyticsService.ts
+(0x   tqq (BdeepseekService.js
+(0x   tqq (Bestimate.js
+(0x   tqq (BfeatureFlagAPI.js
+(0x   tqq (BfloorplanningAIService.js
+(0x   tqq (BifcService.js
+(0x   tqq (BintakeWizardService.js
+(0x   tqq (BmigrationAPI.js
+(0x   tqq (BplanApi.ts
+(0x   tqq (BplanService.ts
+(0x   tqq (Bproject.js
+(0x   tqq (Bprojects.js
+(0x   tqq (Bshare.js
+(0x   mqq (BvisionAI.js
+(0tqq (Bstyles
+(0x   tqq (Bglobals.css
+(0x   mqq (Btheme.js
+(0tqq (Btests
+(0x   tqq (BMainTestSuite.js
+(0x   tqq (B__mocks__
+(0x   x   tqq (BOrbitControls.js
+(0x   x   tqq (BfileMock.js
+(0x   x   tqq (BstyleMock.js
+(0x   x   mqq (Bthree.js
+(0x   tqq (BaiAutomatedWorkflowTesting.js
+(0x   tqq (BaiCanvasOperations.test.js
+(0x   tqq (BaiEdgeCaseValidation.js
+(0x   tqq (BaiStressTesting.js
+(0x   tqq (BaiUserTestingProtocol.md
+(0x   tqq (Bcomponents
+(0x   x   tqq (BBlueprint3D
+(0x   x   x   tqq (BBlueprint3DCanvas.test.js
+(0x   x   x   tqq (BCameraController.test.js
+(0x   x   x   tqq (BMaterialSystem.test.js
+(0x   x   x   mqq (B__mocks__
+(0x   x   x       mqq (BGLTFLoader.ts
+(0x   x   tqq (BIssuesModal.test.jsx
+(0x   x   mqq (Beditor
+(0x   x       mqq (BBlueprint3D
+(0x   x           tqq (BBlueprint3DCanvas.test.js
+(0x   x           mqq (BCameraController.test.js
+(0x   tqq (Bconfig
+(0x   x   tqq (BtestConfig.js
+(0x   x   mqq (BtestConfig.mjs
+(0x   tqq (Bintegration
+(0x   x   tqq (BEnvironmentManager.test.js
+(0x   x   tqq (BFloorplanViewer.test.js
+(0x   x   mqq (Beditor
+(0x   x       mqq (BblueprintHarness.js
+(0x   tqq (Bmocks
+(0x   x   tqq (BEnvironmentManager.js
+(0x   x   tqq (BFlyControls.js
+(0x   x   tqq (BGLTFLoader.js
+(0x   x   tqq (BOBJLoader.js
+(0x   x   tqq (BOrbitControls.js
+(0x   x   tqq (BRGBELoader.js
+(0x   x   tqq (Bcatalog.glb.js
+(0x   x   tqq (Breact-konva.js
+(0x   x   mqq (Bthree.js
+(0x   tqq (Bparametrics.test.js
+(0x   tqq (Bsetup.js
+(0x   tqq (Bsetup.ts
+(0x   tqq (BsetupTests.cjs
+(0x   tqq (Bunit
+(0x   x   tqq (BcabinetRunMath.test.js
+(0x   x   tqq (BcommandTransforms.scaling.test.js
+(0x   x   tqq (BcommandTransforms.test.js
+(0x   x   tqq (Bnlrc.ruleEngine.test.js
+(0x   x   mqq (BsolveIntents.test.js
+(0x   tqq (Butils
+(0x   x   tqq (BBaseTestRunner.js
+(0x   x   tqq (BDebugLogger.test.js
+(0x   x   tqq (BMaterialSystem.test.js
+(0x   x   mqq (Benvironment.test.js
+(0x   mqq (Bvitest.setup.ts
+(0tqq (Btypes
+(0x   tqq (Bindex.d.ts
+(0x   tqq (Bintent.ts
+(0x   tqq (Bplan.ts
+(0x   tqq (Bshims.d.ts
+(0x   tqq (Bsketch.ts
+(0x   tqq (Bthree-modules.d.ts
+(0x   mqq (Bthree.map.control.d.ts
+(0tqq (Butils
+(0x   tqq (BCanvasCommandExecutor.js
+(0x   tqq (BCommandProcessor.js
+(0x   tqq (BConfigurationService.js
+(0x   tqq (BDebugLogger.js
+(0x   tqq (BErrorHandler.js
+(0x   tqq (BIntentDetectionService.js
+(0x   tqq (BRateLimiter.js
+(0x   tqq (BSequentialOperationExecutor.js
+(0x   tqq (BStateManager.js
+(0x   tqq (BaiCanvasValidation.js
+(0x   tqq (BaiCommandProcessor.js
+(0x   tqq (BaiErrorLogging.js
+(0x   tqq (BaiOperationHistory.js
+(0x   tqq (BaiPermissions.js
+(0x   tqq (BaiStateSynchronization.js
+(0x   tqq (Bblueprint3dAdapters.js
+(0x   tqq (Bblueprint3dIFCAdapters.js
+(0x   tqq (Bblueprint3dInterface.js
+(0x   tqq (BcanvasAnimations.js
+(0x   tqq (BcatalogResolver.ts
+(0x   tqq (Bcn.js
+(0x   tqq (Bcolors.js
+(0x   tqq (BcommandQueue.js
+(0x   tqq (BcommandSuggestions.js
+(0x   tqq (BcommandToScene.ts
+(0x   tqq (BcontextualAwareness.js
+(0x   tqq (BcoordinateUtils.js
+(0x   tqq (BdebugUtils.js
+(0x   tqq (BelementCategorization.js
+(0x   tqq (Benvironment.js
+(0x   tqq (BerrorHandling.js
+(0x   tqq (BexportUtils.js
+(0x   tqq (Bformatters.js
+(0x   tqq (BkeyboardShortcuts.js
+(0x   tqq (BmeasurementUtils.js
+(0x   tqq (BmodelCatalogUtils.js
+(0x   tqq (BmodelOrientationUtils.js
+(0x   tqq (BmultiModalInput.js
+(0x   tqq (BnormalizeCommands.ts
+(0x   tqq (BoperationFeedback.js
+(0x   tqq (BpartialExecution.js
+(0x   tqq (BplanToCommands.ts
+(0x   tqq (BrelativeSizeUtils.js
+(0x   tqq (BschemaTransformer.js
+(0x   tqq (BsequentialOperations.js
+(0x   tqq (BsmartCommandSuggestions.js
+(0x   tqq (BspatialRelationships.js
+(0x   tqq (Bstorage.js
+(0x   tqq (BthreeUtils.ts
+(0x   tqq (BtoolValidation.js
+(0x   tqq (Bunits.ts
+(0x   tqq (BuserPreferenceUtils.js
+(0x   tqq (Bvalidation.js
+(0x   mqq (BwallUtils.js
+(0mqq (Bvite-env.d.ts
+
+113 directories, 555 files

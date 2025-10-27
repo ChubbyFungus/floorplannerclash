@@ -1,0 +1,34 @@
+{
+  "room": { "width_in": 144, "depth_in": 120, "height_in": 96 },
+  "walls": [
+    { "id": "A", "length_in": 144, "origin": [0, 0], "direction": "E", "sequence": [] },
+    { "id": "B", "length_in": 120, "origin": [3.6576, 0], "direction": "S", "sequence": [] }
+  ],
+  "windows": [],
+  "openings": [],
+  "units": [
+    { "id": "A-corner-base", "wall_id": "A", "kind": "cabinet", "mount": "floor", "x_start_in": 0,  "width_in": 36, "depth_in": 24, "height_in": 34.5, "subtype": "corner", "model_url": "/models/Cabinets/Base_Cabinets/Base-Cabinet-Super-Susan.std.glb" },
+    { "id": "A-b9",          "wall_id": "A", "kind": "cabinet", "mount": "floor", "x_start_in": 36, "width_in": 9,  "depth_in": 24, "height_in": 34.5, "subtype": "single", "model_url": "/models/Cabinets/Base_Cabinets/Base-Cabinet-Single-Door-One-Drawer-24-Deep (1).std.glb" },
+    { "id": "A-sink33",      "wall_id": "A", "kind": "cabinet", "mount": "floor", "x_start_in": 45, "width_in": 33, "depth_in": 24, "height_in": 34.5, "subtype": "sink_base", "model_url": "/models/Cabinets/Sink_Cabinets/Sink-Base-Cabinet-Double-Door-False-Drawer.std.glb" },
+    { "id": "A-dw24",        "wall_id": "A", "kind": "appliance", "mount": "floor", "x_start_in": 81, "width_in": 24, "depth_in": 24, "height_in": 34, "subtype": "dishwasher", "model_url": "/models/Appliances/Dishwasher.glb" },
+    { "id": "A-fridge39",    "wall_id": "A", "kind": "appliance", "mount": "floor", "x_start_in": 105, "width_in": 39, "depth_in": 28, "height_in": 70, "subtype": "fridge", "model_url": "/models/Appliances/Refrigerator_36in_SubZero_36in_RefrigeratorFrenchDoor_BI-36UFD-S-PH_3ds_Stainless_ProHandle_scaled_final.glb" },
+
+    { "id": "B-corner-base", "wall_id": "B", "kind": "cabinet", "mount": "floor", "x_start_in": 0,  "width_in": 36, "depth_in": 24, "height_in": 34.5, "subtype": "corner", "model_url": "/models/Cabinets/Base_Cabinets/Base-Cabinet-Super-Susan.std.glb" },
+    { "id": "B-b12",         "wall_id": "B", "kind": "cabinet", "mount": "floor", "x_start_in": 36, "width_in": 12, "depth_in": 24, "height_in": 34.5, "subtype": "single", "model_url": "/models/Cabinets/Base_Cabinets/Base-Cabinet-Single-Door-One-Drawer-24-Deep (1).std.glb" },
+    { "id": "B-range30",     "wall_id": "B", "kind": "appliance", "mount": "floor", "x_start_in": 48, "width_in": 30, "depth_in": 26, "height_in": 36, "subtype": "range", "model_url": "/models/Appliances/Range_30in_Wolf_30in_Range_GR304_3ds_scaled_final.glb" },
+    { "id": "B-mwdrawer24",  "wall_id": "B", "kind": "cabinet", "mount": "floor", "x_start_in": 78, "width_in": 24, "depth_in": 24, "height_in": 34.5, "subtype": "microwave_drawer", "model_url": "/models/Cabinets/Base_Cabinets/Base-Cabinet-Microwave-24-Deep.std.glb" },
+    { "id": "B-b3dr18",      "wall_id": "B", "kind": "cabinet", "mount": "floor", "x_start_in": 102, "width_in": 18, "depth_in": 24, "height_in": 34.5, "subtype": "drawer", "model_url": "/models/Cabinets/Base_Cabinets/Universal-Design-Base-Cabinet-Three-Drawer-24-Deep.std.glb" },
+
+    { "id": "A-upper-corner", "wall_id": "A", "kind": "cabinet", "mount": "upper", "x_start_in": 0,  "width_in": 24, "depth_in": 12, "height_in": 36, "subtype": "double", "model_url": "/models/Cabinets/Wall_Cabinets/WHP-Wall-Diagonal-Corner-Door-Prepped-Glass.std.glb" },
+    { "id": "A-upper-9",      "wall_id": "A", "kind": "cabinet", "mount": "upper", "x_start_in": 24, "width_in": 9,  "depth_in": 12, "height_in": 36, "subtype": "single", "model_url": "/models/Cabinets/Wall_Cabinets/Wall-Cabinet-Single-Door-with-Shelves.std.glb" },
+    { "id": "A-upper-24",     "wall_id": "A", "kind": "cabinet", "mount": "upper", "x_start_in": 81, "width_in": 24, "depth_in": 12, "height_in": 36, "subtype": "double", "model_url": "/models/Cabinets/Wall_Cabinets/WHP-Wall-Cabinet-Double-Door-Shelves.std.glb" },
+    { "id": "A-over-fridge",  "wall_id": "A", "kind": "cabinet", "mount": "upper", "x_start_in": 108, "width_in": 36, "depth_in": 24, "height_in": 15, "subtype": "over_fridge", "model_url": "/models/Cabinets/Wall_Cabinets/WHP-Wall-Refrigerator-Double-Door.std.glb" },
+
+    { "id": "B-upper-corner", "wall_id": "B", "kind": "cabinet", "mount": "upper", "x_start_in": 0,  "width_in": 24, "depth_in": 12, "height_in": 36, "subtype": "double", "model_url": "/models/Cabinets/Wall_Cabinets/WHP-Wall-Diagonal-Corner-Door-Prepped-Glass.std.glb" },
+    { "id": "B-upper-12",     "wall_id": "B", "kind": "cabinet", "mount": "upper", "x_start_in": 24, "width_in": 12, "depth_in": 12, "height_in": 36, "subtype": "single", "model_url": "/models/Cabinets/Wall_Cabinets/Wall-Cabinet-Single-Door-with-Shelves.std.glb" },
+    { "id": "B-hood",         "wall_id": "B", "kind": "appliance", "mount": "upper", "x_start_in": 48, "width_in": 30, "depth_in": 20, "height_in": 24, "subtype": "hood", "model_url": "/models/Appliances/Hoodvent_36in.glb" },
+    { "id": "B-upper-24",     "wall_id": "B", "kind": "cabinet", "mount": "upper", "x_start_in": 78, "width_in": 24, "depth_in": 12, "height_in": 36, "subtype": "double", "model_url": "/models/Cabinets/Wall_Cabinets/WHP-Wall-Cabinet-Double-Door-Shelves.std.glb" },
+    { "id": "B-upper-18",     "wall_id": "B", "kind": "cabinet", "mount": "upper", "x_start_in": 102, "width_in": 18, "depth_in": 12, "height_in": 36, "subtype": "single", "model_url": "/models/Cabinets/Wall_Cabinets/Wall-Cabinet-Single-Door-with-Shelves.std.glb" }
+  ],
+  "meta": { "auto_countertops": true }
+}

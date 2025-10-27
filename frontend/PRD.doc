@@ -1,0 +1,137 @@
+# Product Requirements Document (PRD)
+
+## Product Overview
+
+Estimate Genie is a comprehensive web-based application designed to streamline the kitchen and bathroom remodeling process. It offers homeowners powerful yet intuitive tools to create precise 2D floor plans, visualize detailed 3D renderings using real manufacturer 3D models, and interact with an AI-driven chat interface that provides personalized design recommendations and automatic adjustments to their plans.
+
+## Objectives
+
+- Enable homeowners to independently design and visualize kitchen and bathroom remodels.
+- Deliver instant, accurate project estimates without immediate contractor involvement.
+- Provide a premium user experience consistent with the Wish Granted Kitchens and Baths brand.
+
+## Target Audience
+
+- Homeowners planning kitchen and bathroom renovations seeking instant project estimates and visualization.
+
+## Key Features
+
+### 1. 2D Floor Plan Editor
+
+- Drag-and-drop interface for room templates tailored specifically to kitchens and bathrooms.
+- Wall drawing tools supporting:
+  - Straight, curved, and split walls.
+  - Dynamic reshaping and corner adjustment.
+  - Grid snapping for accuracy.
+- Advanced object manipulation:
+  - Single and multi-selection capabilities.
+  - Resize, rotate, reshape using intuitive handles.
+- Properties panel allowing detailed customization:
+  - Manual adjustment of dimensions (length, width, height).
+  - Editable square footage fields to resize rooms accurately.
+  - Rotation angles, alignments, and material selections.
+- Automatic and real-time area and dimension line calculations.
+- Layer management:
+  - Toggle visibility for walls, furniture, annotations, and dimensions.
+- Annotation and labeling tools for clear communication on the plans.
+- Undo/redo functionality and comprehensive zoom/pan controls for detailed editing.
+
+### 2. 3D Visualization
+
+- Real-time synchronization between 2D plans and immersive 3D visualizations.
+- Interactive user controls:
+  - Rotation, zooming, and panning within 3D space.
+- Usage of accurate manufacturer-provided 3D models (500+ models available with continuous additions).
+- Realistic textures, materials, lighting effects, and accurate object representation.
+
+### 3. Object Management and Model Integration
+
+- Integrated predefined object library:
+  - Cabinets, countertops, appliances, fixtures, and accessories using actual 3D manufacturer models.
+  - Intuitive drag-and-drop addition to floor plans from object library.
+  - Placeholders for custom items with adjustable dimensions.
+  - Seamless conversion from 2D placement to accurate 3D representation.
+
+### 4. AI-Powered Chat Interface
+
+- Integration with OpenAI's ChatGPT API for sophisticated natural language interaction.
+- AI-driven personalized design suggestions and automated plan adjustments based on user inputs.
+- Real-time structured JSON output from AI, seamlessly updating user floor plans.
+- Guided step-by-step wizard for streamlined user experience:
+  - Guided workflows ensuring logical and comprehensive project completion.
+  - AI assistance integrated directly into the workflow.
+
+### 5. User Authentication & Project Management
+
+- Secure user authentication:
+  - Email/password and OAuth (Google and Apple) options.
+- Personalized dashboards for managing multiple projects and tracking progress.
+- Secure and efficient storage of user-specific project data.
+
+### 6. Export & Sharing
+
+- Export options:
+  - PDF blueprints.
+  - High-resolution images (PNG, JPEG).
+  - Structured JSON data compatible with estimation applications.
+- Easy sharing via social media and email.
+
+## Technical Details
+
+### Platform & Infrastructure
+
+- Frontend: React.js framework for responsive UI.
+- Backend: Node.js and Express.js providing scalable RESTful APIs.
+- Database: MongoDB or PostgreSQL for reliable data management.
+- Hosting: Scalable deployment using platforms like Netlify, Vercel, Heroku, or AWS.
+- SSL implementation for secure data transmission.
+
+### Frontend Technologies
+
+- React.js for dynamic, responsive interface.
+- Konva.js integrated via react-konva for interactive 2D canvas functionality.
+- Three.js with react-three-fiber for immersive and performant 3D visualizations.
+- Real-time synchronization mechanisms ensuring consistency between 2D and 3D views.
+
+### Backend Technologies
+
+- Node.js with Express.js framework.
+- Secure, efficient data handling with MongoDB or PostgreSQL.
+
+### AI Integration
+
+- Integration with OpenAI's ChatGPT API for real-time, context-aware user interactions.
+- JSON-based communication for seamless interaction between AI responses and front-end interface.
+
+### Authentication & Security
+
+- Passport.js managing secure authentication processes.
+- Password encryption using bcrypt.
+- Environment variables secured via dotenv.
+- Compliance with privacy standards and secure data storage practices.
+
+### Monitoring & Analytics
+
+- Error tracking and logging with Sentry.
+- Detailed analytics for user behavior insights and performance monitoring.
+
+## Design & Branding
+
+- Premium aesthetic featuring champagne gold and black/navy blue themes.
+- Consistent, professional branding aligned with Wish Granted Kitchens and Baths.
+
+## Success Metrics
+
+- High levels of user engagement, retention, and repeat usage.
+- Volume of completed and exported projects.
+- Positive feedback, reviews, and satisfaction ratings from users.
+
+## Documentation & Support
+
+- Detailed developer documentation, including comprehensive API guidelines.
+- Extensive user-facing documentation: user guides, tutorials, FAQs, and dedicated support channels.
+
+---
+
+Ensure completion of all development phases and subtasks as outlined in the Detailed Development Plan, maintaining detailed accuracy and fidelity to the specified functionalities.
+

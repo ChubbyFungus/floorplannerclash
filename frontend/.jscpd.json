@@ -1,0 +1,25 @@
+{
+  "threshold": 0.5,
+  "minTokens": 60,
+  "gitignore": true,
+  "reporters": ["console", "markdown", "json"],
+  "output": "clones.json",
+  "path": ["src"],
+  "ignore": [
+    "**/__tests__/**",
+    "**/*.{spec,test}.{js,jsx,ts,tsx}",
+    "**/*_TEST.*",
+    "**/tests/**",
+    "**/__mocks__/**",
+    "**/_legacy/**",
+    "**/_archive/**",
+    "**/*.md",
+    "scripts/**",
+    "report/**",
+    "src/data/templates/**",
+    "src/lib/layout/StatefulNormalizerExamples.ts",
+    "src/lib/feedback/integration-example.ts",
+    "src/lib/export/integration-examples.ts",
+    "src/components/editor/PointCloudViewer3D_TEST.jsx"
+  ]
+}

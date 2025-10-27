@@ -1,0 +1,230 @@
+Based on your tech stack from the provided files, here's an optimized workflow for building the Estimate Genie application:
+
+## 1. Development Environment Setup
+
+### Start Development Servers
+```bash
+# Terminal 1: Start Mock API Server
+npm run mock-api   # Runs on port 3001
+
+# Terminal 2: Start Vite Dev Server
+npm run dev        # Runs on port 3003
+```
+
+### Code Editor Setup
+- Enable ESLint and Prettier integration
+- Use the provided `.eslintrc.cjs` configuration
+- Enable format on save
+
+## 2. Feature Development Workflow
+
+### A. Branch Creation
+```bash
+# Create feature branch from development
+git checkout development
+git checkout -b feature/specific-feature-name
+```
+
+### B. Component Development Pattern
+1. Create component files following the project structure:
+
+````jsx path=src/components/YourFeature/index.jsx mode=EDIT
+import React from 'react';
+import { useStore } from '@/hooks/useStore';
+
+export const YourFeature = () => {
+  // State management with Zustand
+  const { someState, updateState } = useStore();
+
+  return (
+    <div>
+      {/* Component JSX */}
+    </div>
+  );
+};
+````
+
+2. Create associated test file:
+
+````jsx path=src/components/YourFeature/YourFeature.test.jsx mode=EDIT
+import { render, screen } from '@testing-library/react';
+import { YourFeature } from './index';
+
+describe('YourFeature', () => {
+  it('renders correctly', () => {
+    render(<YourFeature />);
+    // Add assertions
+  });
+});
+````
+
+### C. State Management Pattern
+Using Zustand for state:
+
+````javascript path=src/stores/yourFeatureStore.js mode=EDIT
+import create from 'zustand';
+
+export const useYourFeatureStore = create((set) => ({
+  state: initialState,
+  actions: {
+    updateState: (newState) => set((state) => ({
+      ...state,
+      ...newState
+    })),
+  }
+}));
+````
+
+### D. API Integration Pattern
+
+````javascript path=src/services/api/yourFeatureApi.js mode=EDIT
+const API_BASE = window.API_BASE_URL;
+
+export const yourFeatureApi = {
+  getData: async () => {
+    try {
+      const response = await fetch(`${API_BASE}/v1/your-endpoint`);
+      return await response.json();
+    } catch (error) {
+      console.error('API Error:', error);
+      throw error;
+    }
+  }
+};
+````
+
+## 3. Testing Strategy
+
+### A. Run Tests During Development
+```bash
+# Watch mode for active development
+npm run test:watch
+
+# Single run for CI
+npm run test
+```
+
+### B. Performance Testing
+```bash
+# Build and analyze bundle
+npm run build
+# Check stats.html for bundle analysis
+```
+
+## 4. Optimization Checklist
+
+### A. Code Splitting
+```javascript
+// Lazy load components
+const YourFeature = React.lazy(() => import('./components/YourFeature'));
+
+// Use Suspense
+<Suspense fallback={<LoadingSpinner />}>
+  <YourFeature />
+</Suspense>
+```
+
+### B. Performance Optimizations
+```javascript
+// Memoize expensive components
+const MemoizedComponent = React.memo(YourComponent);
+
+// Use useMemo for expensive calculations
+const expensiveValue = useMemo(() => compute(), [deps]);
+
+// Use useCallback for function props
+const handler = useCallback(() => {
+  // handle event
+}, [deps]);
+```
+
+## 5. Commit & Push Process
+
+```bash
+# 1. Run linter
+npm run lint
+
+# 2. Run tests
+npm run test
+
+# 3. Commit with conventional commits
+git commit -m "feat(scope): description"
+
+# 4. Push to remote
+git push origin feature/your-feature
+```
+
+## 6. Pre-PR Checklist
+
+```markdown
+- [ ] All tests passing
+- [ ] Linting passes
+- [ ] Bundle size checked (stats.html)
+- [ ] No console errors
+- [ ] Responsive design verified
+- [ ] Browser compatibility checked
+- [ ] Performance metrics reviewed
+```
+
+## 7. Development Tips
+
+### A. Use Project Aliases
+```javascript
+// Instead of relative paths
+import { Something } from '../../../components/Something';
+
+// Use aliases
+import { Something } from '@components/Something';
+```
+
+### B. API Development
+```javascript
+// Use the configured API_BASE_URL
+const apiUrl = `${window.API_BASE_URL}/v1/endpoint`;
+
+// Include error handling
+try {
+  const response = await fetch(apiUrl);
+  if (!response.ok) throw new Error('API Error');
+  return await response.json();
+} catch (error) {
+  // Handle error appropriately
+}
+```
+
+### C. 3D Performance
+```javascript
+// Use React Three Fiber best practices
+const Scene = () => {
+  return (
+    <Canvas
+      camera={{ position: [0, 0, 5] }}
+      performance={{ min: 0.5 }}
+    >
+      <Suspense fallback={null}>
+        <Model />
+      </Suspense>
+    </Canvas>
+  );
+};
+```
+
+## 8. Deployment Process
+
+```bash
+# 1. Build for production
+npm run build
+
+# 2. Preview build locally
+npm run preview
+
+# 3. Check bundle analysis
+# Open dist/stats.html
+
+# 4. Deploy via CI/CD
+git push origin main
+```
+
+This workflow integrates with your existing setup and follows the best practices shown in your configuration files. It emphasizes code quality, performance, and maintainable development patterns while utilizing your chosen tech stack effectively.
+
+Remember to adjust the workflow based on your team's specific needs and the current phase of development as indicated in your `Frontend dev checklist.md`.

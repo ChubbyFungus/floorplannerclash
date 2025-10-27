@@ -1,0 +1,671 @@
+apps/frontend/src
+├── AGENTS.md
+├── App.jsx
+├── __tests__
+│   ├── ModernBlueprint3D.test.jsx
+│   ├── ruleEngine.computable.test.ts
+│   ├── ruleEngine.fridge-across-aisle.test.ts
+│   └── ruleEngine.landing-spans.test.ts
+├── _legacy
+│   ├── README.md
+│   ├── backups
+│   │   ├── Blueprint3D.js.bak
+│   │   ├── Blueprint3D.js.bak.md
+│   │   ├── ChatBox.tsx.backup
+│   │   ├── ChatBox.tsx.backup.md
+│   │   └── README.md
+│   ├── components
+│   │   └── README.md
+│   ├── tests
+│   │   └── README.md
+│   └── utilities
+│       └── README.md
+├── agents
+│   ├── AgentProcessor.js
+│   ├── BaseAgent.js
+│   ├── index.js
+│   └── specialized
+│       ├── DesignAgent.js
+│       ├── EstimationAgent.js
+│       ├── FlowAgent.js
+│       ├── FurnitureAgent.js
+│       └── MeasurementAgent.js
+├── components
+│   ├── AICanvasAnnotation.jsx
+│   ├── AICommandHelp.jsx
+│   ├── AIConversationUI.jsx
+│   ├── AIDisambiguationPrompt.jsx
+│   ├── AIFocusIndicator.jsx
+│   ├── AIPreferencePanel.jsx
+│   ├── AITutorialMode.jsx
+│   ├── AnimatedSpatialGuide.jsx
+│   ├── CanvasCommandExecutor.jsx
+│   ├── FloorplanDisplay.jsx
+│   ├── IFCDemo.jsx
+│   ├── IFCViewer.jsx
+│   ├── OperationConfirmation.jsx
+│   ├── OperationFeedback.jsx
+│   ├── WallLayer.jsx
+│   ├── ai
+│   │   ├── AIFloorplanPreview.jsx
+│   │   ├── FloorplanImageUploader.jsx
+│   │   ├── ProcessingIndicator.jsx
+│   │   └── QwenDebugPanel.jsx
+│   ├── auth
+│   │   ├── ForgotPasswordForm.jsx
+│   │   ├── LoginForm.jsx
+│   │   ├── RegisterForm.jsx
+│   │   ├── RequireAuth.jsx
+│   │   └── ResetPasswordForm.jsx
+│   ├── chat
+│   │   ├── ChatInterface.jsx
+│   │   ├── SimpleChatInterface.jsx
+│   │   ├── agents
+│   │   │   ├── AgentManager.jsx
+│   │   │   ├── AgentManagerUtils.js
+│   │   │   ├── BaseAgent.js
+│   │   │   ├── DesignAgent.js
+│   │   │   ├── FloorplanAgent.jsx
+│   │   │   ├── SuggestionAgent.js
+│   │   │   ├── hooks
+│   │   │   │   └── useAgentManager.js
+│   │   │   └── useAgentManager.js
+│   │   └── index.js
+│   ├── editor
+│   │   ├── AICommandDialog.jsx
+│   │   ├── AIFloorPlanner.jsx
+│   │   ├── AIFloorplanningAssistant.jsx
+│   │   ├── AISuggestionsDialog.jsx
+│   │   ├── Actions
+│   │   │   └── DeleteButton.jsx
+│   │   ├── BACKEND_INTEGRATION_SUMMARY.md
+│   │   ├── Blueprint3D
+│   │   │   ├── Blueprint3DObject.js
+│   │   │   ├── CameraController.js
+│   │   │   ├── EnvironmentManager.js
+│   │   │   ├── MaterialSystem.js
+│   │   │   ├── ModelLoader.js
+│   │   │   ├── REFACTOR_TODO.md
+│   │   │   ├── __tests__
+│   │   │   │   ├── fallback.spec.js
+│   │   │   │   └── snapping.cornerAlignment.spec.ts
+│   │   │   ├── assetContract.js
+│   │   │   ├── casework
+│   │   │   │   └── index.js
+│   │   │   ├── catalogResolver.js
+│   │   │   ├── core
+│   │   │   │   ├── commands.js
+│   │   │   │   └── ctx.js
+│   │   │   ├── cornerLabeling.js
+│   │   │   ├── countertops
+│   │   │   │   └── generate.js
+│   │   │   ├── environment.js
+│   │   │   ├── hooks
+│   │   │   │   ├── index.js
+│   │   │   │   ├── useCameraController.js
+│   │   │   │   ├── useEnvironment.js
+│   │   │   │   └── useMaterialSystem.js
+│   │   │   ├── input
+│   │   │   │   ├── events.js
+│   │   │   │   ├── selection.js
+│   │   │   │   └── selectionApi.js
+│   │   │   ├── inputs.js
+│   │   │   ├── items
+│   │   │   │   └── index.js
+│   │   │   ├── kitchenGoldenSets.js
+│   │   │   ├── materials
+│   │   │   │   ├── apply.js
+│   │   │   │   └── presets.js
+│   │   │   ├── measurements.js
+│   │   │   ├── migration-bridge.js
+│   │   │   ├── model
+│   │   │   │   └── history.js
+│   │   │   ├── parametrics.js
+│   │   │   ├── placement-debug.js
+│   │   │   ├── placement-engine.js
+│   │   │   ├── placement-v2.js
+│   │   │   ├── snapping.js
+│   │   │   ├── strangler-delegate.js
+│   │   │   ├── three
+│   │   │   │   └── setup.js
+│   │   │   ├── wall-lanes.js
+│   │   │   └── walls
+│   │   │       ├── core.js
+│   │   │       └── openings.js
+│   │   ├── Blueprint3D.js.backup
+│   │   ├── Blueprint3D.jsx
+│   │   ├── Blueprint3D.md
+│   │   ├── Blueprint3D.zip
+│   │   ├── Blueprint3DDebugger.jsx
+│   │   ├── Blueprint3DErrorBoundary.jsx
+│   │   ├── Blueprint3DPlaywrightHarness.tsx
+│   │   ├── Compass.tsx
+│   │   ├── DimensionDisplay.tsx
+│   │   ├── DimensionForm.jsx
+│   │   ├── DragDropHandler.jsx
+│   │   ├── EditorDebug.jsx
+│   │   ├── ElevationPopup.jsx
+│   │   ├── ImageUploadPanel.jsx
+│   │   ├── IssuesModal.jsx
+│   │   ├── IssuesModal.module.css
+│   │   ├── ItemCatalog.jsx
+│   │   ├── KITCHEN_BOUNDARY_README.md
+│   │   ├── KitchenBoundaryDefinition.jsx
+│   │   ├── LayerPanel.jsx
+│   │   ├── LightingConfiguration.tsx
+│   │   ├── ModelPreview.jsx
+│   │   ├── ModernBlueprint3D.jsx
+│   │   ├── NavigationControls.tsx
+│   │   ├── NlrcDevPanel.jsx
+│   │   ├── ObjectContextMenu.jsx
+│   │   ├── ObjectTagger.jsx
+│   │   ├── PointCloudCanvas.jsx
+│   │   ├── PointCloudViewer3D.jsx
+│   │   ├── PointCloudViewer3D_TEST.jsx
+│   │   ├── PropertiesPanel.jsx
+│   │   ├── RoomShapesCatalog.jsx
+│   │   ├── RoomTemplateSelector.jsx
+│   │   ├── RunPipelineButton.jsx
+│   │   ├── ScaleObjectModal.jsx
+│   │   ├── ScaleRotateGizmo.jsx
+│   │   ├── TemplateSelector.jsx
+│   │   ├── TestComponent.jsx
+│   │   ├── ThumbnailStudio.jsx
+│   │   ├── Toolbar.jsx
+│   │   ├── ToolbarButton.jsx
+│   │   ├── ViewModes.tsx
+│   │   ├── ViewSynchronization.tsx
+│   │   ├── ViewToggle.jsx
+│   │   ├── WallContextMenu.jsx
+│   │   ├── __tests__
+│   │   │   ├── CabinetRun.skipOpenings.int.test.jsx
+│   │   │   ├── ModernBlueprint3D.yawCompat.int.test.jsx
+│   │   │   └── units.test.ts
+│   │   ├── cabinetOptions.js
+│   │   ├── catalog.glb
+│   │   ├── catalog.glb.ts
+│   │   ├── catalogData.js
+│   │   ├── catalogData.spec.ts
+│   │   ├── catalogDimensions.js
+│   │   ├── catalogScaleFactors.js
+│   │   ├── catalogStrictMap.js
+│   │   ├── debug.css
+│   │   ├── grid
+│   │   │   └── GridManager.js
+│   │   ├── standards.js
+│   │   ├── tools
+│   │   │   ├── DoorTool.tsx
+│   │   │   ├── FurnitureTool.tsx
+│   │   │   ├── MaterialTool.tsx
+│   │   │   ├── MeasurementTool.tsx
+│   │   │   ├── RoomLabelTool.tsx
+│   │   │   ├── RoomTool.js
+│   │   │   ├── WallMergeTool.jsx
+│   │   │   ├── WallSplitTool.jsx
+│   │   │   └── WindowTool.tsx
+│   │   ├── units.ts
+│   │   └── validators
+│   │       └── roomStateValidator.js
+│   ├── layout
+│   │   ├── Footer.jsx
+│   │   ├── Header.jsx
+│   │   ├── Layout.jsx
+│   │   ├── MainLayout.jsx
+│   │   ├── Sidebar.jsx
+│   │   └── SidebarPanel.jsx
+│   ├── llm
+│   │   ├── ChatBox.tsx
+│   │   ├── LLMStatusWidget.tsx
+│   │   └── StatusBadge.tsx
+│   ├── migration
+│   │   ├── MigrationDashboard.jsx
+│   │   ├── MigrationMetrics.jsx
+│   │   └── MigrationWizard.jsx
+│   ├── profile
+│   │   ├── ChangePasswordForm.jsx
+│   │   └── ProfileForm.jsx
+│   ├── projects
+│   │   ├── CreateProjectForm.jsx
+│   │   ├── ProjectCard.jsx
+│   │   ├── ProjectList.jsx
+│   │   ├── ProjectShareModal.jsx
+│   │   └── README.md
+│   ├── rules
+│   │   └── RuleViolationsPanel.jsx
+│   ├── shared
+│   │   ├── ApiConnectionTest.jsx
+│   │   ├── ApiErrorDisplay.jsx
+│   │   ├── ApiStatusIndicator.jsx
+│   │   ├── ApiTest.jsx
+│   │   ├── ErrorBoundary.jsx
+│   │   └── KeyboardShortcutsHelp.jsx
+│   ├── ui
+│   │   ├── badge.jsx
+│   │   ├── button.jsx
+│   │   ├── card.jsx
+│   │   ├── provider.jsx
+│   │   ├── separator.jsx
+│   │   └── tabs.jsx
+│   ├── viewer
+│   │   ├── CameraResetButton.jsx
+│   │   ├── Canvas3D.jsx
+│   │   ├── CounterTops.jsx
+│   │   ├── Scene3D.jsx
+│   │   └── ViewControls.jsx
+│   └── wizard
+│       └── WizardModal.jsx
+├── config
+│   ├── apiConfig.js
+│   └── localConfig.js
+├── constants
+│   └── roomTypes.js
+├── contexts
+│   ├── AuthContext.jsx
+│   ├── EditorContext.jsx
+│   ├── LayerContext.jsx
+│   ├── ProjectContext.jsx
+│   ├── ThemeContext.jsx
+│   └── context-objects.js
+├── core
+│   ├── index.js
+│   └── operations
+│       └── SequentialOperationManager.js
+├── data
+│   ├── furnitureLibrary.js
+│   ├── roomTemplates.js
+│   └── templates
+│       ├── bathrooms.js
+│       └── kitchens.js
+├── hooks
+│   ├── useApiError.js
+│   ├── useAuth.js
+│   ├── useCameraController.js
+│   ├── useEditor.js
+│   ├── useEnvironment.js
+│   ├── useFeatureFlags.js
+│   ├── useLLM.ts
+│   ├── useMaterialSystem.js
+│   ├── useProject.js
+│   ├── useProjects.js
+│   ├── useSpeechToText.ts
+│   └── useTheme.js
+├── icons
+│   ├── MoonIcon.jsx
+│   ├── SunIcon.jsx
+│   └── TrashIcon.jsx
+├── lib
+│   ├── analytics
+│   │   ├── __tests__
+│   │   │   ├── commandTelemetry.integration.test.ts
+│   │   │   └── legacyAnalyticsAdapter.spec.ts
+│   │   ├── commandTelemetry.ts
+│   │   └── legacyAnalyticsAdapter.ts
+│   ├── canvas
+│   │   ├── CanvasSyncManager.ts
+│   │   ├── README.md
+│   │   ├── __tests__
+│   │   │   └── CanvasSyncManager.test.ts
+│   │   ├── examples
+│   │   │   ├── BasicUsageExample.ts
+│   │   │   └── SimpleUsageExample.js
+│   │   └── integration
+│   │       └── Blueprint3DIntegration.ts
+│   ├── catalog
+│   │   └── meta.ts
+│   ├── catalogResolver.cjs
+│   ├── commandTranslator.spec.ts
+│   ├── commandTranslator.ts
+│   ├── comparison
+│   │   ├── README.md
+│   │   ├── StateComparator.ts
+│   │   ├── benchmark.ts
+│   │   ├── examples.ts
+│   │   └── index.ts
+│   ├── constraints
+│   │   ├── ConstraintResolver.ts
+│   │   ├── README.md
+│   │   ├── index.ts
+│   │   ├── integration-examples.ts
+│   │   └── types.ts
+│   ├── export
+│   │   ├── ExportManager.ts
+│   │   ├── README.md
+│   │   └── integration-examples.ts
+│   ├── feedback
+│   │   ├── README.md
+│   │   ├── ValidationFeedbackManager.ts
+│   │   └── integration-example.ts
+│   ├── geometry
+│   │   ├── __tests__
+│   │   │   └── faces.spec.ts
+│   │   ├── faces.spec.ts
+│   │   ├── faces.test.ts
+│   │   └── faces.ts
+│   ├── history
+│   │   ├── HistoryManager.ts
+│   │   ├── HistoryUI.tsx
+│   │   ├── README.md
+│   │   └── examples.ts
+│   ├── intent
+│   │   ├── adapter.test.ts
+│   │   ├── adapter.ts
+│   │   ├── goldenAdapter.ts
+│   │   └── intent.ts
+│   ├── layout
+│   │   ├── README.md
+│   │   ├── StatefulNormalizer.ts
+│   │   ├── StatefulNormalizerExamples.ts
+│   │   ├── gridPlacement.js
+│   │   ├── normalizeCommandsGrid.js
+│   │   └── normalizeKitchen.js
+│   ├── llm.ts
+│   ├── llmClient.ts
+│   ├── nlp
+│   │   ├── ContextualInterpreter.spec.ts
+│   │   ├── ContextualInterpreter.ts
+│   │   ├── ContextualInterpreterExamples.ts
+│   │   ├── ContextualInterpreterREADME.md
+│   │   ├── DeterministicParser.spec.ts
+│   │   ├── DeterministicParser.ts
+│   │   ├── README.md
+│   │   └── test-fixed-parser.js
+│   ├── nlrc
+│   │   ├── __tests__
+│   │   │   ├── engineCompat.spec.ts
+│   │   │   ├── intentFlow.integration.spec.ts
+│   │   │   ├── intentPerf.spec.ts
+│   │   │   ├── intentSolver.spec.ts
+│   │   │   ├── noResnap.spec.ts
+│   │   │   ├── schemaGate.inches-meters.spec.ts
+│   │   │   ├── solve.spec.ts
+│   │   │   └── wallSnapPostPass.spec.ts
+│   │   ├── cabinetRunMath.js
+│   │   ├── commandTransforms.ts
+│   │   ├── engineCompat.ts
+│   │   ├── forwardOverrides.ts
+│   │   ├── intentSolver.ts
+│   │   ├── ruleEngine.ts
+│   │   ├── rules.json
+│   │   ├── schemaGate.js
+│   │   ├── schemaGate.spec.js
+│   │   ├── solve.ts
+│   │   ├── tests
+│   │   │   ├── schemaGate-normalization.spec.ts
+│   │   │   └── schemaGate.inches-meters.spec.ts
+│   │   └── wallSnapPostPass.ts
+│   ├── parser
+│   │   ├── cardinals.spec.ts
+│   │   ├── cardinals.ts
+│   │   ├── integration-test.ts
+│   │   ├── parseCommandsToSolverIR.spec.ts
+│   │   └── parseCommandsToSolverIR.ts
+│   ├── performance
+│   │   ├── BatchProcessor.ts
+│   │   ├── LazyLoader.ts
+│   │   ├── PerformanceManager.ts
+│   │   ├── PerformanceOptimizer.ts
+│   │   ├── README.md
+│   │   ├── index.ts
+│   │   ├── integration-examples.ts
+│   │   └── types.ts
+│   ├── pipeline
+│   │   └── gatekeeper.spec.ts
+│   ├── placement
+│   │   ├── IntelligentPlacementResolver.ts
+│   │   ├── README.md
+│   │   └── integration-examples.ts
+│   ├── planRules.ts
+│   ├── repairPlan.ts
+│   ├── room
+│   │   ├── README.md
+│   │   ├── RoomStateManager.ts
+│   │   ├── __tests__
+│   │   │   ├── history-compat.spec.ts
+│   │   │   └── placement-validation.spec.ts
+│   │   ├── index.ts
+│   │   ├── roomUtils.ts
+│   │   └── schemaValidator.ts
+│   ├── session
+│   │   ├── README.md
+│   │   ├── SessionManager.ts
+│   │   ├── SessionManagerExample.tsx
+│   │   └── useSessionManager.ts
+│   ├── solver
+│   │   ├── __tests__
+│   │   │   ├── clearance.spec.ts
+│   │   │   ├── clearance.test.ts
+│   │   │   └── solve.spec.ts
+│   │   ├── clearance.prop.spec.ts
+│   │   ├── clearance.spec.ts
+│   │   ├── clearance.ts
+│   │   ├── determinism.spec.ts
+│   │   ├── goldenL.integration.spec.ts
+│   │   ├── index.ts
+│   │   ├── near_corner.spec.ts
+│   │   ├── pivot_reconcile.spec.ts
+│   │   ├── solve.core.spec.ts
+│   │   ├── solve.prop.spec.ts
+│   │   ├── solve.ts
+│   │   └── solveIntents.ts
+│   ├── test
+│   │   └── testUtils.ts
+│   ├── testing
+│   │   ├── README.md
+│   │   ├── ci
+│   │   │   ├── CIConfiguration.ts
+│   │   │   └── TestPipeline.ts
+│   │   ├── core
+│   │   │   ├── PerformanceTester.ts
+│   │   │   ├── RegressionTester.ts
+│   │   │   ├── TestDataManager.ts
+│   │   │   ├── TestRunner.ts
+│   │   │   └── TestingSuite.ts
+│   │   ├── fixtures
+│   │   │   ├── MockData.ts
+│   │   │   ├── TestFixtures.ts
+│   │   │   └── TestScenarios.ts
+│   │   ├── index.ts
+│   │   ├── reporting
+│   │   │   ├── CoverageAnalyzer.ts
+│   │   │   ├── PerformanceReporter.ts
+│   │   │   └── TestReporter.ts
+│   │   ├── run-tests.ts
+│   │   ├── suites
+│   │   │   ├── E2ETestSuite.ts
+│   │   │   ├── IntegrationTestSuite.ts
+│   │   │   ├── PerformanceTestSuite.ts
+│   │   │   └── UnitTestSuite.ts
+│   │   ├── types
+│   │   │   ├── CoverageTypes.ts
+│   │   │   ├── PerformanceTypes.ts
+│   │   │   └── TestTypes.ts
+│   │   └── utils
+│   │       ├── MockFactory.ts
+│   │       ├── PerformanceUtils.ts
+│   │       ├── TestAssertions.ts
+│   │       └── TestUtils.ts
+│   ├── three
+│   │   ├── loaders.ts
+│   │   └── modelUrl.ts
+│   ├── units.ts
+│   ├── validatePlan.ts
+│   └── validation
+│       ├── CommandValidator.ts
+│       ├── EnhancedValidator.ts
+│       ├── README.md
+│       ├── index.ts
+│       ├── integration-example.ts
+│       └── types.ts
+├── llm
+│   └── ollamaClient.ts
+├── main.jsx
+├── pages
+│   ├── AuthPage.jsx
+│   ├── BlankPage.tsx
+│   ├── Blueprint3DPlaywrightPage.tsx
+│   ├── HomePage.jsx
+│   ├── IntakeWizard.jsx
+│   ├── LLMDemoPage.tsx
+│   ├── ModelOrientationTest.jsx
+│   ├── ProfilePage.jsx
+│   ├── ProjectDetailPage.jsx
+│   ├── ProjectsPage.jsx
+│   ├── TestCatalogPage.jsx
+│   ├── TestPage.jsx
+│   ├── WizardV3.tsx
+│   └── index.jsx
+├── rules
+│   ├── kitchenRuleEngine.js
+│   └── tests
+│       ├── fixtures.js
+│       └── runRuleEngineTests.js
+├── services
+│   ├── LoggingService.js
+│   ├── aiApiClient.js
+│   ├── aiService.js
+│   ├── analyticsAPI.js
+│   ├── api.js
+│   ├── auth.js
+│   ├── canvasAiApi.ts
+│   ├── chat.js
+│   ├── commandAnalyticsService.ts
+│   ├── deepseekService.js
+│   ├── estimate.js
+│   ├── featureFlagAPI.js
+│   ├── floorplanningAIService.js
+│   ├── ifcService.js
+│   ├── intakeWizardService.js
+│   ├── migrationAPI.js
+│   ├── planApi.ts
+│   ├── planService.ts
+│   ├── project.js
+│   ├── projects.js
+│   ├── share.js
+│   └── visionAI.js
+├── styles
+│   ├── globals.css
+│   └── theme.js
+├── tests
+│   ├── MainTestSuite.js
+│   ├── __mocks__
+│   │   ├── OrbitControls.js
+│   │   ├── fileMock.js
+│   │   ├── styleMock.js
+│   │   └── three.js
+│   ├── aiAutomatedWorkflowTesting.js
+│   ├── aiCanvasOperations.test.js
+│   ├── aiEdgeCaseValidation.js
+│   ├── aiStressTesting.js
+│   ├── aiUserTestingProtocol.md
+│   ├── components
+│   │   ├── Blueprint3D
+│   │   │   ├── Blueprint3DCanvas.test.js
+│   │   │   ├── CameraController.test.js
+│   │   │   ├── MaterialSystem.test.js
+│   │   │   └── __mocks__
+│   │   │       └── GLTFLoader.ts
+│   │   ├── IssuesModal.test.jsx
+│   │   └── editor
+│   │       └── Blueprint3D
+│   │           ├── Blueprint3DCanvas.test.js
+│   │           └── CameraController.test.js
+│   ├── config
+│   │   ├── testConfig.js
+│   │   └── testConfig.mjs
+│   ├── integration
+│   │   ├── EnvironmentManager.test.js
+│   │   ├── FloorplanViewer.test.js
+│   │   └── editor
+│   │       └── blueprintHarness.js
+│   ├── mocks
+│   │   ├── EnvironmentManager.js
+│   │   ├── FlyControls.js
+│   │   ├── GLTFLoader.js
+│   │   ├── OBJLoader.js
+│   │   ├── OrbitControls.js
+│   │   ├── RGBELoader.js
+│   │   ├── catalog.glb.js
+│   │   ├── react-konva.js
+│   │   └── three.js
+│   ├── parametrics.test.js
+│   ├── setup.js
+│   ├── setup.ts
+│   ├── setupTests.cjs
+│   ├── unit
+│   │   ├── cabinetRunMath.test.js
+│   │   ├── commandTransforms.scaling.test.js
+│   │   ├── commandTransforms.test.js
+│   │   ├── nlrc.ruleEngine.test.js
+│   │   └── solveIntents.test.js
+│   ├── utils
+│   │   ├── BaseTestRunner.js
+│   │   ├── DebugLogger.test.js
+│   │   ├── MaterialSystem.test.js
+│   │   └── environment.test.js
+│   └── vitest.setup.ts
+├── types
+│   ├── index.d.ts
+│   ├── intent.ts
+│   ├── plan.ts
+│   ├── shims.d.ts
+│   ├── sketch.ts
+│   ├── three-modules.d.ts
+│   └── three.map.control.d.ts
+├── utils
+│   ├── CanvasCommandExecutor.js
+│   ├── CommandProcessor.js
+│   ├── ConfigurationService.js
+│   ├── DebugLogger.js
+│   ├── ErrorHandler.js
+│   ├── IntentDetectionService.js
+│   ├── RateLimiter.js
+│   ├── SequentialOperationExecutor.js
+│   ├── StateManager.js
+│   ├── aiCanvasValidation.js
+│   ├── aiCommandProcessor.js
+│   ├── aiErrorLogging.js
+│   ├── aiOperationHistory.js
+│   ├── aiPermissions.js
+│   ├── aiStateSynchronization.js
+│   ├── blueprint3dAdapters.js
+│   ├── blueprint3dIFCAdapters.js
+│   ├── blueprint3dInterface.js
+│   ├── canvasAnimations.js
+│   ├── catalogResolver.ts
+│   ├── cn.js
+│   ├── colors.js
+│   ├── commandQueue.js
+│   ├── commandSuggestions.js
+│   ├── commandToScene.ts
+│   ├── contextualAwareness.js
+│   ├── coordinateUtils.js
+│   ├── debugUtils.js
+│   ├── elementCategorization.js
+│   ├── environment.js
+│   ├── errorHandling.js
+│   ├── exportUtils.js
+│   ├── formatters.js
+│   ├── keyboardShortcuts.js
+│   ├── measurementUtils.js
+│   ├── modelCatalogUtils.js
+│   ├── modelOrientationUtils.js
+│   ├── multiModalInput.js
+│   ├── normalizeCommands.ts
+│   ├── operationFeedback.js
+│   ├── partialExecution.js
+│   ├── planToCommands.ts
+│   ├── relativeSizeUtils.js
+│   ├── schemaTransformer.js
+│   ├── sequentialOperations.js
+│   ├── smartCommandSuggestions.js
+│   ├── spatialRelationships.js
+│   ├── storage.js
+│   ├── threeUtils.ts
+│   ├── toolValidation.js
+│   ├── units.ts
+│   ├── userPreferenceUtils.js
+│   ├── validation.js
+│   └── wallUtils.js
+└── vite-env.d.ts
+
+113 directories, 555 files

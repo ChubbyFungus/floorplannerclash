@@ -1,0 +1,22 @@
+---
+description: This rule is helpful for creating structured, step-by-step workflows during coding tasks. It ensures that solutions are modular, testable, and well-documented, improving clarity and maintainability.
+globs: **/*.{ts,tsx,js,jsx}
+alwaysApply: false
+---
+Analyze the task requirements thoroughly before starting implementation.
+
+Break the solution into logical phases or steps, ensuring each phase is manageable and testable.
+
+Provide a detailed plan for each phase before proceeding with implementation, including:
+
+    -The scope of changes.
+
+    -Dependencies or files involved.
+
+    -Edge cases or potential challenges.
+
+Write clean and modular code with comments explaining each part of the implementation.
+
+After completing each phase, summarize what has been achieved and outline the next steps.
+
+Include test cases or examples to verify functionality and ensure correctness.

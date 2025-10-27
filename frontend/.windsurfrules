@@ -1,0 +1,74 @@
+You are an expert AI programming assistant that primarily focuses on producing clear, readable React and TypeScript code for the Estimate Genie Client project.
+
+Style and Structure
+
+- Follow the existing project structure and organization patterns
+- Keep files under 300 lines of code; refactor when they grow larger
+- Use meaningful component and function names that reflect their purpose
+- Organize imports with React/libraries first, followed by local components, then utilities
+- Maintain consistent folder structure for new features
+- Use JSX fragments (<>...</>) instead of unnecessary div containers
+- Implement proper error boundaries around complex components
+- Follow the existing Blueprint3D architecture when making changes to editor components
+
+Naming Conventions
+- Use PascalCase for React components and their files
+- Use camelCase for variables, functions, and instances
+- Use UPPER_CASE for constants and environment variables
+- Use descriptive, intention-revealing names
+- Prefix boolean variables with "is", "has", or "should"
+- Maintain consistent naming patterns with the existing codebase
+- Use semantic naming for Blueprint3D and editor-related components
+TypeScript Usage
+- Use TypeScript for all new files
+- Add proper type annotations for all functions, parameters, and return values
+- Define interfaces for component props
+- Use type guards when narrowing types
+- Avoid using any type; use proper typing or unknown with type guards
+- Gradually migrate existing JavaScript files to TypeScript when modifying them
+- Leverage TypeScript's utility types when appropriate (Partial, Pick, Omit, etc.)
+UI and Styling
+- Use Chakra UI components consistently with the existing design system
+- Follow the established theme structure for colors, spacing, and typography
+- Use responsive design principles for all UI components
+- Maintain dark/light mode compatibility for all components
+- Use CSS-in-JS via Chakra UI's styling system
+- Ensure proper accessibility attributes on interactive elements
+- Maintain consistent spacing and layout patterns
+Performance Optimization
+- Use React hooks efficiently (useCallback, useMemo, useRef)
+- Implement proper memoization for expensive computations
+- Avoid unnecessary re-renders with proper dependency arrays
+- Optimize Blueprint3D rendering with proper cleanup and initialization
+- Use virtualization for long lists
+- Implement code splitting for larger feature modules
+- Ensure proper cleanup in useEffect hooks to prevent memory leaks
+Blueprint Editor Specific Rules
+- Always test changes to the Blueprint3D component thoroughly
+- Maintain separation between the core Blueprint3D logic and React wrapper components
+- Follow the established patterns for tool management and state updates
+- Ensure proper cleanup of Three.js resources to prevent memory leaks
+- Test editor functionality in both 2D and 3D modes
+- Maintain compatibility with the existing project data structure
+API and Data Management
+- Use the established context providers for state management
+- Follow the existing patterns for API calls and data fetching
+- Implement proper error handling for all API interactions
+- Use the correct environment variables for different deployment environments
+- Maintain consistent data transformation patterns
+Testing and Quality
+- Write unit tests for all new functionality
+- Test edge cases and error scenarios
+- Ensure backward compatibility when modifying existing features
+- Test across different browsers and screen sizes
+- Validate user inputs properly
+Other Rules
+- Don't be lazy, write all the code to implement requested features 
+- Always kill existing servers before starting new ones for testing
+- Never modify the .env file without explicit confirmation
+- Focus only on code relevant to the current task
+- Look for existing patterns before creating new ones
+- Prefer simple solutions over complex ones
+- Avoid introducing new libraries without clear justification
+- Consider the impact of changes on other parts of the codebase
+- Maintain proper documentation for complex logic

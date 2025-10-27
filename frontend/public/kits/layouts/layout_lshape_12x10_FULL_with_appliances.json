@@ -1,0 +1,64 @@
+{
+  "meta": {
+    "name": "L-Shape 12x10 — cabinets-from-zip",
+    "room": {
+      "wallA_in": 144,
+      "wallB_in": 120,
+      "ceiling_in": 96
+    },
+    "assumptions": {
+      "base_depth_in": 24,
+      "wall_depth_in": 12,
+      "corner_base_nominal": 36
+    }
+  },
+  "runs": {
+    "A": {
+      "length_in": 144,
+      "modules": [
+        {"kind": "base", "key": "base/corner/super_susan", "gltf": "Cabinets/Base_Cabinets/Base-Cabinet-Super-Susan.std.glb", "width_in": 36, "depth_in": 24, "label": "Corner Super Susan", "from_corner_in": 0},
+        {"kind": "base", "key": "base/single_door", "gltf": "Cabinets/Base_Cabinets/Base-Cabinet-Double-Door-One-Drawer-24-Deep.std.glb", "width_in": 9, "depth_in": 24, "label": "Base 9 pull-out (proxy: single door)", "from_corner_in": 36},
+        {"kind": "base", "key": "base/sink/standard", "gltf": "Cabinets/Sink_Cabinets/Sink-Base-Cabinet-Double-Door-False-Drawer.std.glb", "width_in": 36, "depth_in": 24, "label": "Sink Base 36", "from_corner_in": 45},
+        {"kind": "appliance", "key": "dishwasher", "variant": "regular", "gltf": "Dishwasher.glb", "width_in": 24, "depth_in": 24, "label": "Dishwasher 24 (opening)", "from_corner_in": 81},
+        {"kind": "appliance", "key": "fridge", "variant": "standard_french", "gltf": "Appliances/Refrigerator_36in_SubZero_36in_RefrigeratorFrenchDoor_BI-36UFD-S-PH_3ds_Stainless_ProHandle_scaled_final.glb", "width_in": 39, "depth_in": 28, "label": "Fridge 36 with panels (39 module)", "from_corner_in": 105}
+      ],
+      "total_consumed_in": 144,
+      "fits": true
+    },
+    "B": {
+      "length_in": 120,
+      "modules": [
+        {"kind": "base", "key": "base/corner/super_susan", "gltf": "Cabinets/Base_Cabinets/Base-Cabinet-Super-Susan.std.glb", "width_in": 36, "depth_in": 24, "label": "Corner Super Susan", "from_corner_in": 0},
+        {"kind": "base", "key": "base/single_door", "gltf": "Cabinets/Base_Cabinets/Base-Cabinet-Single-Door-One-Drawer-24-Deep (1).std.glb", "width_in": 12, "depth_in": 24, "label": "Base 12 pull-out (proxy: single door)", "from_corner_in": 36},
+        {"kind": "appliance", "key": "range", "variant": "std", "gltf": "Appliances/Range_30in_Wolf_30in_Range_GR304_3ds_scaled_final.glb", "width_in": 30, "depth_in": 26, "label": "Range 30 (opening)", "from_corner_in": 48},
+        {"kind": "base", "key": "base/microwave_drawer", "gltf": "Cabinets/Base_Cabinets/Base-Cabinet-Microwave-24-Deep.std.glb", "width_in": 24, "depth_in": 24, "label": "Microwave Drawer Base 24", "from_corner_in": 78},
+        {"kind": "base", "key": "base/drawer/3", "gltf": "Cabinets/Base_Cabinets/Universal-Design-Base-Cabinet-Three-Drawer-24-Deep.std.glb", "width_in": 18, "depth_in": 24, "label": "Base 3-Drawer 18", "from_corner_in": 102}
+      ],
+      "total_consumed_in": 120,
+      "fits": true
+    }
+  },
+  "uppers": {
+    "A": {
+      "length_in": 144,
+      "modules": [
+        {"kind": "upper", "key": "wall/diag_corner", "gltf": "Cabinets/Wall_Cabinets/WHP-Wall-Diagonal-Corner-Door-Prepped-Glass.std.glb", "width_in": 24, "depth_in": 12, "height_in": 36, "label": "Upper Corner (Diagonal)", "from_corner_in": 0},
+        {"kind": "upper", "key": "wall/standard/single", "gltf": "Cabinets/Wall_Cabinets/Wall-Cabinet-Single-Door-with-Shelves.std.glb", "width_in": 9, "depth_in": 12, "height_in": 36, "label": "Upper 9", "from_corner_in": 24},
+        {"kind": "shelf", "key": "shelf/floating/aksel", "gltf": "Aksel-Wood-Floating-Shelves.gltf", "width_in": 36, "depth_in": 10, "thickness_in": 1.5, "label": "Floating Shelf (lower)", "from_corner_in": 45, "height_from_counter_in": 18},
+        {"kind": "shelf", "key": "shelf/floating/aksel", "gltf": "Aksel-Wood-Floating-Shelves.gltf", "width_in": 36, "depth_in": 10, "thickness_in": 1.5, "label": "Floating Shelf (upper)", "from_corner_in": 45, "height_from_counter_in": 30},
+        {"kind": "upper", "key": "wall/standard/double", "gltf": "Cabinets/Wall_Cabinets/WHP-Wall-Cabinet-Double-Door-Shelves.std.glb", "width_in": 24, "depth_in": 12, "height_in": 36, "label": "Upper 24 over DW", "from_corner_in": 81},
+        {"kind": "upper", "key": "wall/over_fridge/double", "gltf": "Cabinets/Wall_Cabinets/WHP-Wall-Refrigerator-Double-Door.std.glb", "width_in": 36, "depth_in": 24, "height_in": 15, "label": "Over-Fridge 36 (24D)", "from_corner_in": 108}
+      ]
+    },
+    "B": {
+      "length_in": 120,
+      "modules": [
+        {"kind": "upper", "key": "wall/diag_corner", "gltf": "Cabinets/Wall_Cabinets/WHP-Wall-Diagonal-Corner-Door-Prepped-Glass.std.glb", "width_in": 24, "depth_in": 12, "height_in": 36, "label": "Upper Corner (Diagonal)", "from_corner_in": 0},
+        {"kind": "upper", "key": "wall/standard/single", "gltf": "Cabinets/Wall_Cabinets/Wall-Cabinet-Single-Door-with-Shelves.std.glb", "width_in": 12, "depth_in": 12, "height_in": 36, "label": "Upper 12", "from_corner_in": 24},
+        {"kind": "appliance_hood", "key": "appliance/hood/vent", "gltf": "Appliances/Hoodvent_36in.glb", "width_in": 30, "depth_in": 20, "height_in": 24, "label": "30\" Hood (vent.glb)", "from_corner_in": 48},
+        {"kind": "upper", "key": "wall/standard/double", "gltf": "Cabinets/Wall_Cabinets/WHP-Wall-Cabinet-Double-Door-Shelves.std.glb", "width_in": 24, "depth_in": 12, "height_in": 36, "label": "Upper 24", "from_corner_in": 78},
+        {"kind": "upper", "key": "wall/standard/single", "gltf": "Cabinets/Wall_Cabinets/Wall-Cabinet-Single-Door-with-Shelves.std.glb", "width_in": 18, "depth_in": 12, "height_in": 36, "label": "Upper 18", "from_corner_in": 102}
+      ]
+    }
+  }
+}

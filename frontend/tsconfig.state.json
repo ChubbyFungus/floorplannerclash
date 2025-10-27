@@ -1,0 +1,14 @@
+{
+  "extends": "./tsconfig.json",
+  "include": [
+    "src/lib/room/**/*.ts",
+    "src/lib/room/**/*.tsx",
+    "src/lib/nlrc/**/*.ts",
+    "src/lib/nlrc/**/*.tsx",
+    "src/lib/validation/**/*.ts",
+    "src/lib/validation/**/*.tsx",
+    "src/lib/comparison/**/*.ts",
+    "src/lib/comparison/**/*.tsx"
+  ],
+  "exclude": ["node_modules", "dist"]
+}

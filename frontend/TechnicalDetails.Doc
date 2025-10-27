@@ -1,0 +1,221 @@
+Technical Details
+Frontend Technology Stack
+Core Framework
+
+React.js (v18+): Used for building the user interface with functional components and hooks.
+
+React provides a component-based architecture that makes it easy to build and maintain complex user interfaces.
+Functional components with hooks are used throughout the application for better code organization and reusability.
+
+
+
+State Management
+
+Zustand: A lightweight state management solution preferred over Redux for simplicity.
+
+Zustand provides a simple API for managing global application state without the boilerplate of Redux.
+Custom stores are created for different aspects of the application (editor state, project data, user settings).
+
+
+
+2D Editor Technology
+
+Konva.js with react-konva: Provides the canvas-based drawing capabilities.
+
+The canvas is organized into multiple layers for better performance and organization:
+
+Background layer for grid and room outline
+Wall layer for room structure
+Object layer for furniture and fixtures
+Annotation layer for dimensions and labels
+
+
+Custom event handling is implemented to manage selection, transformation, and tool interactions.
+Performance optimizations include layer caching and selective rerendering.
+
+
+
+3D Visualization
+
+Three.js with react-three-fiber: Enables 3D rendering and visualization.
+
+react-three-fiber provides a React-friendly way to work with Three.js.
+@react-three/drei is used for common Three.js helpers and controls.
+Custom hooks manage the synchronization between 2D and 3D representations.
+Optimizations include:
+
+Level of Detail (LOD) for complex models
+Instancing for duplicate objects
+Frustum culling to only render visible objects
+Texture compression and delayed loading
+
+
+
+
+
+Routing and Navigation
+
+React Router (v6): Handles application routing and navigation.
+
+Browser router is used for clean URLs.
+Protected routes ensure authenticated access to certain pages.
+Route-based code splitting is implemented for performance.
+
+
+
+UI Component Library
+
+Custom UI Components with Tailwind CSS: For consistent styling and responsive design.
+
+Tailwind provides utility classes for rapid UI development.
+Custom component library extends Tailwind for application-specific components.
+Design tokens ensure consistent colors, spacing, and typography.
+
+
+
+API Communication
+
+Axios: Handles HTTP requests to the backend.
+
+Request interceptors add authentication headers.
+Response interceptors handle common errors.
+Cancelable requests prevent race conditions.
+
+
+
+Drag and Drop Functionality
+
+Custom Drag and Drop System: Built on native browser APIs for performance.
+
+Integrates with Konva for canvas interactions.
+Supports dragging items from library to canvas.
+Implements preview and snapping behavior.
+
+
+
+File Handling and Export
+
+PDF Generation: Using jsPDF for creating exportable plans.
+Image Export: Canvas/WebGL to Blob conversion for high-resolution exports.
+Data Export: JSON serialization with structured formatting.
+
+Backend Technology Stack
+Server Framework
+
+Node.js with Express.js: Provides the API server functionality.
+
+RESTful API design with versioned endpoints.
+Middleware architecture for request processing.
+Rate limiting and security headers for protection.
+
+
+
+Database
+
+MongoDB with Mongoose: Document database for flexible data storage.
+
+Schemas enforce data structure while allowing flexibility for project data.
+Indexing is applied to frequently queried fields.
+Aggregation pipeline used for complex data transformations.
+
+
+
+Authentication
+
+Passport.js with JWT: Handles user authentication and authorization.
+
+JSON Web Tokens (JWT) for stateless authentication.
+Multiple strategies support (local, Google, Apple).
+Token refresh mechanism for extended sessions.
+bcrypt for secure password hashing.
+
+
+
+AI Integration
+
+OpenAI API Integration: Powers the chat and design assistance.
+
+System prompts establish design assistant capabilities.
+Context management to maintain conversation history.
+Structured output formatting for JSON parsing.
+Rate limiting and error handling for API stability.
+
+
+
+Estimation Engine
+
+Custom Estimation Algorithms: Calculate costs based on materials, labor, and features.
+
+Rule-based pricing for standard items.
+Area-based calculations for materials.
+Regional adjustment factors for pricing accuracy.
+Material quantity algorithms account for waste and packaging.
+
+
+
+Development and Deployment Infrastructure
+Development Tools
+
+ESLint and Prettier: Code quality and formatting.
+Jest and React Testing Library: Unit and integration testing.
+Husky: Pre-commit hooks for code quality.
+
+CI/CD Pipeline
+
+GitHub Actions: Automated testing and deployment.
+
+Separate workflows for testing and deployment.
+Environment-specific deployment configurations.
+Automated versioning and release notes.
+
+
+
+Deployment Targets
+
+Frontend: Vercel or Netlify for static site hosting.
+
+CDN integration for fast content delivery.
+Edge functions for API proxying.
+Automatic preview deployments for pull requests.
+
+
+Backend: AWS Elastic Beanstalk or similar managed service.
+
+Auto-scaling configuration for handling load.
+Database connection pooling for efficiency.
+Load balancing for high availability.
+
+
+
+Monitoring and Analytics
+
+Sentry.io: Error tracking and performance monitoring.
+
+Real-time error alerts.
+Performance tracing for slow operations.
+User impact analysis for prioritizing fixes.
+
+
+Custom Analytics: User behavior tracking for product improvement.
+
+Feature usage metrics.
+User flow analysis.
+Conversion tracking for key actions.
+
+
+
+Performance Optimizations
+Frontend Performance
+
+Code Splitting: Lazy loading of components for faster initial load.
+Asset Optimization: Compression and CDN for static assets.
+Virtualization: For large lists and object libraries to reduce DOM size.
+Memoization: Strategic use of React.memo and useMemo to prevent unnecessary rerenders.
+WebWorkers: For CPU-intensive operations to keep UI responsive.
+
+3D Rendering Performance
+
+Adaptive Quality: Automatic quality adjustments based on device capability.
+Geometry Optimization: Simplified meshes for distant objects.
+Shader Optimization: Custom shaders for specific effects over general-purpose ones.
+Texture Atlasing: Combined textures to reduce draw calls.

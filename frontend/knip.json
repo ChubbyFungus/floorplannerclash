@@ -1,0 +1,9 @@
+{
+  "project": ["src/**/*.{ts,tsx,js,jsx}"],
+  "ignore": [
+    "src/_archive/**",
+    "dist/**"
+  ],
+  "vite": true,
+  "vitest": true
+}

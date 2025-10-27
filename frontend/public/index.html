@@ -1,0 +1,20 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+<!-- ADD THE CORE BLUEPRINT3D LIBRARY SCRIPT HERE -->
+<script src="/bp3djs.js"></script>
+
+<script>
+    // Make sure THREE.js is available globally
+    window.THREE = window.THREE || {};
+
+    // Log when the document is ready and check BP3D availability
+    document.addEventListener('DOMContentLoaded', () => {
+        const bp3dLoaded = typeof window.BP3D !== 'undefined' || typeof window.bp3djs !== 'undefined';
+        console.log('Document ready, checking BP3D script load status:', bp3dLoaded);
+        if (!bp3dLoaded) {
+            console.error('!!! CRITICAL: BP3D script (bp3djs.js) failed to load or is not exposing a global variable (window.BP3D or window.bp3djs) !!!');
+        }
+    });
+</script>
+<title>Estimate Genie</title>
+</head>

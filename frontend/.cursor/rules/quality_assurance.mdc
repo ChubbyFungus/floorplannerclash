@@ -1,0 +1,10 @@
+---
+description: This rule ensures that all implementations are thoroughly tested and verified for correctness before completion. It is helpful for maintaining high-quality code standards.
+globs: **/*.{ts,tsx,js,jsx}
+alwaysApply: false
+---
+Include test cases to validate functionality for both typical and edge cases.
+
+Verify that all changes meet the task requirements before marking them as complete.
+
+Document why the solution works and how it handles edge cases to ensure clarity for future developers.

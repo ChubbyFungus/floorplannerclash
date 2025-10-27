@@ -1,0 +1,49 @@
+{
+  "base": {
+    "corner/super_susan": "Cabinets/Base_Cabinets/Base-Cabinet-Super-Susan.std.glb",
+    "sink/standard": "Cabinets/Sink_Cabinets/Sink-Base-Cabinet-Double-Door-False-Drawer.std.glb",
+    "sink/farmhouse": "Cabinets/Sink_Cabinets/Base-Cabinet-Farm-Sink-24-Deep.std.glb",
+    "drawer/3": "Cabinets/Base_Cabinets/Universal-Design-Base-Cabinet-Three-Drawer-24-Deep.std.glb",
+    "double_door/1drawer": "Cabinets/Base_Cabinets/Base-Cabinet-Double-Door-One-Drawer-24-Deep.std.glb",
+    "double_door/2drawer": "Cabinets/Base_Cabinets/Base-Cabinet-Double-Door-Two-Drawer-24-Deep.std.glb",
+    "single_door": "Cabinets/Base_Cabinets/Base-Cabinet-Single-Door-One-Drawer-24-Deep (1).std.glb",
+    "waste": "Cabinets/Base_Cabinets/Base-Cabinet-Wastebasket-24-Deep.std.glb",
+    "microwave_drawer": "Cabinets/Base_Cabinets/Base-Cabinet-Microwave-24-Deep.std.glb",
+    "utility": "Cabinets/Tall_Cabinets/Utility-Cabinet-24-Deep.std.glb"
+  },
+  "tall": {
+    "oven_single": "Cabinets/Tall_Cabinets/Oven-Cabinet-24-Deep.std.glb",
+    "oven_double": "Cabinets/Tall_Cabinets/WHP-Double-Tall-Oven-Cabinet.std.glb",
+    "utility/12d": "Cabinets/Tall_Cabinets/Utility-Cabinet-12-Deep.std.glb",
+    "utility/24d": "Cabinets/Tall_Cabinets/Utility-Cabinet-24-Deep.std.glb",
+    "utility/ud_24d": "Cabinets/Tall_Cabinets/Universal-Design-Utility-Cabinet-24-Deep.std.glb"
+  },
+  "wall": {
+    "standard/single": "Cabinets/Wall_Cabinets/Wall-Cabinet-Single-Door-with-Shelves.std.glb",
+    "standard/double": "Cabinets/Wall_Cabinets/WHP-Wall-Cabinet-Double-Door-Shelves.std.glb",
+    "diag_corner": "Cabinets/Wall_Cabinets/WHP-Wall-Diagonal-Corner-Door-Prepped-Glass.std.glb",
+    "easy_reach_corner": "Cabinets/Wall_Cabinets/Wall-Cabinet-Easy-Reach-12-Deep.std.glb",
+    "over_fridge/double": "Cabinets/Wall_Cabinets/WHP-Wall-Refrigerator-Double-Door.std.glb",
+    "over_fridge/butt": "Cabinets/Wall_Cabinets/WHP-Wall-Refrigerator-Two-Butt-Door.std.glb",
+    "height_12": "Cabinets/Wall_Cabinets/12-15-High-12-Deep.std.glb",
+    "height_18": "Cabinets/Wall_Cabinets/Wall-Cabinet-18-High-12-Deep.std.glb",
+    "height_21": "Cabinets/Wall_Cabinets/Wall-Cabinet-21-High-12-Deep.std.glb"
+  },
+  "appliance": {
+    "dishwasher/regular": "Appliances/Dishwasher.glb",
+    "dishwasher/black": "Appliances/Dishwasher.glb",
+    "dishwasher/ss": "Appliances/Dishwasher.glb",
+    "range/std": "Appliances/Range_30in_Wolf_30in_Range_GR304_3ds_scaled_final.glb",
+    "range/alt2": "Appliances/Range_36in_Wolf_36in_Range_GR366_3ds_scaled_final.glb",
+    "range/alt3": "Appliances/Range_30in_Wolf_30in_Range_GR304_3ds_scaled_final.glb",
+    "range/alt4": "Appliances/Range_30in_Wolf_30in_Range_GR304_3ds_scaled_final.glb",
+    "range/alt5": "Appliances/Range_36in_Wolf_36in_Range_GR366_3ds_scaled_final.glb",
+    "fridge/standard_french": "Appliances/Refrigerator_36in_SubZero_36in_RefrigeratorFrenchDoor_BI-36UFD-S-PH_3ds_Stainless_ProHandle_scaled_final.glb",
+    "fridge/integrated_french": "Appliances/Refrigerator_36in_SubZero_36in_RefrigeratorFrenchDoor_BI-36UFD-S-PH_3ds_Stainless_ProHandle_scaled_final.glb",
+    "microwave/counter_or_otr": "Appliances/Microwave_24in.glb",
+    "hood/vent": "Appliances/Hoodvent_36in.glb"
+  },
+  "shelf": {
+    "floating/aksel": "Aksel-Wood-Floating-Shelves.gltf"
+  }
+}

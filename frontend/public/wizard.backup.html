@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<!-- Replaced with the new Wizard (Wall-by-Wall Elevation Designer). Original content retained below for reference during transition. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Wall-by-Wall Elevation Designer</title>
+<script>
+  // Redirect to in-app editor wizard modal by default
+  try {
+    var p = new URLSearchParams(location.search);
+    if (!p.get('__no_redirect__')) {
+      location.replace('/editor?openWizard=1');
+    }
+  } catch (e) { /* ignore */ }
+</script>
+
+<style>
+  :root { --bg:#0b1d33; --fg:#fff; --muted:#f5f6f8; --line:#ddd; --accent:#cfb53b; --red:#d33; }
+  body { margin:0; font:14px/1.45 system-ui, Arial; color:#111; background:#fafafa; }
+  header { background:var(--bg); color:var(--fg); padding:10px 14px; }
+  h1 { margin:0; font-size:18px; }
+  main { max-width:980px; margin:0 auto; padding:12px; display:grid; gap:12px; }
+  .card { background:#fff; border:1px solid var(--line); border-radius:10px; padding:12px; }
+  .row { display:grid; gap:10px; grid-template-columns: repeat(6, minmax(0,1fr)); }
+  .row-2 { grid-template-columns: repeat(2, minmax(0,1fr)); }
+  .row-3 { grid-template-columns: repeat(3, minmax(0,1fr)); }
+  .row-4 { grid-template-columns: repeat(4, minmax(0,1fr)); }
+  label { font-size:12px; color:#444; display:block; margin-bottom:4px; }
+  input, select, button { font: inherit; }
+  input[type=number], select { width:100%; border:1px solid var(--line); border-radius:8px; padding:6px 8px; background:#fff; }
+  .btn { border:1px solid var(--line); background:#fff; border-radius:10px; padding:7px 10px; cursor:pointer; }
+  .btn.primary { background:var(--bg); color:#fff; border-color:#001428; }
+  .inline { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+  .muted { color:#666; }
+
+  .palette { display:flex; flex-wrap:wrap; gap:6px; }
+  .pill { border:1px solid var(--line); border-radius:999px; padding:4px 8px; background:#fff; cursor:pointer; font-size:12px; }
+  .pill[data-cat="appliance"]{ background:#f7fbff; border-color:#cfe7ff; }
+  .pill[data-cat="cabinet"]{ background:#fffaf5; border-color:#ffe0b3; }
+  .pill[data-cat="cutout"]{ background:#f6fff7; border-color:#cbf2d0; }
+
+  .walls { display:grid; gap:12px; }
+  .wall { border:1px dashed #bbb; background:#fff; border-radius:8px; padding:8px; }
+  .wallHeader { display:flex; align-items:center; justify-content:space-between; margin-bottom:6px; }
+  .wallTrack { position:relative; border:1px solid #eee; background:repeating-linear-gradient(90deg,#fafafa,#fafafa 8px,#fff 8px,#fff 16px); border-radius:8px; overflow:hidden; height:200px; }
+  .trackLabel { display:none; }
+  .block { position:absolute; border-radius:6px; border:1px solid transparent; display:flex; align-items:center; justify-content:center; font-size:12px; padding:0; user-select:none; }
+  .block.appliance, .block.cabinet, .block.cutout { background:transparent; border-color:transparent; }
+  .block .w { font-variant-numeric: tabular-nums; }
+  .block svg { width:100%; height:100%; display:block; }
+  /* Rough shapes via clip-path / patterns */
+  .block.t-hood { clip-path: polygon(0 100%, 50% 15%, 100% 100%); }
+  .block.t-sink_base { clip-path: polygon(0 0, 100% 0, 100% 78%, 62% 78%, 50% 100%, 38% 78%, 0 78%); }
+  .block.t-drawer { background-image: repeating-linear-gradient(to bottom, rgba(0,0,0,0.08) 0 6px, rgba(0,0,0,0.0) 6px 12px); }
+  .block.t-fridge, .block.t-freezer { background-image: linear-gradient(to right, transparent 49%, rgba(0,0,0,0.1) 50%, transparent 51%); }
+  .block.t-range { background-image: repeating-linear-gradient(90deg, rgba(0,0,0,0.08) 0 3px, transparent 3px 6px); }
+  .block.t-upper_12,.block.t-upper_15,.block.t-upper_18,.block.t-upper_24,.block.t-upper_30,.block.t-upper_36 { /* smaller already via row-upper */ }
+  .selWall { color:#222; font-weight:600; }
+  .wallTabs { display:flex; gap:8px; margin-bottom:4px; }
+  .tab { padding:4px 8px; border-radius:8px; border:1px solid var(--line); background:#fff; cursor:pointer; }
+  .tab.active { background:#eef5ff; border-color:#bcd8ff; }
+  .legend { font-size:12px; display:flex; gap:10px; color:#555; }
+  .legend i { display:inline-block; width:12px; height:12px; border-radius:3px; margin-right:4px; vertical-align:middle; }
+  .lg-a i{ background:#e8f3ff; border:1px solid #add3ff; }
+  .lg-c i{ background:#fff1df; border:1px solid #ffd5a3; }
+  .lg-o i{ background:#e9fbea; border:1px solid #c6efcc; }
+  .note { color:#555; font-size:12px; }
+  .refBox { border:1px dashed #cbd5e1; background:#f8fafc; border-radius:8px; padding:8px; margin:8px 0; }
+  #wallRef svg { width:100%; height:140px; display:block; }
+  <!-- New wizard content below: -->
+  <script>
+  // placeholder to mount new script seamlessly
+  </script>
+
+</style>
+  <div class="app">
+    <div class="topbar">
+      <div class="group">
+        <button id="undoBtn" class="btn" title="Ctrl+Z">Undo</button>
+        <button id="redoBtn" class="btn" title="Ctrl+Y">Redo</button>
+        <div class="sep"></div>
+        <button id="exportBtn" class="btn" title="Export JSON">Export</button>
+        <button id="importBtn" class="btn" title="Import JSON">Import</button>
+        <input id="fileInput" type="file" accept="application/json" style="display:none"/>
+      </div>
+
+      <!-- Wall navigation -->
+      <div class="group">
+        <button id="prevWallBtn" class="btn ghost" title="Previous wall">◀ Prev</button>
+        <select id="wallPicker" class="select" title="Select wall"></select>
+        <button id="nextWallBtn" class="btn ghost" title="Next wall">Next ▶</button>
+        <button id="finishWallBtn" class="btn solid" title="Finish current wall and advance">Finish & Next</button>
+      </div>
+
+      <div class="group status" id="status"></div>
+    </div>
+
+    <div class="content">
+      <div class="top-panels">
+        <aside class="left">
+          <div class="library">
+            <div class="section-title">Item Library</div>
+            <div id="catTabs" class="tabs"></div>
+            <input id="search" class="search" placeholder="Search" />
+            <div id="chips" class="chips"></div>
+            <div class="subtle" style="margin-top:.75rem">
+              Click a chip, then click the wall panel to place. <span class="kbd">Shift</span> lock X, <span class="kbd">Alt</span> lock Y. Right-click to delete. <span class="kbd">D</span> to duplicate.
+            </div>
+          </div>
+        </aside>
+
+        <aside class="right">
+          <div class="inspector">
+            <div class="section-title">Inspector</div>
+            <div id="noSel" class="muted">No selection. Click an item to edit.</div>
+            <div id="inspectorFields" style="display:none">
+              <div class="field"><label>Name</label><input id="f_name" type="text" /></div>
+              <div class="grid" style="margin-top:.5rem">
+                <div class="field"><label>Width (in)</label><input id="f_w" type="number" step="1" min="1" /></div>
+                <div class="field"><label>Height (in)</label><input id="f_h" type="number" step="1" min="1" /></div>
+                <div class="field"><label>X from left (in)</label><input id="f_x" type="number" step="1" /></div>
+                <div class="field"><label>Bottom AFF (in)</label><input id="f_aff" type="number" step="1" /></div>
+                <div class="field"><label>Color</label><select id="f_color"></select></div>
+                <div class="field"><label>Category</label><input id="f_cat" type="text" disabled /></div>
+              </div>
+            </div>
+
+            <div class="section-title" style="margin-top:1rem">Global Guides</div>
+            <div class="grid">
+              <div class="field"><label>Countertop AFF</label><input id="g_ct" type="number" value="36" /></div>
+              <div class="field"><label>Uppers Bottom AFF</label><input id="g_upper" type="number" value="54" /></div>
+            </div>
+
+            <div class="section-title" style="margin-top:1rem">Wall</div>
+            <div class="grid">
+              <div class="field" style="grid-column:1 / span 2"><label>Wall Name</label><input id="wall_name" type="text" /></div>
+              <div class="field"><label>Length (in)</label><input id="wall_len" type="number" value="168" min="12" step="1" /></div>
+              <div class="field"><label>Height (in)</label><input id="wall_ht" type="number" value="96" min="60" step="1" /></div>
+              <div class="field" style="grid-column:1 / span 2"><span id="wall_complete_badge" class="badge" style="display:none">✅ Completed</span></div>
+            </div>
+          </div>
+        </aside>
+      </div>
+
+      <main class="stage">
+        <div class="viewport" id="viewport">
+          <div class="world" id="world">
+            <div class="floor-line"></div>
+            <div class="guide" id="ctGuide"></div>
+            <div class="guide" id="upperGuide"></div>
+            <div class="guide-label" id="ctLabel">CT 36&quot; AFF</div>
+            <div class="guide-label" id="upperLabel">Uppers 54&quot; AFF</div>
+            <div class="inset" id="insetLeft"></div>
+            <div class="inset" id="insetRight"></div>
+            <div class="items" id="itemsLayer"></div>
+          </div>
+          <div class="hint">Snap: 3&quot; grid • Ticks: 1 ft • Whole wall view (locked)</div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+</head>
+<body>
+
+<!-- Step 1: Room & Layout -->
+<div class="card" id="step1">
+  <h3>Step 1 · Room & Layout</h3>
+  <div class="row row-4">
+    <div>
+      <label>Room width (in)</label>
+      <input type="number" id="room_w" min="36" value="156" />
+    </div>
+    <div>
+      <label>Room depth (in)</label>
+      <input type="number" id="room_d" min="36" value="192" />
+    </div>
+    <div>
+      <label>Ceiling height (in)</label>
+      <input type="number" id="room_h" min="84" value="108" />
+    </div>
+    <div>
+      <label>Layout</label>
+      <select id="layout">
+        <option value="single">Single wall</option>
+        <option value="galley">Galley</option>
+        <option value="l" selected>L‑shape</option>
+        <option value="u">U‑shape</option>
+        <option value="single_island">Single + island</option>
+        <option value="single_peninsula">Single + peninsula</option>
+      </select>
+    </div>
+  <div class="refBox" id="wallRef"></div>
+
+  </div>
+  <div class="inline" style="margin-top:8px"><button class="btn" id="to2">Next</button></div>
+</div>
+
+<!-- Step 2: Must‑haves (Intent) -->
+<div class="card" id="step2" style="display:none">
+  <h3>Step 2 · Must‑haves</h3>
+  <div class="row row-3">
+    <div>
+      <label>Fridge</label>
+      <select id="fridge"><option value="none">None</option><option value="counter_depth" selected>Counter‑depth</option><option value="freestanding">Freestanding</option><option value="built_in">Built‑in</option></select>
+    </div>
+    <div>
+      <label>Cooking</label>
+      <select id="cook_choice"><option value="range" selected>Range</option><option value="cooktop_walloven">Cooktop + wall oven</option></select>
+    </div>
+    <div>
+      <label>Ventilation</label>
+      <select id="vent_choice"><option value="hood" selected>Hood</option><option value="otr">OTR Microwave</option><option value="none">None</option></select>
+    </div>
+  </div>
+  <div class="row row-3">
+    <div>
+      <label>Dishwasher</label>
+      <select id="dw"><option value="no">No</option><option value="yes" selected>Yes</option></select>
+    </div>
+    <div>
+      <label>Sink</label>
+      <select id="sink_size_pref"><option value="auto" selected>Auto</option><option value="standard">Standard</option><option value="large">Large</option></select>
+    </div>
+    <div>
+      <label>Window above sink?</label>
+      <select id="sink_window"><option value="no" selected>No</option><option value="yes">Yes</option></select>
+    </div>
+  </div>
+  <div class="row row-3">
+    <div>
+      <label>Pantry</label>
+      <select id="pantry"><option value="none">None</option><option value="one" selected>One</option><option value="two">Two</option></select>
+    </div>
+    <div>
+      <label>Upper mode</label>
+      <select id="uppers"><option value="uppers" selected>Uppers</option><option value="shelves">Shelves</option><option value="mix">Mix</option></select>
+    </div>
+    <div>
+      <label>Storage preference</label>
+      <select id="storage_pref"><option value="balanced" selected>Balanced</option><option value="more_drawers">More drawers</option><option value="more_doors">More doors</option></select>
+    </div>
+  </div>
+  <div class="row row-3">
+    <div>
+      <label>Doors (count)</label>
+      <input type="number" id="doors" min="0" value="0" />
+    </div>
+    <div>
+      <label>Door width (in)</label>
+      <input type="number" id="door_w" min="24" value="30" />
+    </div>
+    <div>
+      <label>Windows (extra, count)</label>
+      <input type="number" id="windows" min="0" value="0" />
+    </div>
+  </div>
+  <div class="row row-3">
+    <div>
+      <label>Win width (in)</label>
+      <input type="number" id="win_w" min="18" value="36" />
+    </div>
+    <div>
+      <label>Win height (in)</label>
+      <input type="number" id="win_h" min="18" value="36" />
+    </div>
+    <div>
+      <label>Sill height (in)</label>
+      <input type="number" id="win_sill" min="24" value="42" />
+    </div>
+  </div>
+  <div class="inline" style="margin-top:8px">
+    <button class="btn" id="back1">Back</button>
+    <button class="btn" id="to3">Next</button>
+  </div>
+</div>
+
+<!-- Step 3: Quick‑Sketch Anchors -->
+<div class="card" id="step3" style="display:none">
+  <div class="inline" style="justify-content:space-between; width:100%">
+    <h3>Step 3 · Quick‑Sketch</h3>
+    <div class="legend">
+      <span class="lg-a"><i></i> appliance</span>
+      <span class="lg-c"><i></i> cabinet</span>
+      <span class="lg-o"><i></i> opening/window</span>
+    </div>
+  </div>
+  <div class="inline">
+    <strong class="selWall">Selected wall:</strong>
+    <div class="wallTabs" id="wallTabs"></div>
+  </div>
+  <div class="palette" id="palette"></div>
+  <p class="note">Tip: Click a palette item to add at 12″ on the selected wall. Drag blocks to move (snap 3″). Double‑click to toggle Auto width vs fixed. Right‑click to delete.</p>
+  <div class="walls" id="walls"></div>
+  <div class="inline" style="margin-top:10px">
+    <label class="inline"><input type="checkbox" id="ai_refine" /> AI refine after deterministic placement</label>
+  </div>
+  <div class="inline" style="gap:10px;margin-top:10px">
+    <button class="btn" id="preview">Preview payload</button>
+    <button class="btn" id="generate">Generate Deterministic</button>
+    <button class="btn primary" id="generate_ai">Generate with AI (preview choice)</button>
+    <button class="btn" id="apply_ai" disabled>Use AI Plan</button>
+    <span id="msg" class="muted"></span>
+  </div>
+  <pre id="out" style="display:none; max-height:220px; overflow:auto"></pre>
+  <div class="inline" style="margin-top:8px"><button class="btn" id="back2">Back</button></div>
+</div>
+
+</main>
+<script>
+(function(){
+  const IN_SNAP = 3;
+  const DEF = {
+    widths: {
+      fridge:36, freezer:36, dishwasher:24, range:30, cooktop:30, wall_oven:30,
+      // Base cabinets – common widths
+      base:18, base_12:12, base_15:15, base_18:18, base_24:24, base_30:30, base_36:36,
+      // Drawer bank (default module)
+      drawer:30,
+      // Sink base
+      sink_base:33,
+      // Corners
+      corner_base:36, corner_upper:36,
+      // Tall pantry
+      pantry:24,
+      // Upper cabinets – common widths
+      upper:30, upper_12:12, upper_15:15, upper_18:18, upper_24:24, upper_30:30, upper_36:36,
+      // Appliances and misc
+      microwave:30, microwave_drawer:24, warming_drawer:30,
+      beverage_center:24, wine_cooler:24, ice_maker:18, coffee_system:30,
+      hood:30, window:36, opening:30
+    },
+    height: { door:80, window:36, sill:42 }
+  };
+
+  const CATS = {
+    fridge:'appliance', freezer:'appliance', dishwasher:'appliance', range:'appliance', cooktop:'appliance', wall_oven:'appliance',
+    microwave:'appliance', microwave_drawer:'appliance', warming_drawer:'appliance', beverage_center:'appliance', wine_cooler:'appliance', ice_maker:'appliance', coffee_system:'appliance', hood:'appliance',
+    sink_base:'cabinet', base:'cabinet', drawer:'cabinet', pantry:'cabinet',
+    window:'cutout', opening:'cutout'
+  };
+
+  // Expand palette to multiple base and upper widths for quick picking
+  const TYPES = [
+    // Appliances & misc
+    'fridge','freezer','dishwasher','range','cooktop','wall_oven','microwave','microwave_drawer','warming_drawer','beverage_center','wine_cooler','ice_maker','coffee_system','hood',
+    // Base cabinets – common widths
+    'sink_base','base_12','base_15','base_18','base_24','base_30','base_36','corner_base','drawer','pantry',
+    // Uppers – common widths
+    'upper_12','upper_15','upper_18','upper_24','upper_30','upper_36','corner_upper',
+    // Openings
+    'window','opening'
+  ];
+  const palette = document.getElementById('palette');
+  const wallsEl = document.getElementById('walls');
+  let selectedWall = 'W1';
+  let walls = [];
+  let anchors = [];
+
+  function snap3(n){ return Math.round((+n||0)/IN_SNAP)*IN_SNAP; }
+  function uid(){ return 'A' + Math.random().toString(36).slice(2,7); }
+  function wallIdsForLayout(layout){
+    // Always expose W1–W4 in UI so users can place items on any wall regardless of layout
+    return ['W1','W2','W3','W4'];
+  }
+  function buildWalls(){
+    const width = +document.getElementById('room_w').value || 144;
+    const depth = +document.getElementById('room_d').value || 132;
+    const layout = document.getElementById('layout').value;
+    // Always create all 4 walls; widths on W1/W3, depths on W2/W4 for the reference box
+    const base = [
+      { id:'W1', length_in: width },
+      { id:'W2', length_in: depth },
+      { id:'W3', length_in: width },
+      { id:'W4', length_in: depth }
+    ];
+    walls = base;
+    if (!walls.find(w=>w.id===selectedWall)) selectedWall = walls[0].id;
+  }
+  function renderTabs(){
+    const tabs = document.getElementById('wallTabs');
+    tabs.innerHTML = '';
+    walls.forEach(w=>{
+      const b = document.createElement('button'); b.className='tab'+(w.id===selectedWall?' active':''); b.textContent=w.id+` (${w.length_in}\" )`;
+      b.onclick=()=>{ selectedWall=w.id; renderAll(); };
+      tabs.appendChild(b);
+    });
+  }
+  function renderPalette(){
+    palette.innerHTML='';
+    TYPES.forEach(t=>{
+      const s = document.createElement('span'); s.className='pill'; s.dataset.cat=CATS[t]; s.textContent=t.replace(/_/g,' ');
+      s.onclick=()=>{
+        const w = walls.find(x=>x.id===selectedWall); if (!w) return;
+        const a = { id:uid(), wall_id:w.id, type:t, x_in:12, width_in:null };
+        anchors.push(a); renderAll();
+      };
+      palette.appendChild(s);
+    });
+  }
+  function pxPerInch(len){ const track = 720; return track/Math.max(1,len); }
+  function blockWidthPx(a){ const w = a.width_in!=null ? a.width_in : DEF.widths[a.type] || 24; return Math.max(12, w*pxPerInch(getWall(a.wall_id).length_in)); }
+  function toPx(x, wall){ return x*pxPerInch(wall.length_in); }
+  function getWall(id){ return walls.find(w=>w.id===id); }
+  function shapeSvg(a){
+    const t = a.type;
+    const label = `${t.replace(/_/g,' ')}${a.width_in!=null?` ${a.width_in}\"`:''}`;
+    // Each block gets an SVG that roughly matches the item silhouette
+    const common = (body)=>`<svg viewBox='0 0 100 100' preserveAspectRatio='none'>${body}<text x='50' y='55' text-anchor='middle' font-size='11' fill='#333'>${label}</text></svg>`;
+    if (t==='corner_base' || t==='corner_upper') {
+      return cornerFaceSvg(a);
+    }
+    if (t.startsWith('upper')) {
+      return upperFaceSvg(a);
+    }
+    if (t==='sink_base') {
+      return baseFaceSvg(a);
+    }
+    if (t==='drawer') {
+      return baseFaceSvg(a);
+    }
+    if (t==='pantry') {
+      return common(`<rect x='5' y='0' width='90' height='100' fill='#ffe9c9' stroke='#e0b47f'/>
+        <line x1='50' y1='0' x2='50' y2='100' stroke='#b88b52' stroke-width='2'/>`);
+    }
+    if (t==='fridge' || t==='freezer') {
+      return common(`<rect x='2' y='0' width='96' height='100' fill='#e8f3ff' stroke='#add3ff'/>
+        <line x1='50' y1='0' x2='50' y2='100' stroke='#7fb4ff' stroke-width='2'/>`);
+    }
+    if (t==='range') {
+      return common(`<rect x='0' y='0' width='100' height='100' fill='#e8f3ff' stroke='#add3ff'/>
+        <g stroke='#7fb4ff' stroke-width='2'>
+          <circle cx='20' cy='20' r='8' fill='none'/>
+          <circle cx='50' cy='20' r='8' fill='none'/>
+          <circle cx='80' cy='20' r='8' fill='none'/>
+        </g>`);
+    }
+    if (t==='dishwasher') {
+      return common(`<rect x='5' y='5' width='90' height='90' fill='#e8f3ff' stroke='#add3ff'/>
+        <rect x='10' y='15' width='80' height='20' fill='none' stroke='#7fb4ff'/>`);
+    }
+
+    if (t==='microwave' || t==='microwave_drawer') {
+      return common(`<rect x='8' y='20' width='84' height='60' fill='#e8f3ff' stroke='#add3ff'/>`);
+    }
+  function doorPairSvg(x,y,w,h){ return `<g><rect x='${x}' y='${y}' width='${w/2-1}' height='${h}' fill='none' stroke='#b88b52'/><rect x='${x+w/2+1}' y='${y}' width='${w/2-1}' height='${h}' fill='none' stroke='#b88b52'/></g>`; }
+  function handleLeft(x,y){ return `<rect x='${x}' y='${y}' width='3' height='16' fill='#b88b52' rx='1'/>`; }
+  function handleRight(x,y){ return `<rect x='${x}' y='${y}' width='3' height='16' fill='#b88b52' rx='1'/>`; }
+  function baseFaceSvg(a){
+    const label = `${a.type.replace(/_/g,' ')}${a.width_in!=null?` ${a.width_in}\"`:''}`;
+    const body = `
+      <rect x='2' y='4' width='96' height='92' fill='#ffe9c9' stroke='#e0b47f'/>
+      ${a.type==='drawer' ? `<g stroke='#b88b52'><rect x='6' y='8' width='88' height='20' fill='none'/><rect x='6' y='34' width='88' height='20' fill='none'/><rect x='6' y='60' width='88' height='20' fill='none'/></g>` : ''}
+      ${a.type==='sink_base' ? `<rect x='10' y='10' width='80' height='30' fill='none' stroke='#b88b52'/>` : ''}
+      ${(() => { const w=a.width_in ?? DEF.widths[a.type] ?? 24; return (a.type.startsWith('base_')||a.type==='base') ? (w<=21 ? `<rect x='6' y='34' width='88' height='56' fill='none' stroke='#b88b52'/>${handleRight(85,60)}` : `${doorPairSvg(6,34,88,56)}${handleLeft(12,60)}${handleRight(85,60)}`) : '' })()}
+    `;
+    return `<svg viewBox='0 0 100 100' preserveAspectRatio='none'>${body}<text x='50' y='97' text-anchor='middle' font-size='10' fill='#333'>${label}</text></svg>`;
+  }
+  function upperFaceSvg(a){
+    const label = `${a.type.replace(/_/g,' ')}${a.width_in!=null?` ${a.width_in}\"`:''}`;
+    const body = `
+      <rect x='2' y='10' width='96' height='56' fill='#ffe9c9' stroke='#e0b47f'/>
+      ${(() => { const w=a.width_in ?? DEF.widths[a.type] ?? 24; return w<=18 ? `<rect x='6' y='14' width='88' height='48' fill='none' stroke='#b88b52'/>${handleRight(85,34)}` : `${doorPairSvg(6,14,88,48)}${handleLeft(12,34)}${handleRight(85,34)}` })()}
+    `;
+    return `<svg viewBox='0 0 100 100' preserveAspectRatio='none'>${body}<text x='50' y='90' text-anchor='middle' font-size='10' fill='#333'>${label}</text></svg>`;
+  }
+  function cornerFaceSvg(a){
+    const label = `${a.type.replace(/_/g,' ')}${a.width_in!=null?` ${a.width_in}\"`:''}`;
+    const body = `
+      <rect x='2' y='4' width='96' height='92' fill='#ffe9c9' stroke='#e0b47f'/>
+      <line x1='6' y1='34' x2='94' y2='90' stroke='#b88b52' stroke-width='2'/>
+      ${handleLeft(12,40)}${handleRight(85,70)}
+    `;
+    return `<svg viewBox='0 0 100 100' preserveAspectRatio='none'>${body}<text x='50' y='97' text-anchor='middle' font-size='10' fill='#333'>${label}</text></svg>`;
+  }
+  function overRangeMicrowaveSvg(a){
+    const label = `microwave${a.width_in!=null?` ${a.width_in}\"`:''}`;
+    const body = `
+      <rect x='10' y='20' width='80' height='44' fill='#e8f3ff' stroke='#7fb4ff'/>
+      <rect x='18' y='28' width='52' height='28' fill='none' stroke='#7fb4ff'/>
+      <rect x='74' y='32' width='10' height='20' fill='#7fb4ff' rx='2'/>
+    `;
+    return `<svg viewBox='0 0 100 100' preserveAspectRatio='none'>${body}<text x='50' y='90' text-anchor='middle' font-size='10' fill='#333'>${label}</text></svg>`;
+  }
+
+    if (t==='hood') {
+      return common(`<polygon points='0,100 50,10 100,100' fill='#e8f3ff' stroke='#add3ff'/>`);
+    }
+    if (t==='window' || t==='opening') {
+      return common(`<rect x='10' y='10' width='80' height='80' fill='#e9fbea' stroke='#b4dfb9'/>`);
+    }
+    // Generic base cabinet
+    return common(`<rect x='0' y='0' width='100' height='100' rx='6' ry='6' fill='#ffe9c9' stroke='#e0b47f'/>`);
+  }
+
+
+  function isUpperType(t){ return t.startsWith('upper') || t==='microwave' || t==='hood'; }
+  function blockClassFor(a){ const shape = `t-${a.type}`; const row = isUpperType(a.type)?'row-upper':'row-base'; return `block ${CATS[a.type]} ${row} ${shape}`; }
+
+  function renderWalls(){
+    wallsEl.innerHTML='';
+    walls.forEach(w=>{
+      const card = document.createElement('div'); card.className='wall';
+      const head = document.createElement('div'); head.className='wallHeader';
+      head.innerHTML = `<div><strong>${w.id}</strong> · length ${w.length_in}\"</div><div class="muted">Drag blocks; snap 3\"</div>`;
+      card.appendChild(head);
+
+      const track = document.createElement('div'); track.className='wallTrack'; track.dataset.wall=w.id;
+
+      const pxi = pxPerInch(w.length_in);
+
+      anchors.filter(a=>a.wall_id===w.id).forEach(a=>{
+        const block = document.createElement('div'); block.className=`block ${CATS[a.type]}`; block.dataset.id=a.id;
+        block.style.left = (toPx(a.x_in, w)) + 'px';
+        // Visual height determined by the SVG face; one track shows relative heights
+        // Width still based on plan width mapping
+        block.style.width = blockWidthPx(a) + 'px';
+        block.title = `${a.type} @ ${a.x_in}\" (${a.width_in==null?'auto':a.width_in+'\"'})`;
+        block.innerHTML = shapeSvg(a);
+
+  const TRACK_PX = 200; // px height of the single wall track (matches CSS)
+  function ceilingIn(){ const el=document.getElementById('room_h'); const v=el?+el.value:108; return v||108; }
+  function pxPerInchY(){ return TRACK_PX / Math.max(84, ceilingIn()); }
+  function dimsFor(a){
+    try{
+      const t = a?.type || '';
+      const backsplash = 18, cnt = 36;
+      const upperH = 30, tallH = 84;
+      const apps = { fr:70, dw:35, rg:36, mw:17, hood:12, cooktop:6 };
+      // Windows/openings from inputs
+      const wh = document.getElementById('win_h'); const ws = document.getElementById('win_sill');
+      const winH = wh?+wh.value:36;
+      const winSill = ws?+ws.value:42;
+      if (t==='window' || t==='opening') return { h: winH, bottom: winSill };
+      if (t==='pantry') return { h: tallH, bottom: 0 };
+      if (t==='fridge' || t==='freezer') return { h: apps.fr, bottom: 0 };
+      if (t==='dishwasher') return { h: apps.dw, bottom: 0 };
+      if (t==='range') return { h: apps.rg, bottom: 0 };
+      if (t==='cooktop') return { h: apps.cooktop, bottom: cnt };
+      if (t==='microwave_drawer') return { h: 10, bottom: 0 };
+      if (t==='microwave') return { h: apps.mw, bottom: cnt+backsplash };
+      if (t==='hood') return { h: apps.hood, bottom: cnt+backsplash };
+      if (t.startsWith('upper') || t==='corner_upper') return { h: upperH, bottom: cnt+backsplash };
+      // Base family (includes corner_base, sink_base, drawer, base_*)
+      return { h: cnt, bottom: 0 };
+    } catch(e){
+      return { h: 36, bottom: 0 };
+    }
+  }
+
+        // Dragging
+        let dragging=false, startX=0, startLeft=0;
+        block.onpointerdown = (ev)=>{ dragging=true; startX=ev.clientX; startLeft=parseFloat(block.style.left)||0; block.setPointerCapture(ev.pointerId); ev.preventDefault(); };
+        block.onpointermove = (ev)=>{ if(!dragging) return; const dx=ev.clientX-startX; let px=startLeft+dx; if(px<0) px=0; const maxPx=toPx(Math.max(0,w.length_in-(a.width_in||DEF.widths[a.type]||24)), w); if(px>maxPx) px=maxPx; block.style.left=px+'px'; a.x_in = snap3(px/pxi); block.title = `${a.type} @ ${a.x_in}\" (${a.width_in==null?'auto':a.width_in+'\"'})`; };
+        block.onpointerup = (ev)=>{ dragging=false; block.releasePointerCapture(ev.pointerId); };
+        // Vertical positioning according to typical heights
+        const d = dimsFor(a);
+        const pxy = pxPerInchY();
+        const bottomPx = d.bottom * pxy;
+        const hPx = Math.max(14, d.h * pxy);
+        block.style.bottom = bottomPx + 'px';
+        block.style.height = hPx + 'px';
+
+        // Double-click toggle Auto vs fixed width
+        block.ondblclick = ()=>{
+          if (a.width_in==null) a.width_in = DEF.widths[a.type] || 24; else a.width_in = null; renderAll();
+        };
+        // Right-click delete
+        block.oncontextmenu = (e)=>{ e.preventDefault(); anchors = anchors.filter(x=>x.id!==a.id); renderAll(); };
+
+        track.appendChild(block);
+      });
+
+      card.appendChild(track);
+      wallsEl.appendChild(card);
+    });
+  }
+
+  // Render reference on load and when room dims/layout change
+  ['room_w','room_d','layout'].forEach(id=>{
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('change', () => { buildWalls(); renderWallRef(); });
+  });
+
+  function renderAll(){ renderTabs(); renderPalette(); renderWalls(); }
+
+  // Render 4-wall reference diagram (kept near top-level so it's defined before use)
+  function renderWallRef(){
+    const w = +document.getElementById('room_w').value||156;
+    const d = +document.getElementById('room_d').value||192;
+    const labels = ['W1','W2','W3','W4'];
+    const svg = [
+      `<svg viewBox='0 0 400 140' preserveAspectRatio='xMidYMid meet'>`,
+      `<rect x='10' y='10' width='380' height='120' rx='8' ry='8' fill='#fff' stroke='#94a3b8'/>`,
+      `<text x='200' y='24' text-anchor='middle' fill='#0f172a' font-weight='600'>W1</text>`,
+      `<text x='200' y='134' text-anchor='middle' fill='#0f172a' font-weight='600'>W2</text>`,
+      `<text x='24' y='80' text-anchor='middle' fill='#0f172a' font-weight='600' transform='rotate(-90 24,80)'>W3</text>`,
+      `<text x='376' y='80' text-anchor='middle' fill='#0f172a' font-weight='600' transform='rotate(90 376,80)'>W4</text>`,
+      `</svg>`
+    ].join('');
+    document.getElementById('wallRef').innerHTML = svg;
+  }
+
+  function setStep(k){ document.getElementById('step1').style.display = k===1?'block':'none'; document.getElementById('step2').style.display = k===2?'block':'none'; document.getElementById('step3').style.display = k===3?'block':'none'; }
+
+  // Nav
+  document.getElementById('to2').onclick=()=>{ buildWalls(); renderWallRef(); setStep(2); renderAll(); };
+  document.getElementById('back1').onclick=()=> setStep(1);
+  document.getElementById('to3').onclick=()=>{ buildWalls(); setStep(3); renderAll(); };
+  document.getElementById('back2').onclick=()=> setStep(2);
+
+  // Payload helpers
+  function buildIntent(){
+    const intent = {
+      room: { width_in:+document.getElementById('room_w').value||144, depth_in:+document.getElementById('room_d').value||132, height_in:+document.getElementById('room_h').value||96 },
+      layout: document.getElementById('layout').value,
+      essentials: {
+        fridge: { type: document.getElementById('fridge').value, width_in: null },
+        cooking: (document.getElementById('cook_choice').value==='range') ? { mode:'range', width_in:null } : { mode:'cooktop_walloven', cooktop_width_in:null, wall_oven:'single' },
+        ventilation: document.getElementById('vent_choice').value,
+        dishwasher: document.getElementById('dw').value==='yes',
+        sink: { size_pref: document.getElementById('sink_size_pref').value, window_above: document.getElementById('sink_window').value==='yes' },
+        pantry: document.getElementById('pantry').value,
+        storage_pref: document.getElementById('storage_pref').value,
+        uppers: { mode: document.getElementById('uppers').value, to_ceiling: false }
+      },
+      extras: { freezer_column:false, beverage_center:false, microwave_drawer:false, warming_drawer:false, ice_maker:false, built_in_coffee:false },
+      openings: { door_count:+document.getElementById('doors').value||0, door_width_in:+document.getElementById('door_w').value||30, window_count:+document.getElementById('windows').value||0, window_size:{ width_in:+document.getElementById('win_w').value||36, height_in:+document.getElementById('win_h').value||36, sill_height_in:+document.getElementById('win_sill').value||42 } },
+      preferences: { auto_size_all:true, symmetry:'auto', dw_side:'auto', center_range:'auto' },
+      notes: ''
+    };
+    return intent;
+  }
+  function buildSketch(){
+    const layout = document.getElementById('layout').value;
+    const room = { width_in:+document.getElementById('room_w').value||144, depth_in:+document.getElementById('room_d').value||132, height_in:+document.getElementById('room_h').value||96 };
+    return { room, layout, walls: walls.map(w=>({ id:w.id, length_in:w.length_in })), anchors };
+  }
+  function backendBase(){ return (window.VITE_BACKEND_URL) || 'http://localhost:3002'; }
+
+  document.getElementById('preview').onclick=()=>{
+    const payload = { intent: buildIntent(), sketch: buildSketch() };
+    const pre = document.getElementById('out'); pre.style.display='block'; pre.textContent = JSON.stringify(payload, null, 2);
+    document.getElementById('msg').textContent='OK';
+  };
+
+  async function callPlaceSketch(payload){
+    const url = `${backendBase()}/api/v1/intent/place-sketch`;
+    const res = await fetch(url, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+    if (!res.ok){ const t = await res.text(); throw new Error(`place-sketch failed ${res.status}: ${t}`); }
+    return await res.json();
+  }
+
+  function planToBp3d(plan){
+    const IN_TO_M = 0.0254;
+    const W = plan.room.width_in||144, D = plan.room.depth_in||132;
+    const halfW = (W*IN_TO_M)/2, halfD = (D*IN_TO_M)/2;
+    const walls = [
+      { start:[-halfW, -halfD], end:[ halfW, -halfD] },
+      { start:[ halfW, -halfD], end:[ halfW,  halfD] },
+      { start:[ halfW,  halfD], end:[-halfW,  halfD] },
+      { start:[-halfW,  halfD], end:[-halfW, -halfD] }
+    ];
+    const items = (plan.units||[]).map(u=>{
+      // Map unit to a canonical objectType used by the NL/Catalog resolver
+      let objectType = u.subtype || '';
+      if (u.kind === 'cabinet'){
+        if (u.mount === 'upper'){
+          // Full-height uppers vs short (use height to decide)
+          objectType = (u.height_in && u.height_in >= 36) ? 'upper full' : 'upper';
+        } else if (u.mount === 'tall'){
+          objectType = 'pantry';
+        } else {
+          if (u.subtype === 'sink_base') objectType = 'sink base';
+          else objectType = 'base';
+        }
+      }
+      if (u.kind === 'appliance'){
+        // Keep appliance subtype (fridge, range, dishwasher, microwave, hood, etc.)
+        objectType = u.subtype || objectType;
+      }
+      return {
+        id: u.id,
+        name: u.subtype,
+        objectType,
+        type: 'kitchen',
+        category: (u.kind==='appliance'?'appliance':'cabinet'),
+        position: { x:(-halfW)+(u.x_start_in*IN_TO_M)+(u.width_in*IN_TO_M)/2, y:(u.mount==='upper'?1.524:0), z:-halfD+0.02 },
+        width: (u.width_in||24)*IN_TO_M,
+        height: (u.height_in||((u.mount==='upper')?30:36))*IN_TO_M,
+        depth: (u.depth_in||((u.mount==='upper')?12:24))*IN_TO_M,
+      };
+    });
+    const openings = (plan.openings||[]).map(op=>({ type:'door', position:[ (-halfW)+(op.x_start_in*IN_TO_M), -halfD ], width:(op.width_in||30)*IN_TO_M, height:(op.height_in||80)*IN_TO_M }));
+    return { meta:{unit:'meters', source:'wizard_v3'}, floorplan:{walls, rooms:[], openings}, scene:{items, measurements:[], annotations:[]} };
+  }
+
+  document.getElementById('generate').onclick = async ()=>{
+    try{
+      document.getElementById('msg').textContent='Generating…';
+      const payload = { intent: buildIntent(), sketch: buildSketch() };
+      const plan = await callPlaceSketch(payload);
+      const pre = document.getElementById('out'); pre.style.display='block'; pre.textContent = JSON.stringify(plan, null, 2);
+
+      // Apply to Blueprint3D if available
+      const bpData = planToBp3d(plan);
+      const w = window;
+      if (w.blueprint3DRef && w.blueprint3DRef.current && typeof w.blueprint3DRef.current.loadData==='function'){
+        w.blueprint3DRef.current.loadData(bpData);
+        document.getElementById('msg').textContent = 'Rendered to canvas.';
+      } else if (w.opener && w.opener.postMessage) {
+        w.opener.postMessage({ type:'LOAD_BP3D_DATA', payload: bpData }, '*');
+        document.getElementById('msg').textContent = 'Sent to opener for rendering.';
+      } else if (w.parent && w.parent !== w && w.parent.postMessage) {
+        w.parent.postMessage({ type:'LOAD_BP3D_DATA', payload: bpData }, '*');
+        document.getElementById('msg').textContent = 'Sent to parent for rendering.';
+      } else {
+        document.getElementById('msg').textContent = 'Plan ready. No canvas hook found.';
+      }
+    } catch(e){
+      console.error(e);
+      document.getElementById('msg').textContent = 'Error: '+(e.message||String(e));
+    }
+  };
+
+  // Generate with AI (preview choice)
+  document.getElementById('generate_ai').onclick = async ()=>{
+    try{
+      document.getElementById('msg').textContent='Generating (deterministic + AI)…';
+      const payload = { intent: buildIntent(), sketch: buildSketch() };
+      const detPlan = await callPlaceSketch(payload);
+
+      // Build a compact description for LLM
+      const parts = [];
+      const r = payload.intent.room || {};
+      parts.push(`Room ${r.width_in||144}x${r.depth_in||132} layout ${payload.intent.layout||'single'}.`);
+      const e = payload.intent.essentials || {};
+      if (e.fridge?.type && e.fridge.type!=='none') parts.push(`Fridge ${e.fridge.width_in||36}\" ${e.fridge.type}.`);
+      if (e.cooking?.mode==='range') parts.push(`Range ${e.cooking.width_in||30}\" vent ${e.ventilation||'hood'}.`);
+      else if (e.cooking?.mode==='cooktop_walloven') parts.push(`Cooktop ${e.cooking.cooktop_width_in||30}\" + ${e.cooking.wall_oven||'single'} wall oven. Vent ${e.ventilation||'hood'}.`);
+      if (e.dishwasher) parts.push('Dishwasher 24\".');
+      parts.push(`Sink ${e.sink?.size_pref||'auto'}${e.sink?.window_above?' with window':''}.`);
+      if (e.pantry && e.pantry!=='none') parts.push(`Pantry ${e.pantry}.`);
+      if (e.uppers?.mode) parts.push(`Uppers ${e.uppers.mode}${e.uppers.to_ceiling?' to ceiling':''}.`);
+      const o = payload.intent.openings || {};
+      if (o.door_count) parts.push(`${o.door_count} doors ${o.door_width_in||30}\" wide.`);
+      if (o.window_count) parts.push(`${o.window_count} windows ${(o.window_size?.width_in||36)}\"x${(o.window_size?.height_in||36)}\" sill ${(o.window_size?.sill_height_in||42)}\".`);
+      const description = parts.join(' ');
+
+      // Call existing LLM parse (already repairs and validates plan), then show a chooser
+      const llmUrl = `${backendBase()}/api/v1/plan/parse`;
+      const res = await fetch(llmUrl, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ description }) });
+      let aiPlan = null;
+      if (res.ok) aiPlan = await res.json();
+
+      const pre = document.getElementById('out');
+      pre.style.display='block';
+      pre.textContent = JSON.stringify({ deterministic: detPlan, ai: aiPlan }, null, 2);
+
+      // Enable Use AI button if available
+      const applyBtn = document.getElementById('apply_ai');
+      applyBtn.disabled = !aiPlan;
+
+      // Render chooser: by default load deterministic to canvas; AI available to apply manually
+      const bpData = planToBp3d(detPlan);
+      const w = window;
+      if (w.blueprint3DRef && w.blueprint3DRef.current && typeof w.blueprint3DRef.current.loadData==='function'){
+        w.blueprint3DRef.current.loadData(bpData);
+        document.getElementById('msg').textContent = aiPlan ? 'Deterministic rendered. AI variant available in preview.' : 'Rendered deterministic (AI unavailable).';
+      } else if (w.opener && w.opener.postMessage) {
+        w.opener.postMessage({ type:'LOAD_BP3D_DATA', payload: bpData }, '*');
+        document.getElementById('msg').textContent = aiPlan ? 'Sent deterministic to opener. AI variant available in preview.' : 'Sent deterministic to opener.';
+      } else if (w.parent && w.parent !== w && w.parent.postMessage) {
+        w.parent.postMessage({ type:'LOAD_BP3D_DATA', payload: bpData }, '*');
+        document.getElementById('msg').textContent = aiPlan ? 'Sent deterministic to parent. AI variant available in preview.' : 'Sent deterministic to parent.';
+      } else {
+        document.getElementById('msg').textContent = 'Plan ready. No canvas hook found.';
+      }
+
+      // Clicking Use AI Plan posts AI plan as BP3D data
+      applyBtn.onclick = ()=>{
+        if (!aiPlan) return;
+        const bpAI = planToBp3d(aiPlan);
+        const w = window;
+        if (w.blueprint3DRef && w.blueprint3DRef.current && typeof w.blueprint3DRef.current.loadData==='function'){
+          w.blueprint3DRef.current.loadData(bpAI);
+          document.getElementById('msg').textContent = 'AI plan rendered to canvas.';
+        } else if (w.opener && w.opener.postMessage) {
+          w.opener.postMessage({ type:'LOAD_BP3D_DATA', payload: bpAI }, '*');
+          document.getElementById('msg').textContent = 'AI plan sent to opener.';
+        } else if (w.parent && w.parent !== w && w.parent.postMessage) {
+          w.parent.postMessage({ type:'LOAD_BP3D_DATA', payload: bpAI }, '*');
+          document.getElementById('msg').textContent = 'AI plan sent to parent.';
+        } else {
+          document.getElementById('msg').textContent = 'AI plan ready. No canvas hook found.';
+        }
+      };
+
+    } catch(e){
+      console.error(e);
+      document.getElementById('msg').textContent = 'Error: '+(e.message||String(e));
+
+    }
+  };
+
+  // Initial
+  buildWalls(); renderWallRef(); renderAll(); setStep(1);
+})();
+</script>
+</body>
+</html>

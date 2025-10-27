@@ -1,0 +1,15 @@
+[core]
+	repositoryformatversion = 0
+	filemode = false
+	bare = false
+	logallrefupdates = true
+	symlinks = false
+	ignorecase = true
+	hooksPath = .husky/_
+[remote "origin"]
+	url = https://github.com/ChubbyFungus/estimate-genie-client.git
+	fetch = +refs/heads/*:refs/remotes/origin/*
+[branch "blueprint3d-integration"]
+	remote = origin
+	merge = refs/heads/blueprint3d-integration
+	vscode-merge-base = origin/blueprint3d-integration

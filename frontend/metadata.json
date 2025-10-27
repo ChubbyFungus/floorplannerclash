@@ -1,0 +1,7 @@
+{
+  "name": "AI 3D Room Planner",
+  "description": "A 3D kitchen and bathroom floorplanner that allows you to design your space using natural language commands. Add, move, and remove furniture and fixtures with simple text prompts.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}

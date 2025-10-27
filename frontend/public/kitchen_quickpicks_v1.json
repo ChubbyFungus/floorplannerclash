@@ -1,0 +1,1503 @@
+{
+  "schema_version": "1.0",
+  "units": "in",
+  "conventions": {
+    "room_origin": "top-left interior corner of Wall A",
+    "wall_order": "A(top), B(right), C(bottom), D(left) \u2013 listed clockwise",
+    "measure_from": "from_start measured along the interior face from each wall's start corner in the clockwise loop",
+    "depths": {
+      "base": 24,
+      "upper": 12,
+      "tall": 24,
+      "appliance": 27,
+      "counter_overhang": 1.5,
+      "bar_overhang": 12
+    },
+    "heights": {
+      "base_cab": 34.5,
+      "countertop": 1.5,
+      "upper_cab": 30,
+      "ceiling_default": 96,
+      "tall_cab": 90
+    }
+  },
+  "designs": [
+    {
+      "id": "A1-OneWall-12ft",
+      "title": "One-Wall 12' Studio",
+      "units": "in",
+      "room": {
+        "shape": "rect",
+        "width": 144,
+        "height": 120,
+        "ceiling": 96
+      },
+      "walls": [
+        {
+          "id": "A",
+          "start": [
+            0,
+            0
+          ],
+          "end": [
+            144,
+            0
+          ],
+          "length": 144,
+          "orientation": "N"
+        },
+        {
+          "id": "B",
+          "start": [
+            144,
+            0
+          ],
+          "end": [
+            144,
+            120
+          ],
+          "length": 120,
+          "orientation": "E"
+        },
+        {
+          "id": "C",
+          "start": [
+            144,
+            120
+          ],
+          "end": [
+            0,
+            120
+          ],
+          "length": 144,
+          "orientation": "S"
+        },
+        {
+          "id": "D",
+          "start": [
+            0,
+            120
+          ],
+          "end": [
+            0,
+            0
+          ],
+          "length": 120,
+          "orientation": "W"
+        }
+      ],
+      "runs": [
+        {
+          "wall": "A",
+          "sequence": [
+            {
+              "type": "filler",
+              "w": 1.5,
+              "from_start": 0.0
+            },
+            {
+              "type": "appliance",
+              "subtype": "fridge",
+              "w": 36.0,
+              "d": 27,
+              "h": 70,
+              "from_start": 1.5
+            },
+            {
+              "type": "tall",
+              "subtype": "pantry",
+              "w": 18.0,
+              "d": 24,
+              "h": 90,
+              "from_start": 37.5,
+              "name": "pantry_18"
+            },
+            {
+              "type": "sink_base",
+              "w": 33.0,
+              "d": 24,
+              "from_start": 55.5,
+              "sink": "double"
+            },
+            {
+              "type": "appliance",
+              "subtype": "dishwasher",
+              "w": 24.0,
+              "d": 24,
+              "from_start": 88.5
+            },
+            {
+              "type": "appliance",
+              "subtype": "range",
+              "w": 30.0,
+              "d": 27,
+              "h": 36,
+              "from_start": 112.5,
+              "hood": "mwo_30"
+            },
+            {
+              "type": "filler",
+              "w": 1.5,
+              "from_start": 142.5
+            }
+          ]
+        }
+      ],
+      "islands": [],
+      "peninsulas": [],
+      "openings": [
+        {
+          "type": "window",
+          "wall": "A",
+          "from_start": 54.0,
+          "width": 36.0,
+          "sill_h": 42,
+          "head_h": 72,
+          "note": "centered on SB33"
+        }
+      ],
+      "uppers_rule": "30h uppers above bases except over window and over tall/fridge; micro-hood 30 over range.",
+      "notes": "Compact full-appliance one-wall with centered sink window.",
+      "layout": {
+        "runs": [
+          {
+            "wall": "A",
+            "sequence": [
+              { "type": "filler", "w": 1.5, "from_start": 0.0 },
+              { "type": "appliance", "subtype": "fridge", "w": 36.0, "d": 27, "h": 70, "from_start": 1.5 },
+              { "type": "tall", "subtype": "pantry", "w": 18.0, "d": 24, "h": 90, "from_start": 37.5, "name": "pantry_18" },
+              { "type": "sink_base", "w": 33.0, "d": 24, "from_start": 55.5, "sink": "double" },
+              { "type": "appliance", "subtype": "dishwasher", "w": 24.0, "d": 24, "from_start": 88.5 },
+              { "type": "appliance", "subtype": "range", "w": 30.0, "d": 27, "h": 36, "from_start": 112.5, "hood": "mwo_30" },
+              { "type": "filler", "w": 1.5, "from_start": 142.5 }
+            ]
+          }
+        ],
+        "uppers": [
+          { "wall": "A", "type": "appliance", "subtype": "hood", "w": 30, "d": 20, "h": 24, "from_start": 112.5, "name": "mwo_hood_30" }
+        ]
+      }
+    },
+    {
+      "id": "B1-Galley-12x10",
+      "title": "Galley 12' x 10'",
+      "units": "in",
+      "room": {
+        "shape": "rect",
+        "width": 144,
+        "height": 120,
+        "ceiling": 96
+      },
+      "walls": [
+        {
+          "id": "A",
+          "start": [
+            0,
+            0
+          ],
+          "end": [
+            144,
+            0
+          ],
+          "length": 144,
+          "orientation": "N"
+        },
+        {
+          "id": "B",
+          "start": [
+            144,
+            0
+          ],
+          "end": [
+            144,
+            120
+          ],
+          "length": 120,
+          "orientation": "E"
+        },
+        {
+          "id": "C",
+          "start": [
+            144,
+            120
+          ],
+          "end": [
+            0,
+            120
+          ],
+          "length": 144,
+          "orientation": "S"
+        },
+        {
+          "id": "D",
+          "start": [
+            0,
+            120
+          ],
+          "end": [
+            0,
+            0
+          ],
+          "length": 120,
+          "orientation": "W"
+        }
+      ],
+      "runs": [
+        {
+          "wall": "A",
+          "sequence": [
+            {
+              "type": "filler",
+              "w": 3.0,
+              "from_start": 0.0
+            },
+            {
+              "type": "tall",
+              "subtype": "pantry",
+              "w": 24.0,
+              "d": 24,
+              "h": 90,
+              "from_start": 3.0,
+              "name": "pantry_24"
+            },
+            {
+              "type": "appliance",
+              "subtype": "fridge",
+              "w": 36.0,
+              "d": 27,
+              "h": 70,
+              "from_start": 27.0
+            },
+            {
+              "type": "base",
+              "w": 24.0,
+              "d": 24,
+              "from_start": 63.0,
+              "code": "B24"
+            },
+            {
+              "type": "appliance",
+              "subtype": "range",
+              "w": 30.0,
+              "d": 27,
+              "h": 36,
+              "from_start": 87.0,
+              "hood": "mwo_30"
+            },
+            {
+              "type": "base",
+              "w": 27.0,
+              "d": 24,
+              "from_start": 117.0,
+              "code": "B27"
+            }
+          ]
+        },
+        {
+          "wall": "C",
+          "sequence": [
+            {
+              "type": "filler",
+              "w": 3.0,
+              "from_start": 0.0
+            },
+            {
+              "type": "base",
+              "w": 15.0,
+              "d": 24,
+              "from_start": 3.0,
+              "code": "B15"
+            },
+            {
+              "type": "sink_base",
+              "w": 33.0,
+              "d": 24,
+              "from_start": 18.0,
+              "sink": "single"
+            },
+            {
+              "type": "appliance",
+              "subtype": "dishwasher",
+              "w": 24.0,
+              "d": 24,
+              "from_start": 51.0
+            },
+            {
+              "type": "base",
+              "w": 36.0,
+              "d": 24,
+              "from_start": 75.0,
+              "code": "B36"
+            },
+            {
+              "type": "base",
+              "w": 30.0,
+              "d": 24,
+              "from_start": 111.0,
+              "code": "B30"
+            },
+            {
+              "type": "filler",
+              "w": 3.0,
+              "from_start": 141.0
+            }
+          ]
+        }
+      ],
+      "islands": [],
+      "peninsulas": [],
+      "openings": [
+        {
+          "type": "window",
+          "wall": "C",
+          "from_start": 18.0,
+          "width": 36.0,
+          "sill_h": 42,
+          "head_h": 72,
+          "note": "centered on SB33"
+        }
+      ],
+      "uppers_rule": "30h uppers mirrored on both runs except over sink window and over tall/fridge; micro-hood 30 over range.",
+      "notes": "Work triangle split across runs; fridge/pantry on A, sink/DW on C."
+    },
+    {
+      "id": "C1-L-Small-12x10",
+      "title": "L-Shape Small (12' x 10')",
+      "units": "in",
+      "room": {
+        "shape": "rect",
+        "width": 144,
+        "height": 120,
+        "ceiling": 96
+      },
+      "walls": [
+        {
+          "id": "A",
+          "start": [
+            0,
+            0
+          ],
+          "end": [
+            144,
+            0
+          ],
+          "length": 144,
+          "orientation": "N"
+        },
+        {
+          "id": "B",
+          "start": [
+            144,
+            0
+          ],
+          "end": [
+            144,
+            120
+          ],
+          "length": 120,
+          "orientation": "E"
+        },
+        {
+          "id": "C",
+          "start": [
+            144,
+            120
+          ],
+          "end": [
+            0,
+            120
+          ],
+          "length": 144,
+          "orientation": "S"
+        },
+        {
+          "id": "D",
+          "start": [
+            0,
+            120
+          ],
+          "end": [
+            0,
+            0
+          ],
+          "length": 120,
+          "orientation": "W"
+        }
+      ],
+      "runs": [
+        {
+          "wall": "A",
+          "sequence": [
+            { "type": "corner_L", "consumes": 36.0, "from_start": 0.0, "id": "corner_AB" },
+            { "type": "base", "w": 9.0, "d": 24, "from_start": 36.0, "code": "B9" },
+            { "type": "sink_base", "w": 33.0, "d": 24, "from_start": 45.0, "sink": "double" },
+            { "type": "appliance", "subtype": "dishwasher", "w": 24.0, "d": 24, "from_start": 81.0 },
+            { "type": "appliance", "subtype": "fridge", "w": 39.0, "d": 28, "h": 70, "from_start": 105.0 }
+          ]
+        },
+        {
+          "wall": "B",
+          "sequence": [
+            { "type": "corner_L", "consumes": 36.0, "from_start": 0.0, "pair": "corner_AB" },
+            { "type": "base", "w": 12.0, "d": 24, "from_start": 36.0, "code": "B12" },
+            { "type": "appliance", "subtype": "range", "w": 30.0, "d": 26, "h": 36, "from_start": 48.0 },
+            { "type": "appliance", "subtype": "hood", "w": 30.0, "d": 20, "h": 24, "from_start": 48.0 },
+            { "type": "base", "w": 24.0, "d": 24, "from_start": 78.0, "code": "Microwave_Drawer_Base_24" },
+            { "type": "base", "w": 18.0, "d": 24, "from_start": 102.0, "code": "B3_Drawer_18" }
+          ]
+        }
+      ],
+      "islands": [],
+      "peninsulas": [],
+      "openings": [],
+      "uppers_rule": "30h uppers on A except over fridge; on B, uppers except over hood.",
+      "notes": "Efficient L; corner uses 36x36 diagonal cabinet."
+    },
+    {
+      "id": "D1-L-Plus-Island-16x14",
+      "title": "L + Island (16' x 14')",
+      "units": "in",
+      "room": {
+        "shape": "rect",
+        "width": 192,
+        "height": 168,
+        "ceiling": 96
+      },
+      "walls": [
+        {
+          "id": "A",
+          "start": [
+            0,
+            0
+          ],
+          "end": [
+            192,
+            0
+          ],
+          "length": 192,
+          "orientation": "N"
+        },
+        {
+          "id": "B",
+          "start": [
+            192,
+            0
+          ],
+          "end": [
+            192,
+            168
+          ],
+          "length": 168,
+          "orientation": "E"
+        },
+        {
+          "id": "C",
+          "start": [
+            192,
+            168
+          ],
+          "end": [
+            0,
+            168
+          ],
+          "length": 192,
+          "orientation": "S"
+        },
+        {
+          "id": "D",
+          "start": [
+            0,
+            168
+          ],
+          "end": [
+            0,
+            0
+          ],
+          "length": 168,
+          "orientation": "W"
+        }
+      ],
+      "runs": [
+        {
+          "wall": "A",
+          "sequence": [
+            {
+              "type": "tall",
+              "subtype": "pantry",
+              "w": 24.0,
+              "d": 24,
+              "h": 90,
+              "from_start": 0.0,
+              "name": "pantry_24"
+            },
+            {
+              "type": "appliance",
+              "subtype": "fridge",
+              "w": 36.0,
+              "d": 27,
+              "h": 70,
+              "from_start": 24.0
+            },
+            {
+              "type": "base",
+              "w": 24.0,
+              "d": 24,
+              "from_start": 60.0,
+              "code": "B24"
+            },
+            {
+              "type": "appliance",
+              "subtype": "range",
+              "w": 30.0,
+              "d": 27,
+              "h": 36,
+              "from_start": 84.0,
+              "hood": "chimney_30"
+            },
+            {
+              "type": "base",
+              "w": 18.0,
+              "d": 24,
+              "from_start": 114.0,
+              "code": "B18"
+            },
+            {
+              "type": "base",
+              "w": 24.0,
+              "d": 24,
+              "from_start": 132.0,
+              "code": "B24"
+            },
+            {
+              "type": "corner_L",
+              "consumes": 36.0,
+              "from_start": 156.0,
+              "id": "corner_AB"
+            }
+          ]
+        },
+        {
+          "wall": "B",
+          "sequence": [
+            {
+              "type": "corner_L",
+              "consumes": 36.0,
+              "from_start": 0.0,
+              "pair": "corner_AB"
+            },
+            {
+              "type": "sink_base",
+              "w":  33,
+              "d": 24,
+              "from_start": 36.0,
+              "sink": "double"
+            },
+            {
+              "type": "appliance",
+              "subtype": "dishwasher",
+              "w": 24.0,
+              "d": 24,
+              "from_start": 72.0
+            },
+            {
+              "type": "base",
+              "w": 36.0,
+              "d": 24,
+              "from_start": 96.0,
+              "code": "B36"
+            },
+            {
+              "type": "base",
+              "w": 24.0,
+              "d": 24,
+              "from_start": 132.0,
+              "code": "B24"
+            },
+            {
+              "type": "filler",
+              "w": 12.0,
+              "from_start": 156.0
+            }
+          ]
+        }
+      ],
+      "islands": [
+        {
+          "id": "island1",
+          "x": 54,
+          "y": 67,
+          "w": 84,
+          "h": 36,
+          "seating": {
+            "side": "S",
+            "overhang": 12,
+            "stools": 3
+          },
+          "base_layout": [
+            {
+              "w": 24
+            },
+            {
+              "w": 36
+            },
+            {
+              "w": 24
+            }
+          ]
+        }
+      ],
+      "peninsulas": [],
+      "openings": [
+        {
+          "type": "window",
+          "wall": "B",
+          "from_start": 36.0,
+          "width": 42.0,
+          "sill_h": 42,
+          "head_h": 72,
+          "note": "over SB36"
+        }
+      ],
+      "uppers": [
+        {
+          "wall": "A",
+          "type": "upper",
+          "w": 24,
+          "d": 12,
+          "h": 30,
+          "from_start": 60,
+          "name": "upper_above_B24"
+        },
+        {
+          "wall": "A",
+          "type": "upper",
+          "w": 18,
+          "d": 12,
+          "h": 30,
+          "from_start": 114,
+          "name": "upper_above_B18"
+        },
+        {
+          "wall": "A",
+          "type": "upper",
+          "w": 24,
+          "d": 12,
+          "h": 30,
+          "from_start": 132,
+          "name": "upper_above_B24_2"
+        },
+        {
+          "wall": "B",
+          "type": "upper",
+          "w": 36,
+          "d": 12,
+          "h": 30,
+          "from_start": 96,
+          "name": "upper_above_B36"
+        },
+        {
+          "wall": "B",
+          "type": "upper",
+          "w": 24,
+          "d": 12,
+          "h": 30,
+          "from_start": 132,
+          "name": "upper_above_B24_3"
+        },
+        {
+          "wall": "A",
+          "type": "appliance",
+          "subtype": "hood",
+          "w": 30,
+          "d": 20,
+          "h": 24,
+          "from_start": 84,
+          "name": "chimney_hood_30"
+        }
+      ],
+      "uppers_rule": "Explicit upper placement - no inference needed",
+      "notes": "~42\" aisles; island seats 3 on the south side.",
+      "layout": {
+        "runs": [
+          {
+            "wall": "A",
+            "sequence": [
+              { "type": "tall", "subtype": "pantry", "w": 24, "d": 24, "h": 90, "from_start": 0, "name": "pantry_24" },
+              { "type": "appliance", "subtype": "fridge", "w": 36, "d": 27, "h": 70, "from_start": 24 },
+              { "type": "base", "w": 24, "d": 24, "from_start": 60, "code": "B24" },
+              { "type": "appliance", "subtype": "range", "w": 30, "d": 27, "h": 36, "from_start": 84, "hood": "chimney_30" },
+              { "type": "base", "w": 18, "d": 24, "from_start": 114, "code": "B18" },
+              { "type": "base", "w": 24, "d": 24, "from_start": 132, "code": "B24" },
+              { "type": "corner_L", "consumes": 36, "from_start": 156, "id": "corner_AB" }
+            ]
+          },
+          {
+            "wall": "B",
+            "sequence": [
+              { "type": "corner_L", "consumes": 36, "from_start": 0, "pair": "corner_AB" },
+              { "type": "sink_base", "w": 33, "d": 24, "from_start": 36, "sink": "double" },
+              { "type": "appliance", "subtype": "dishwasher", "w": 24, "d": 24, "from_start": 72 },
+              { "type": "base", "w": 36, "d": 24, "from_start": 96, "code": "B36" },
+              { "type": "base", "w": 24, "d": 24, "from_start": 132, "code": "B24" },
+              { "type": "filler", "w": 12, "from_start": 156 }
+            ]
+          }
+        ],
+        "uppers": [
+          { "wall": "A", "type": "upper", "w": 24, "d": 12, "h": 30, "from_start": 60, "name": "upper_above_B24" },
+          { "wall": "A", "type": "upper", "w": 18, "d": 12, "h": 30, "from_start": 114, "name": "upper_above_B18" },
+          { "wall": "A", "type": "upper", "w": 24, "d": 12, "h": 30, "from_start": 132, "name": "upper_above_B24_2" },
+          { "wall": "B", "type": "upper", "w": 36, "d": 12, "h": 30, "from_start": 96, "name": "upper_above_B36" },
+          { "wall": "B", "type": "upper", "w": 24, "d": 12, "h": 30, "from_start": 132, "name": "upper_above_B24_3" },
+          { "wall": "A", "type": "appliance", "subtype": "hood", "w": 30, "d": 20, "h": 24, "from_start": 84, "name": "chimney_hood_30" }
+        ]
+      }
+    },
+    {
+      "id": "E1-U-Shape-12x12",
+      "title": "U-Shape (12' x 12')",
+      "units": "in",
+      "room": {
+        "shape": "rect",
+        "width": 144,
+        "height": 144,
+        "ceiling": 96
+      },
+      "walls": [
+        {
+          "id": "A",
+          "start": [
+            0,
+            0
+          ],
+          "end": [
+            144,
+            0
+          ],
+          "length": 144,
+          "orientation": "N"
+        },
+        {
+          "id": "B",
+          "start": [
+            144,
+            0
+          ],
+          "end": [
+            144,
+            144
+          ],
+          "length": 144,
+          "orientation": "E"
+        },
+        {
+          "id": "C",
+          "start": [
+            144,
+            144
+          ],
+          "end": [
+            0,
+            144
+          ],
+          "length": 144,
+          "orientation": "S"
+        },
+        {
+          "id": "D",
+          "start": [
+            0,
+            144
+          ],
+          "end": [
+            0,
+            0
+          ],
+          "length": 144,
+          "orientation": "W"
+        }
+      ],
+      "runs": [
+        {
+          "wall": "A",
+          "sequence": [
+            {
+              "type": "appliance",
+              "subtype": "fridge",
+              "w": 36.0,
+              "d": 27,
+              "h": 70,
+              "from_start": 0.0
+            },
+            {
+              "type": "base",
+              "w": 24.0,
+              "d": 24,
+              "from_start": 36.0,
+              "code": "B24"
+            },
+            {
+              "type": "appliance",
+              "subtype": "range",
+              "w": 30.0,
+              "d": 27,
+              "h": 36,
+              "from_start": 60.0,
+              "hood": "chimney_30"
+            },
+            {
+              "type": "base",
+              "w": 18.0,
+              "d": 24,
+              "from_start": 90.0,
+              "code": "B18"
+            },
+            {
+              "type": "corner_L",
+              "consumes": 36.0,
+              "from_start": 108.0,
+              "id": "corner_AB"
+            }
+          ]
+        },
+        {
+          "wall": "B",
+          "sequence": [
+            {
+              "type": "corner_L",
+              "consumes": 36.0,
+              "from_start": 0.0,
+              "pair": "corner_AB"
+            },
+            {
+              "type": "sink_base",
+              "w":  33,
+              "d": 24,
+              "from_start": 36.0,
+              "sink": "double"
+            },
+            {
+              "type": "appliance",
+              "subtype": "dishwasher",
+              "w": 24.0,
+              "d": 24,
+              "from_start": 72.0
+            },
+            {
+              "type": "base",
+              "w": 12.0,
+              "d": 24,
+              "from_start": 96.0,
+              "code": "B12"
+            },
+            {
+              "type": "corner_L",
+              "consumes": 36.0,
+              "from_start": 108.0,
+              "id": "corner_BC"
+            }
+          ]
+        },
+        {
+          "wall": "C",
+          "sequence": [
+            {
+              "type": "corner_L",
+              "consumes": 36.0,
+              "from_start": 0.0,
+              "pair": "corner_BC"
+            },
+            {
+              "type": "base",
+              "w": 24.0,
+              "d": 24,
+              "from_start": 36.0,
+              "code": "B24"
+            },
+            {
+              "type": "base",
+              "w": 24.0,
+              "d": 24,
+              "from_start": 60.0,
+              "code": "B24"
+            },
+            {
+              "type": "base",
+              "w": 24.0,
+              "d": 24,
+              "from_start": 84.0,
+              "code": "B24"
+            },
+            {
+              "type": "corner_L",
+              "consumes": 36.0,
+              "from_start": 108.0,
+              "id": "corner_CD"
+            }
+          ]
+        }
+      ],
+      "islands": [],
+      "peninsulas": [],
+      "openings": [
+        {
+          "type": "window",
+          "wall": "B",
+          "from_start": 36.0,
+          "width": 42.0,
+          "sill_h": 42,
+          "head_h": 72,
+          "note": "over SB36"
+        }
+      ],
+      "uppers_rule": "Uppers on A/B/C except over sink window and above range (chimney hood).",
+      "notes": "Continuous counters; strong work triangle."
+    },
+    {
+      "id": "F1-L-Peninsula-Bar-13x11",
+      "title": "L + Peninsula (Breakfast Bar) 13' x 11'",
+      "units": "in",
+      "room": {
+        "shape": "rect",
+        "width": 156,
+        "height": 132,
+        "ceiling": 96
+      },
+      "walls": [
+        {
+          "id": "A",
+          "start": [
+            0,
+            0
+          ],
+          "end": [
+            156,
+            0
+          ],
+          "length": 156,
+          "orientation": "N"
+        },
+        {
+          "id": "B",
+          "start": [
+            156,
+            0
+          ],
+          "end": [
+            156,
+            132
+          ],
+          "length": 132,
+          "orientation": "E"
+        },
+        {
+          "id": "C",
+          "start": [
+            156,
+            132
+          ],
+          "end": [
+            0,
+            132
+          ],
+          "length": 156,
+          "orientation": "S"
+        },
+        {
+          "id": "D",
+          "start": [
+            0,
+            132
+          ],
+          "end": [
+            0,
+            0
+          ],
+          "length": 132,
+          "orientation": "W"
+        }
+      ],
+      "runs": [
+        {
+          "wall": "A",
+          "sequence": [
+            {
+              "type": "appliance",
+              "subtype": "fridge",
+              "w": 36.0,
+              "d": 27,
+              "h": 70,
+              "from_start": 0.0
+            },
+            {
+              "type": "base",
+              "w": 24.0,
+              "d": 24,
+              "from_start": 36.0,
+              "code": "B24"
+            },
+            {
+              "type": "appliance",
+              "subtype": "range",
+              "w": 30.0,
+              "d": 27,
+              "h": 36,
+              "from_start": 60.0,
+              "hood": "mwo_30"
+            },
+            {
+              "type": "base",
+              "w": 18.0,
+              "d": 24,
+              "from_start": 90.0,
+              "code": "B18"
+            },
+            {
+              "type": "corner_L",
+              "consumes": 36.0,
+              "from_start": 108.0,
+              "id": "corner_AB"
+            },
+            {
+              "type": "filler",
+              "w": 12.0,
+              "from_start": 144.0
+            }
+          ]
+        },
+        {
+          "wall": "B",
+          "sequence": [
+            {
+              "type": "corner_L",
+              "consumes": 36.0,
+              "from_start": 0.0,
+              "pair": "corner_AB"
+            },
+            {
+              "type": "sink_base",
+              "w": 33.0,
+              "d": 24,
+              "from_start": 36.0,
+              "sink": "single"
+            },
+            {
+              "type": "appliance",
+              "subtype": "dishwasher",
+              "w": 24.0,
+              "d": 24,
+              "from_start": 69.0
+            },
+            {
+              "type": "base",
+              "w": 24.0,
+              "d": 24,
+              "from_start": 93.0,
+              "code": "B24"
+            },
+            {
+              "type": "filler",
+              "w": 15.0,
+              "from_start": 117.0
+            }
+          ]
+        }
+      ],
+      "islands": [],
+      "peninsulas": [
+        {
+          "id": "pen1",
+          "anchor_wall": "B",
+          "from_start": 96,
+          "length": 84,
+          "depth": 24,
+          "direction": "W",
+          "seating": {
+            "side": "S",
+            "overhang": 12,
+            "stools": 3
+          },
+          "base_layout": [
+            {
+              "w": 24
+            },
+            {
+              "w": 24
+            },
+            {
+              "w": 36
+            }
+          ]
+        }
+      ],
+      "openings": [
+        {
+          "type": "window",
+          "wall": "B",
+          "from_start": 36.0,
+          "width": 36.0,
+          "sill_h": 42,
+          "head_h": 72,
+          "note": "over SB33"
+        }
+      ],
+      "uppers_rule": "Uppers on A/B except over sink window; MWO over range.",
+      "notes": "Peninsula seats 3 with 12\" bar overhang; maintain ~42\" aisle to perimeter."
+    },
+    {
+      "id": "G1-L-Plus-BigIsland-16x18",
+      "title": "L + Oversized Island (16' x 18')",
+      "units": "in",
+      "room": {
+        "shape": "rect",
+        "width": 192,
+        "height": 216,
+        "ceiling": 96
+      },
+      "walls": [
+        {
+          "id": "A",
+          "start": [
+            0,
+            0
+          ],
+          "end": [
+            192,
+            0
+          ],
+          "length": 192,
+          "orientation": "N"
+        },
+        {
+          "id": "B",
+          "start": [
+            192,
+            0
+          ],
+          "end": [
+            192,
+            216
+          ],
+          "length": 216,
+          "orientation": "E"
+        },
+        {
+          "id": "C",
+          "start": [
+            192,
+            216
+          ],
+          "end": [
+            0,
+            216
+          ],
+          "length": 192,
+          "orientation": "S"
+        },
+        {
+          "id": "D",
+          "start": [
+            0,
+            216
+          ],
+          "end": [
+            0,
+            0
+          ],
+          "length": 216,
+          "orientation": "W"
+        }
+      ],
+      "runs": [
+        {
+          "wall": "A",
+          "sequence": [
+            {
+              "type": "tall",
+              "subtype": "pantry",
+              "w": 24.0,
+              "d": 24,
+              "h": 90,
+              "from_start": 0.0,
+              "name": "pantry_24"
+            },
+            {
+              "type": "appliance",
+              "subtype": "fridge",
+              "w": 36.0,
+              "d": 27,
+              "h": 70,
+              "from_start": 24.0
+            },
+            {
+              "type": "base",
+              "w": 24.0,
+              "d": 24,
+              "from_start": 60.0,
+              "code": "B24"
+            },
+            {
+              "type": "appliance",
+              "subtype": "range",
+              "w": 36.0,
+              "d": 27,
+              "h": 36,
+              "from_start": 84.0,
+              "hood": "chimney_36"
+            },
+            {
+              "type": "base",
+              "w": 12.0,
+              "d": 24,
+              "from_start": 120.0,
+              "code": "B12"
+            },
+            {
+              "type": "base",
+              "w": 24.0,
+              "d": 24,
+              "from_start": 132.0,
+              "code": "B24"
+            },
+            {
+              "type": "corner_L",
+              "consumes": 36.0,
+              "from_start": 156.0,
+              "id": "corner_AB"
+            }
+          ]
+        },
+        {
+          "wall": "B",
+          "sequence": [
+            {
+              "type": "corner_L",
+              "consumes": 36.0,
+              "from_start": 0.0,
+              "pair": "corner_AB"
+            },
+            {
+              "type": "sink_base",
+              "w":  33,
+              "d": 24,
+              "from_start": 36.0,
+              "sink": "double"
+            },
+            {
+              "type": "appliance",
+              "subtype": "dishwasher",
+              "w": 24.0,
+              "d": 24,
+              "from_start": 72.0
+            },
+            {
+              "type": "base",
+              "w": 36.0,
+              "d": 24,
+              "from_start": 96.0,
+              "code": "B36"
+            },
+            {
+              "type": "base",
+              "w": 18.0,
+              "d": 24,
+              "from_start": 132.0,
+              "code": "trash_18"
+            },
+            {
+              "type": "base",
+              "w": 24.0,
+              "d": 24,
+              "from_start": 150.0,
+              "code": "B24"
+            },
+            {
+              "type": "tall",
+              "subtype": "pantry",
+              "w": 24.0,
+              "d": 24,
+              "h": 90,
+              "from_start": 174.0,
+              "name": "pantry_24_end"
+            },
+            {
+              "type": "filler",
+              "w": 18.0,
+              "from_start": 198.0
+            }
+          ]
+        }
+      ],
+      "islands": [
+        {
+          "id": "island_big",
+          "x": 42,
+          "y": 74,
+          "w": 108,
+          "h": 48,
+          "seating": {
+            "side": "S",
+            "overhang": 12,
+            "stools": 4
+          },
+          "base_layout": [
+            {
+              "w": 24
+            },
+            {
+              "w": 36
+            },
+            {
+              "w": 24
+            },
+            {
+              "w": 24
+            }
+          ]
+        }
+      ],
+      "peninsulas": [],
+      "openings": [
+        {
+          "type": "window",
+          "wall": "B",
+          "from_start": 36.0,
+          "width": 48.0,
+          "sill_h": 42,
+          "head_h": 72,
+          "note": "over SB36"
+        }
+      ],
+      "uppers_rule": "Full uppers; chimney hood; two tall pantries bookend the run.",
+      "notes": "Island 108x48 seats 4; ~48\" work aisles."
+    },
+    {
+      "id": "H1-OneWall-Compact-9ft",
+      "title": "One-Wall Compact (9')",
+      "units": "in",
+      "room": {
+        "shape": "rect",
+        "width": 108,
+        "height": 108,
+        "ceiling": 96
+      },
+      "walls": [
+        {
+          "id": "A",
+          "start": [
+            0,
+            0
+          ],
+          "end": [
+            108,
+            0
+          ],
+          "length": 108,
+          "orientation": "N"
+        },
+        {
+          "id": "B",
+          "start": [
+            108,
+            0
+          ],
+          "end": [
+            108,
+            108
+          ],
+          "length": 108,
+          "orientation": "E"
+        },
+        {
+          "id": "C",
+          "start": [
+            108,
+            108
+          ],
+          "end": [
+            0,
+            108
+          ],
+          "length": 108,
+          "orientation": "S"
+        },
+        {
+          "id": "D",
+          "start": [
+            0,
+            108
+          ],
+          "end": [
+            0,
+            0
+          ],
+          "length": 108,
+          "orientation": "W"
+        }
+      ],
+      "runs": [
+        {
+          "wall": "A",
+          "sequence": [
+            {
+              "type": "filler",
+              "w": 1.5,
+              "from_start": 0.0
+            },
+            {
+              "type": "appliance",
+              "subtype": "apt_fridge",
+              "w": 30.0,
+              "d": 27,
+              "h": 68,
+              "from_start": 1.5
+            },
+            {
+              "type": "sink_base",
+              "w":  33,
+              "d": 24,
+              "from_start": 31.5,
+              "sink": "single"
+            },
+            {
+              "type": "appliance",
+              "subtype": "dishwasher",
+              "w": 18.0,
+              "d": 24,
+              "from_start": 61.5
+            },
+            {
+              "type": "appliance",
+              "subtype": "apt_range",
+              "w": 24.0,
+              "d": 27,
+              "h": 36,
+              "from_start": 79.5,
+              "hood": "mwo_24"
+            },
+            {
+              "type": "filler",
+              "w": 4.5,
+              "from_start": 103.5
+            }
+          ]
+        }
+      ],
+      "islands": [],
+      "peninsulas": [],
+      "openings": [
+        {
+          "type": "window",
+          "wall": "A",
+          "from_start": 28.5,
+          "width": 30.0,
+          "sill_h": 40,
+          "head_h": 70,
+          "note": "small window over SB30"
+        }
+      ],
+      "uppers_rule": "Simple uppers except over window and tall/appliance terminations; MWO 24 over 24\" range.",
+      "notes": "Apartment-friendly modules; includes slim 18\" DW."
+    }
+  ]
+}

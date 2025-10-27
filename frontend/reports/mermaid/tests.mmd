@@ -1,0 +1,15 @@
+%%{init: {"flowchart": {"nodeSpacing": 20, "rankSpacing": 40}}}%%
+flowchart TB
+  tests["tests/"]
+  tests["tests/"] --> tests___mocks__["tests/__mocks__/"]
+  tests["tests/"] --> tests_components["tests/components/"]
+  tests_components["tests/components/"] --> tests_components_Blueprint3D["tests/components/Blueprint3D/"]
+  tests_components_Blueprint3D["tests/components/Blueprint3D/"] --> tests_components_Blueprint3D___mocks__["tests/components/Blueprint3D/__mocks__/"]
+  tests_components["tests/components/"] --> tests_components_editor["tests/components/editor/"]
+  tests_components_editor["tests/components/editor/"] --> tests_components_editor_Blueprint3D["tests/components/editor/Blueprint3D/"]
+  tests["tests/"] --> tests_config["tests/config/"]
+  tests["tests/"] --> tests_integration["tests/integration/"]
+  tests_integration["tests/integration/"] --> tests_integration_editor["tests/integration/editor/"]
+  tests["tests/"] --> tests_mocks["tests/mocks/"]
+  tests["tests/"] --> tests_unit["tests/unit/"]
+  tests["tests/"] --> tests_utils["tests/utils/"]
