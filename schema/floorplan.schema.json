@@ -1,0 +1,222 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "roomType": {
+      "type": "string",
+      "enum": ["kitchen", "bathroom"]
+    },
+    "style": {
+      "type": "string",
+      "enum": ["modern", "traditional", "transitional"]
+    },
+    "dimensions": {
+      "type": "object",
+      "properties": {
+        "width": { "type": "number", "minimum": 5, "maximum": 50 },
+        "depth": { "type": "number", "minimum": 5, "maximum": 50 }
+      },
+      "required": ["width", "depth"]
+    },
+    "floorMaterial": {
+      "type": "string"
+    },
+    "appliances": {
+      "type": "object",
+      "properties": {
+        "refrigerator": {
+          "type": "object",
+          "properties": {
+            "type": { "type": "string" },
+            "finish": { "type": "string" }
+          },
+          "required": ["type"]
+        },
+        "oven": {
+          "type": "object",
+          "properties": {
+            "type": { "type": "string" },
+            "finish": { "type": "string" }
+          },
+          "required": ["type"]
+        },
+        "sink": {
+          "type": "object",
+          "properties": {
+            "type": { "type": "string" },
+            "finish": { "type": "string" }
+          },
+          "required": ["type"]
+        }
+      }
+    },
+    "cabinets": {
+      "type": "object",
+      "properties": {
+        "style": { "type": "string" },
+        "color": { "type": "string" }
+      }
+    },
+    "countertops": {
+      "type": "object",
+      "properties": {
+        "material": { "type": "string" },
+        "color": { "type": "string" }
+      }
+    },
+    "layout": {
+      "type": "string",
+      "enum": ["L-shaped", "U-shaped", "straight", "galley"]
+    }
+  },
+  "required": ["roomType", "style", "dimensions"],
+  "if": {
+    "properties": { "roomType": { "const": "kitchen" } }
+  },
+  "then": {
+    "properties": {
+      "appliances": {
+        "required": ["refrigerator", "oven", "sink"]
+      }
+    }
+  },
+  "else": {
+    "if": {
+      "properties": { "roomType": { "const": "bathroom" } }
+    },
+    "then": {
+      "properties": {
+        "appliances": {
+          "properties": {
+            "toilet": {
+              "type": "object",
+              "properties": {
+                "type": { "type": "string" },
+                "finish": { "type": "string" }
+              },
+              "required": ["type"]
+            },
+            "bathtub": {
+              "type": "object",
+              "properties": {
+                "type": { "type": "string" },
+                "finish": { "type": "string" }
+              }
+            },
+            "shower": {
+              "type": "object",
+              "properties": {
+                "type": { "type": "string" },
+                "finish": { "type": "string" }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": { "style": { "const": "modern" } }
+      },
+      "then": {
+        "properties": {
+          "appliances": {
+            "properties": {
+              "refrigerator": {
+                "properties": {
+                  "finish": { "enum": ["panel-ready", "stainless-steel"] }
+                }
+              },
+              "oven": {
+                "properties": {
+                  "finish": { "enum": ["panel-ready", "stainless-steel"] }
+                }
+              }
+            }
+          },
+          "cabinets": {
+            "properties": {
+              "style": { "enum": ["flat-panel", "sleek"] },
+              "color": { "enum": ["white", "black", "gray"] }
+            }
+          },
+          "countertops": {
+            "properties": {
+              "material": { "enum": ["quartz", "concrete", "stainless-steel"] }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": { "style": { "const": "traditional" } }
+      },
+      "then": {
+        "properties": {
+          "appliances": {
+            "properties": {
+              "refrigerator": {
+                "properties": {
+                  "finish": { "enum": ["stainless-steel", "black", "white"] }
+                }
+              },
+              "oven": {
+                "properties": {
+                  "finish": { "enum": ["stainless-steel", "black", "white"] }
+                }
+              }
+            }
+          },
+          "cabinets": {
+            "properties": {
+              "style": { "enum": ["shaker", "raised-panel"] },
+              "color": { "enum": ["wood", "cream", "navy"] }
+            }
+          },
+          "countertops": {
+            "properties": {
+              "material": { "enum": ["granite", "marble", "butcher-block"] }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": { "style": { "const": "transitional" } }
+      },
+      "then": {
+        "properties": {
+          "appliances": {
+            "properties": {
+              "refrigerator": {
+                "properties": {
+                  "finish": { "enum": ["stainless-steel", "panel-ready", "black"] }
+                }
+              },
+              "oven": {
+                "properties": {
+                  "finish": { "enum": ["stainless-steel", "panel-ready", "black"] }
+                }
+              }
+            }
+          },
+          "cabinets": {
+            "properties": {
+              "style": { "enum": ["shaker", "flat-panel"] },
+              "color": { "enum": ["gray", "white", "wood"] }
+            }
+          },
+          "countertops": {
+            "properties": {
+              "material": { "enum": ["quartz", "granite", "marble"] }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

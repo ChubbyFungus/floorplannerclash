@@ -1,0 +1,123 @@
+{
+  "meta": { "version": "1.0.0", "units": "in", "notes": ["Hard=engine-enforced; Prefs=bias questions/defaults; SKUs external"] },
+
+  "globals": {
+    "ada": {
+      "clearFloorWxD": [30, 48],
+      "turningDia": 60,
+      "rationale": "Universal wheelchair access footprints",
+      "source": "ADA/ANSI summaries"
+    },
+    "defaults": {
+      "counterHeight": 36,
+      "upperClearanceAboveCounter": 18,
+      "toeKickH": 4,
+      "toeKickD": 3
+    }
+  },
+
+  "kitchen": {
+    "hard": {
+      "aisles": { "workOneCookMin": 42, "workTwoCookMin": 48, "walkwayMin": 36, "unit": "in",
+        "rationale": "Safe maneuvering for 1–2 cooks",
+        "source": "NKBA kitchen planning"
+      },
+      "triangle": { "legMin": 48, "legMax": 108, "sumMax": 312, "sumRecommendedMax": 312, "legacySumMax": 312,
+        "unit": "in",
+        "rationale": "Efficient proximity between sink, range, fridge",
+        "source": "NKBA work triangle"
+      },
+      "islandClear": { "min": 42, "ifDoorOpensIntoAislePrefer": 48, "unit": "in",
+        "rationale": "Door swing won’t block movement",
+        "source": "NKBA island guidance"
+      },
+      "seatingBehindClear": { "none": 32, "light": 36, "heavy": 43, "wheelchair": 60, "unit": "in",
+        "rationale": "Circulation behind stools by traffic level",
+        "source": "NKBA seating clearances"
+      },
+      "landings": {
+        "sink": { "left": 24, "right": 18, "unit": "in" },
+        "cooktop": { "left": 12, "right": 15, "behindIfSeating": 9, "unit": "in" },
+        "refrigerator": { "adjacent": 15, "orAcrossWithin": 48, "unit": "in" },
+        "wallOven": { "adjacentOrAbove": 15, "orAcrossWithin": 48, "unit": "in" },
+        "microwave": { "adjacent": 15, "unit": "in" },
+        "combineRule": { "largestPlus": 12, "unit": "in",
+          "rationale": "Shared counter can serve two adjacent work centers"
+        }
+      },
+      "dwNearSink": { "maxEdgeToEdge": 36, "sideClearAtRightAngle": 21, "unit": "in",
+        "rationale": "Ease of loading and door swing clearance"
+      }
+    },
+    "placement": {
+      "sink": { "preferBetweenOrOpposite": ["cooktop", "refrigerator"] },
+      "dishwasher": { "mustBeAdjacentTo": ["sink"], "hingeSideClearMin": 21, "unit": "in" },
+      "refrigerator": {
+        "doorSwingClearFrontMin": 30,
+        "cornerWallFillerRecommended": 3,
+        "unit": "in",
+        "rationale": "Prevent door/wall conflict; full bin access"
+      },
+      "range": {
+        "avoidUnderWindow": true,
+        "hoodClearMinAbove": 24,
+        "upperCabinetAboveCounterMin": 18,
+        "unit": "in"
+      }
+    }
+  },
+
+  "bath": {
+    "hard": {
+      "frontClear": { "lavToiletTubMin": 21, "showerEntryMin": 24, "recommendedFrontAll": 30, "unit": "in",
+        "rationale": "Approach and safe egress"
+      },
+      "toilet": { "centerlineToSideMin": 15, "clearWidthMin": 30, "unit": "in" },
+      "shower": { "interiorMin": [30, 30], "doorSwingFreeAreaMin": 24, "unit": "in" }
+    },
+    "placement": {
+      "vanity": { "counterHeight": 34, "unit": "in" }
+    }
+  },
+
+  "styles": {
+    "modern": {
+      "prefs": {
+        "cabinetDoorProfiles": ["slab","flat-panel"],
+        "pullTypes": ["integrated","edge","none"],
+        "applianceFinishes": ["panel_ready","stainless","black_stainless","matte_black"],
+        "panelReadyBias": true
+      },
+      "questionBias": [
+        "Panel-ready appliances?",
+        "Handleless or edge pulls?",
+        "Slab door profile?"
+      ]
+    },
+    "traditional": {
+      "prefs": {
+        "cabinetDoorProfiles": ["raised-panel","recessed-panel","shaker"],
+        "pullTypes": ["bar","knob"],
+        "applianceFinishes": ["stainless","black_stainless","matte_black","panel_ready"],
+        "crownMolding": true
+      },
+      "questionBias": [
+        "Crown molding at wall cabinets?",
+        "Furniture-style island panels?",
+        "Raised or recessed doors?"
+      ]
+    },
+    "transitional": {
+      "prefs": {
+        "cabinetDoorProfiles": ["shaker","recessed-panel","slab"],
+        "pullTypes": ["bar","knob"],
+        "applianceFinishes": ["panel_ready","stainless","black_stainless"]
+      },
+      "questionBias": [
+        "Shaker or recessed-panel?",
+        "Mixed metal finishes?",
+        "Panel-ready refrigerator?"
+      ]
+    }
+  }
+}

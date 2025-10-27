@@ -1,0 +1,29 @@
+[
+  {
+    "sku": "gen-fridge-36-french",
+    "category": "refrigerator",
+    "dims": { "w": 35.75, "h": 70, "d": 33.5 },
+    "clearances": { "sideMin": 0.125, "topMin": 1, "backMin": 1 },
+    "doorSwingDepth": 50,
+    "panelReady": true,
+    "rationale": "Representative 36in french-door footprint + ventilation",
+    "source": "Manufacturer design guides summarized"
+  },
+  {
+    "sku": "gen-dishwasher-24",
+    "category": "dishwasher",
+    "dims": { "w": 23.75, "h": 34.5, "d": 24 },
+    "clearances": { "sideMin": 0.125, "backMin": 0.5 },
+    "doorOpenDepth": 27,
+    "panelReady": true,
+    "source": "Common 24in DW cutout + door projection"
+  },
+  {
+    "sku": "gen-range-30-gas",
+    "category": "range",
+    "dims": { "w": 30, "h": 36, "d": 28 },
+    "clearances": { "sideMin": 6, "overheadToCabinetMin": 30, "backMin": 0 },
+    "fuel": "gas",
+    "source": "GE/Bosch install manuals summarized"
+  }
+]
