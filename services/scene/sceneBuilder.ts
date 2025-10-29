@@ -33,8 +33,8 @@ knownSkus.add('island-standard');
 const ajv = new Ajv({ allErrors: true, strict: false });
 const validateScene = ajv.compile(sceneSchema);
 
-type Wall = 'north' | 'south' | 'east' | 'west';
-type Style = 'modern' | 'traditional' | 'transitional';
+export type Wall = 'north' | 'south' | 'east' | 'west';
+export type Style = 'modern' | 'traditional' | 'transitional';
 
 interface DimensionsInches {
   width: number;
@@ -47,7 +47,7 @@ interface SceneBuilderOptions {
   requireAdaClearances?: boolean;
 }
 
-interface SceneObject {
+export interface SceneObject {
   sku: string;
   type: string;
   position: { x: number; y: number; z: number };
@@ -55,7 +55,7 @@ interface SceneObject {
   metadata?: Record<string, any>;
 }
 
-interface Scene {
+export interface Scene {
   room: {
     type: string;
     style: Style;
@@ -67,13 +67,14 @@ interface Scene {
   objects: SceneObject[];
 }
 
-interface SceneWarning {
+export interface SceneWarning {
   message: string;
   severity: 'low' | 'medium' | 'high';
   objectIds?: string[];
+  code?: string;
 }
 
-interface SceneBuildResult {
+export interface SceneBuildResult {
   scene: Scene;
   warnings: SceneWarning[];
   validation: { frameValid: boolean; sceneValid: boolean; errors: string[] };
@@ -91,8 +92,8 @@ export function buildScene(frame: Frame, options: SceneBuilderOptions = {}): Sce
   const heightIn = options.roomHeightIn ?? (frame.dimensions.height ? frame.dimensions.height * 12 : DEFAULT_ROOM_HEIGHT_IN);
   const dims: DimensionsInches = { width: widthIn, depth: depthIn, height: heightIn };
 
-  const roomType = frame.roomType as 'kitchen' | 'bathroom' || 'kitchen';
-  const style = frame.style as string || 'modern';
+  const roomType = (frame.roomType as 'kitchen' | 'bathroom') || 'kitchen';
+  const style = (frame.style as Style) || 'modern';
 
   const { objects, warnings: geometryWarnings } =
     roomType === 'bathroom'

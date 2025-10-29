@@ -29,10 +29,10 @@ export interface Question {
 
 export interface StyleTemplate {
   id: ID;
-  version: string;
-  roomType: 'kitchen' | 'bath';
-  questions: Question[];
-  defaults: Record<string, unknown>;
+  style: string;
+  properties: Record<string, unknown>;
+  constraints: Record<string, string[]>;
+  questions: Record<string, string>;
 }
 
 export interface RoomState {

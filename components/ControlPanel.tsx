@@ -178,7 +178,7 @@ const WorkTriangleAnalysis: React.FC<{
 
         const p1 = new THREE.Vector2(sink.position.x, sink.position.z);
         const p2 = new THREE.Vector2(refrigerator.position.x, refrigerator.position.z);
-        const p3 = new THREE.Vector2(cooktop.position.x, cooktop.position.y, cooktop.position.z);
+        const p3 = new THREE.Vector2(cooktop.position.x, cooktop.position.z);
         
         const distA = p1.distanceTo(p2);
         const distB = p2.distanceTo(p3);
@@ -382,10 +382,10 @@ const EditPanel: React.FC<{
 };
 
 const ControlPanel: React.FC<ControlPanelProps> = ({
-    description, setDescription, onGenerate, isGenerating, roomState, 
-    selectedObjectId, onDeselect, onAddNewObject, 
+    description, setDescription, onGenerate, isGenerating, roomState,
+    selectedObjectId, onDeselect, onAddNewObject,
     appState, conversation, onSendConversationMessage, onModifyFloorplan,
-    showWorkTriangle, onToggleWorkTriangle, onObjectChange
+    showWorkTriangle, onToggleWorkTriangle, onObjectChange, onExport
 }) => {
   
   const floorplan = useMemo(() => convertRoomStateToFloorplan(roomState), [roomState]);

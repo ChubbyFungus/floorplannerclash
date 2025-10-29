@@ -1,6 +1,6 @@
 import { parseUtterance } from '../nlp/parse';
 import { buildScene, SceneWarning } from '../services/scene/sceneBuilder';
-import { Frame } from '../src/state/frame';
+import { Frame } from '../types';
 
 describe('Deterministic parser', () => {
   it('extracts core frame fields from structured input', () => {
@@ -42,6 +42,7 @@ describe('Scene builder', () => {
     style: 'modern',
     dimensions: { width: 12, depth: 10 },
     layout: 'L-shaped',
+    floorMaterial: 'concrete',
     appliances: {
       refrigerator: { type: 'french-door', finish: 'stainless-steel' },
       oven: { type: 'slide-in-range', finish: 'stainless-steel' },

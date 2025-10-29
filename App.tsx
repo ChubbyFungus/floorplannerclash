@@ -5,7 +5,7 @@ import Loader from './components/Loader';
 import { getInitialDesign, askQuestion as askLlmQuestion } from './services/localLlmService';
 import { buildFloorplanFromState } from './services/floorplanBuilder';
 import { exportToGlb } from './services/exportService'; // New import
-import type { ConversationTurn, Choice, StyleTemplate, RoomState, Cmd, Item } from './types';
+import type { ConversationTurn, Choice, StyleTemplate, RoomState, Cmd, Item, FloorplanObject, ObjectType } from './types';
 import { Vector3 } from 'three';
 
 type AppState = 'INITIAL' | 'AWAITING_STYLE_CHOICE' | 'GATHERING_INFO' | 'GENERATING' | 'DISPLAYING';
@@ -43,6 +43,7 @@ const App: React.FC = () => {
   const [isStateLoaded, setIsStateLoaded] = useState(false);
   const [showWorkTriangle, setShowWorkTriangle] = useState<boolean>(true);
   const styleTemplateCache = useRef<Record<string, StyleTemplate>>({});
+  const initialDesignDetailsCache = useRef<any>({});
 
   useEffect(() => {
     fetch('./state.json')
@@ -168,7 +169,7 @@ const App: React.FC = () => {
       const template: StyleTemplate = await response.json();
       styleTemplateCache.current[template.id] = template;
 
-      const initialDesignDetails = styleTemplateCache.current.initialDesignDetails || {};
+      const initialDesignDetails = initialDesignDetailsCache.current || {};
       const newState = createInitialRoomState(template.id || template.style, { ...initialDesignDetails, ...initialParams });
       setRoomState(newState);
       setConversation(prev => [...prev, { role: 'user', text: `Let's go with a ${style} style.`}]);
@@ -199,17 +200,17 @@ const App: React.FC = () => {
       const initialDesign = await getInitialDesign(description); 
       const styleChoices = initialDesign.styleChoices.map(s => ({ name: s, description: `A ${s} style design.`, material: s }));
       
-      const modelResponse = { role: 'model', text: 'What style would you like for your design?', choices: styleChoices };
-      setConversation(prev => [...prev, modelResponse]);
+       const modelResponse: ConversationTurn = { role: 'model', text: 'What style would you like for your design?', choices: styleChoices };
+       setConversation(prev => [...prev, modelResponse]);
       setCurrentChoices(styleChoices);
 
-      // Store initial design details to be used when style is chosen
-      styleTemplateCache.current.initialDesignDetails = { 
-        roomType: initialDesign.roomType,
-        style: initialDesign.style,
-        primaryColor: initialDesign.primaryColor,
-        accentColor: initialDesign.accentColor,
-      };
+       // Store initial design details to be used when style is chosen
+       initialDesignDetailsCache.current = {
+         roomType: initialDesign.roomType,
+         style: initialDesign.style,
+         primaryColor: initialDesign.primaryColor,
+         accentColor: initialDesign.accentColor,
+       };
 
     } catch (e: any) {
         setError(e.message || "An unknown error occurred.");
