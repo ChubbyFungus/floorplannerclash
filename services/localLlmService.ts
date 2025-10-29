@@ -105,16 +105,83 @@ export async function getInitialDesign(description: string): Promise<{ style: st
   }
 }
 
-export async function askQuestion(question: string, choices: Choice[]): Promise<{ text: string; choices: Choice[] }> {
+export async function askQuestion(question: string, choices: Choice[], designBrief: string): Promise<{ text: string; choices: Choice[] }> {
     const messages = [
-      { role: 'user', content: `You are a design assistant. Ask the user the following question and present them with these choices. Question: "${question}"` }
+      { role: 'system', content: `You are a design assistant. Your goal is to gather information for a 3D floor plan. Here is a brief of the information you need to collect:\n\n${designBrief}` },
+      { role: 'user', content: `Ask the user the following question in a conversational way. Question: "${question}"` }
     ];
 
-    const data = await postChat<any>(CONVERSATION_LLM_URL, messages, CONVERSATION_LLM_MODEL, { choices });
+    const data = await postChat<any>(CONVERSATION_LLM_URL, messages, CONVERSATION_LLM_MODEL);
     const text = data.message.content || question;
 
-    return { text, choices: data.choices || choices };
+    return { text, choices };
 }
+
+export async function getRoomStateFromConversation(conversation: any[], designBrief: string): Promise<any> {
+  const roomStateInterface = `
+interface RoomState {
+  id: string;
+  version: string;
+  styleTemplateId: string;
+  params: Record<string, unknown>;
+  room: {
+    widthIn: number;
+    depthIn: number;
+    heightIn: number;
+    wallThicknessIn: number;
+    openings: Opening[];
+  };
+  items: Item[];
+  seed: string;
+}
+
+interface Opening {
+  id: string;
+  kind: 'door' | 'window';
+  x: number;
+  y: number;
+  wallId: string;
+  widthIn: number;
+  heightIn: number;
+  sillIn?: number;
+  swing?: 'L' | 'R' | 'SL' | 'SR';
+}
+
+interface Item {
+  id: string;
+  sku: string;
+  anchor: 'wall' | 'floor';
+  x: number;
+  y: number;
+  rotDeg: number;
+  meta: Record<string, unknown>;
+}
+`;
+
+  const messages = [
+    { role: 'system', content: `You are a helpful design assistant. Your task is to analyze the following conversation and the design brief and extract all the parameters for a room design. The output must be a JSON object that conforms to the RoomState interface. The RoomState interface is defined as:\n\n${roomStateInterface}\n\nHere is the design brief:\n\n${designBrief}\n\nIMPORTANT: The widthIn and depthIn properties in the room object must be in inches, and they must be greater than or equal to 60. The roomType must be one of ["kitchen", "bathroom"]. The style must be one of ["modern", "traditional", "transitional"]. Return only the JSON object.` },
+    ...conversation
+  ];
+
+  const data = await postChat<any>(REASONING_LLM_URL, messages, REASONING_LLM_MODEL);
+  try {
+    const rawContent = data.message.content;
+    const jsonStartIndex = rawContent.indexOf('{');
+    const jsonEndIndex = rawContent.lastIndexOf('}');
+
+    if (jsonStartIndex === -1 || jsonEndIndex === -1) {
+      throw new Error('No JSON object found in LLM response.');
+    }
+
+    const jsonString = rawContent.substring(jsonStartIndex, jsonEndIndex + 1);
+    const parsed = JSON.parse(jsonString);
+    return parsed;
+  } catch (e) {
+    console.error("Failed to parse RoomState from LLM", e);
+    throw new Error('Failed to parse RoomState from LLM');
+  }
+}
+
 
 
 export async function summarizeChoices(finalPrompt: string): Promise<string> {

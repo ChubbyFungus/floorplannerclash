@@ -2,10 +2,10 @@ import React, { useState, useCallback, useRef, useEffect } from 'react';
 import ControlPanel from './components/ControlPanel';
 import Canvas3D from './components/Canvas3D';
 import Loader from './components/Loader';
-import { getInitialDesign, askQuestion as askLlmQuestion } from './services/localLlmService';
+import { getInitialDesign, askQuestion as askLlmQuestion, getRoomStateFromConversation } from './services/localLlmService';
 import { buildFloorplanFromState } from './services/floorplanBuilder';
 import { exportToGlb } from './services/exportService'; // New import
-import type { ConversationTurn, Choice, StyleTemplate, RoomState, Cmd, Item, FloorplanObject, ObjectType } from './types';
+import type { ConversationTurn, Choice, StyleTemplate, RoomState, Cmd, Item, FloorplanObject, ObjectType, Floorplan } from './types';
 import { Vector3 } from 'three';
 
 type AppState = 'INITIAL' | 'AWAITING_STYLE_CHOICE' | 'GATHERING_INFO' | 'GENERATING' | 'DISPLAYING';
@@ -39,9 +39,19 @@ const App: React.FC = () => {
   const [currentChoices, setCurrentChoices] = useState<Choice[] | null>(null);
   
   const [roomState, setRoomState] = useState<RoomState | null>(null);
+  const [floorplan, setFloorplan] = useState<Floorplan | null>(null);
+
 
   const [isStateLoaded, setIsStateLoaded] = useState(false);
   const [showWorkTriangle, setShowWorkTriangle] = useState<boolean>(true);
+  const [designBrief, setDesignBrief] = useState<string>('');
+
+  useEffect(() => {
+    fetch('./rules/design_brief.md')
+      .then(response => response.text())
+      .then(text => setDesignBrief(text))
+      .catch(e => console.error("Could not load design brief.", e));
+  }, []);
   const styleTemplateCache = useRef<Record<string, StyleTemplate>>({});
   const initialDesignDetailsCache = useRef<any>({});
 
@@ -61,9 +71,9 @@ const App: React.FC = () => {
       setLoadingMessage('Building your 3D floor plan...');
       setIsLoading(true);
       try {
-        const legacyPrompt = `A ${styleTemplate.style} ${currentRoomState.params.roomType} with a ${currentRoomState.params.primaryColor} and ${currentRoomState.params.accentColor} color scheme.`;
-        const generatedPlan = await buildFloorplanFromState(currentRoomState);
-
+        const roomState = await getRoomStateFromConversation(conversation, designBrief);
+        const generatedPlan = await buildFloorplanFromState(roomState);
+        setFloorplan(generatedPlan);
         setAppState('DISPLAYING');
       } catch (e: any) {
         setError(e.message || "An unknown error occurred during final generation.");
@@ -79,19 +89,25 @@ const App: React.FC = () => {
     const choices = styleTemplate.constraints[nextParam as keyof typeof styleTemplate.constraints];
     const expectsFreeFormInput = !Array.isArray(choices);
 
-    const modelResponse = await askLlmQuestion(question, expectsFreeFormInput ? [] : choices.map(c => ({ name: c, description: c, material: c })));
-    
-    const newModelTurn: ConversationTurn = { 
-      role: 'model', 
-      text: modelResponse.text, 
-      choices: expectsFreeFormInput ? undefined : modelResponse.choices, 
-      expectsFreeFormInput 
+    const staticChoices = expectsFreeFormInput ? undefined : choices.map(c => ({ name: c, description: c, material: c }));
+
+    const { text: llmQuestion, choices: llmChoices } = await askLlmQuestion(question, staticChoices || [], designBrief);
+
+    const newModelTurn: ConversationTurn = {
+      role: 'model',
+      text: llmQuestion,
+      choices: llmChoices,
+      expectsFreeFormInput
     };
 
-    setConversation(prev => [...prev, newModelTurn]);
-    setCurrentChoices(modelResponse.choices || null);
-    setAppState('GATHERING_INFO');
-  }, []);
+        setConversation(prev => [...prev, newModelTurn]);
+
+    
+
+    
+
+        setAppState('GATHERING_INFO');
+  }, [conversation, designBrief, appState, roomState, setFloorplan]);
 
   const processCommand = useCallback((cmd: Cmd) => {
     if (!roomState && cmd.t !== 'set_param') return; // Only set_param can happen before roomState is initialized
@@ -202,7 +218,7 @@ const App: React.FC = () => {
       
        const modelResponse: ConversationTurn = { role: 'model', text: 'What style would you like for your design?', choices: styleChoices };
        setConversation(prev => [...prev, modelResponse]);
-      setCurrentChoices(styleChoices);
+    setCurrentChoices(styleChoices || null);
 
        // Store initial design details to be used when style is chosen
        initialDesignDetailsCache.current = {
