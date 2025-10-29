@@ -1,0 +1,8 @@
+description = "Refactor into a pure function. Output only the new code."
+prompt = """
+Refactor code at {{args}} into a pure function with explicit inputs/outputs and guards.
+Output ONLY the new code. No commentary, no fences.
+
+Input:
+!{cat "{{args}}" || true}
+"""

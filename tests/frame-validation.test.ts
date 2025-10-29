@@ -40,7 +40,7 @@ describe('Frame Validation Tests', () => {
 
       const result = frameManager.validateWithAjv();
       expect(result.valid).toBe(false);
-      expect(result.errors).toContain('finish: must be equal to one of the allowed values');
+      expect(result.errors).toContain('/appliances/refrigerator/finish: must be equal to one of the allowed values');
     });
   });
 
@@ -194,8 +194,8 @@ describe('Frame Validation Tests', () => {
       });
 
       const missing = frameManager.listMissingOrLowConfidence();
-      expect(missing).toContain('appliances.refrigerator.finish (panel-ready or stainless-steel)');
-      expect(missing).toContain('appliances.oven.finish (panel-ready or stainless-steel)');
+      expect(missing).toContain('appliances.refrigerator.finish');
+      expect(missing).toContain('appliances.oven.finish');
     });
   });
 

@@ -1,19 +1,44 @@
-
-
 import React, { Suspense, useRef, useCallback, useMemo, useState } from 'react';
 import * as THREE from 'three';
 import { Canvas, extend } from '@react-three/fiber';
 import { OrbitControls, TransformControls, Box, Plane, Cylinder, Html, Text, useTexture, Line } from '@react-three/drei';
-import type { Floorplan, FloorplanObject, Choice } from '../types';
+import type { Floorplan, FloorplanObject, Choice, RoomState, ObjectType } from '../types';
 import './models';
 
-// FIX: The `extend` call, which caused a type error, was removed.
-// Intrinsic JSX elements for react-three-fiber are now correctly defined via module augmentation in the imported `models.ts` file.
+// Temporary conversion function until all components use RoomState directly
+const convertRoomStateToFloorplan = (roomState: RoomState | null): Floorplan | null => {
+  if (!roomState) return null;
 
-type AppState = 'INITIAL' | 'CONVERSATION' | 'CHOICE_PREVIEW' | 'GENERATING' | 'DISPLAYING';
+  const inchToFeet = (val: number) => val / 12;
+
+  const floorplanObjects: FloorplanObject[] = roomState.items.map(item => ({
+    id: item.id,
+    type: item.sku as ObjectType, // This is a simplification
+    position: new THREE.Vector3(inchToFeet(item.x), inchToFeet(item.y), 0), // Z is missing
+    rotation: new THREE.Vector3(0, item.rotDeg * (Math.PI / 180), 0),
+    dimensions: { width: 3, height: 3, depth: 2 }, // Placeholder
+    color: '#ffffff',
+    material: 'white_laminate',
+  }));
+
+  return {
+    room: {
+      type: roomState.params.roomType as 'kitchen' | 'bathroom' || 'kitchen',
+      dimensions: {
+        width: inchToFeet(roomState.room.widthIn),
+        depth: inchToFeet(roomState.room.depthIn),
+      },
+      floorMaterial: 'light_wood_plank',
+    },
+    objects: floorplanObjects,
+  };
+};
+
+
+type AppState = 'INITIAL' | 'AWAITING_STYLE_CHOICE' | 'GATHERING_INFO' | 'GENERATING' | 'DISPLAYING';
 
 interface Canvas3DProps {
-  floorplan: Floorplan | null;
+  roomState: RoomState | null;
   selectedObjectId: string | null;
   onSelectObject: (id: string | null) => void;
   onObjectChange: (updatedObject: FloorplanObject) => void;
@@ -1011,7 +1036,7 @@ const KitchenWorkTriangle: React.FC<{ floorplan: Floorplan }> = ({ floorplan }) 
     );
 };
 
-const FloorplanScene: React.FC<Omit<Canvas3DProps, 'appState' | 'choices' | 'onChoiceMade'>> = ({ floorplan, selectedObjectId, onSelectObject, onObjectChange, showWorkTriangle }) => {
+const FloorplanScene: React.FC<Omit<Canvas3DProps, 'appState' | 'choices' | 'onChoiceMade' | 'roomState'> & { floorplan: Floorplan | null }> = ({ floorplan, selectedObjectId, onSelectObject, onObjectChange, showWorkTriangle }) => {
   if (!floorplan) return null;
 
   const roomWidth = floorplan.room.dimensions.width;
@@ -1308,23 +1333,31 @@ const ChoiceObject: React.FC<{ choice: Choice; onSelect: () => void }> = ({ choi
 }
 
 const Canvas3D: React.FC<Canvas3DProps> = (props) => {
+  const floorplan = useMemo(() => convertRoomStateToFloorplan(props.roomState), [props.roomState]);
+
   return (
     <div className="w-full h-full bg-gray-800 rounded-lg shadow-inner" onClick={() => props.onSelectObject(null)}>
       <Canvas shadows camera={{ position: [0, 5, 20], fov: 50 }}>
         <Suspense fallback={null}>
-          {props.appState === 'CHOICE_PREVIEW' && props.choices ? (
+          {(props.appState === 'AWAITING_STYLE_CHOICE' || props.appState === 'GATHERING_INFO') && props.choices ? (
             <ChoicePreviewScene choices={props.choices} onChoiceMade={props.onChoiceMade} isGeneratingImages={props.isGeneratingImages} />
           ) : (
-            <FloorplanScene {...props} />
+            <FloorplanScene 
+              floorplan={floorplan}
+              selectedObjectId={props.selectedObjectId}
+              onSelectObject={props.onSelectObject}
+              onObjectChange={props.onObjectChange}
+              showWorkTriangle={props.showWorkTriangle}
+            />
           )}
         </Suspense>
       </Canvas>
-      {props.appState === 'INITIAL' && !props.floorplan && (
+      {props.appState === 'INITIAL' && !floorplan && (
         <div className="absolute inset-0 flex justify-center items-center pointer-events-none">
             <p className="text-gray-400 text-2xl font-semibold">Describe your room to get started</p>
         </div>
       )}
-       {props.appState === 'CHOICE_PREVIEW' && (
+       {(props.appState === 'AWAITING_STYLE_CHOICE' || props.appState === 'GATHERING_INFO') && (
         <div className="absolute top-5 left-1/2 -translate-x-1/2 flex justify-center items-center pointer-events-none">
             <p className="text-gray-200 text-lg font-semibold bg-gray-900 bg-opacity-50 px-4 py-2 rounded-md">Select an option to continue</p>
         </div>

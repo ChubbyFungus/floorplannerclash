@@ -1,0 +1,76 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": ["room", "objects"],
+  "properties": {
+    "room": {
+      "type": "object",
+      "required": ["type", "style", "width", "depth", "height", "units"],
+      "properties": {
+        "type": { "type": "string", "enum": ["kitchen", "bathroom"] },
+        "style": { "type": "string", "enum": ["modern", "traditional", "transitional"] },
+        "width": { "type": "number", "minimum": 60 },
+        "depth": { "type": "number", "minimum": 60 },
+        "height": { "type": "number", "minimum": 84 },
+        "units": { "type": "string", "enum": ["in"] }
+      },
+      "additionalProperties": false
+    },
+    "objects": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["sku", "type", "position"],
+        "properties": {
+          "sku": { "type": "string" },
+          "type": { "type": "string" },
+          "rotation": { "type": "number" },
+          "dimensions": {
+            "type": "object",
+            "properties": {
+              "width": { "type": "number" },
+              "height": { "type": "number" },
+              "depth": { "type": "number" }
+            },
+            "additionalProperties": false
+          },
+          "position": {
+            "type": "object",
+            "required": ["x", "y", "z"],
+            "properties": {
+              "x": { "type": "number" },
+              "y": { "type": "number" },
+              "z": { "type": "number" }
+            },
+            "additionalProperties": false
+          },
+          "metadata": {
+            "type": "object",
+            "properties": {
+              "key": { "type": "string" },
+              "label": { "type": "string" },
+              "finish": { "type": "string" },
+              "wall": { "type": "string", "enum": ["north", "south", "east", "west"] },
+              "adjacent": {
+                "type": "array",
+                "items": { "type": "string" }
+              },
+              "notes": {
+                "type": "array",
+                "items": { "type": "string" }
+              },
+              "spanInches": { "type": "number" },
+              "cabinetColor": { "type": "string" },
+              "cabinetStyle": { "type": "string" },
+              "countertopMaterial": { "type": "string" },
+              "mount": { "type": "string", "enum": ["base", "wall"] }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

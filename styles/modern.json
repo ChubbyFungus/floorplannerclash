@@ -1,0 +1,28 @@
+{
+  "id": "Modern",
+  "style": "Modern",
+  "properties": {
+    "roomType": null,
+    "primaryColor": null,
+    "accentColor": null,
+    "cabinetFinish": null,
+    "countertopMaterial": null,
+    "flooringType": null,
+    "lightingStyle": null
+  },
+  "constraints": {
+    "cabinetFinish": ["Flat-panel", "Slab door", "Glossy white", "Dark wood"],
+    "countertopMaterial": ["Quartz", "Polished Concrete", "Stainless Steel", "White Marble"],
+    "flooringType": ["Polished Concrete", "Large-format Tile", "Hardwood"],
+    "lightingStyle": ["Recessed", "Track lighting", "Pendant lights with clean lines"]
+  },
+  "questions": {
+    "roomType": "What type of room are you designing? (e.g., Kitchen, Bathroom)",
+    "primaryColor": "What should be the primary color for the room?",
+    "accentColor": "What should be the accent color?",
+    "cabinetFinish": "What kind of finish should the cabinets have?",
+    "countertopMaterial": "What material would you like for the countertops?",
+    "flooringType": "What type of flooring do you prefer?",
+    "lightingStyle": "What style of lighting should we use?"
+  }
+}

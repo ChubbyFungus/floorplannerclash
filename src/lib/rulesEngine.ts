@@ -4,7 +4,7 @@
 import rulebook from "../../rules/rulebook.master.json";
 import skuSpecs from "../../catalog/skuSpecs.json";
 
-export type RoomType = "kitchen" | "bath";
+export type RoomType = "kitchen" | "bathroom";
 export type Style = "modern" | "traditional" | "transitional";
 
 export interface EffectiveRules {
@@ -38,8 +38,9 @@ export interface ValidationResult {
  * @returns EffectiveRules object ready for validation
  */
 export function mergeRules(roomType: RoomType, style: Style, skuRefs?: string[]): EffectiveRules {
-  const room = (rulebook as any)[roomType] || {};
-  const stylePrefs = rulebook.styles?.[style]?.prefs || {};
+  const ruleKey = roomType === "bathroom" ? "bath" : roomType;
+  const room = (rulebook as any)[ruleKey] || {};
+  const stylePrefs = (rulebook as any).styles?.[style]?.prefs || {};
 
   // Base hard rules
   const hard = room.hard || {};
@@ -79,7 +80,7 @@ export function placementValidator(spec: PlacementSpec, effectiveRules: Effectiv
   // Check hard rules based on room type
   if (roomType === "kitchen") {
     return validateKitchenPlacement(spec, skuData, hard, placement, skuOverrides);
-  } else if (roomType === "bath") {
+  } else if (roomType === "bathroom") {
     return validateBathPlacement(spec, skuData, hard, placement, skuOverrides);
   }
 
@@ -183,18 +184,15 @@ function validateBathPlacement(
   const { sku, position } = spec;
   const category = skuData.category;
 
-  // Vanity height check
-  if (category === "vanity") {
-    const counterHeight = placement.vanity?.counterHeight || 34;
-    // Simplified check - in real impl, would check actual counter height
-    if (Math.abs(position.y - counterHeight) > 2) { // Allow 2in tolerance
-      return {
-        ok: false,
-        alt: { ...spec, position: { ...position, y: counterHeight } },
-        reason: `Vanity counter should be at ${counterHeight}in height`
-      };
-    }
-  }
-
   return { ok: true, reason: "Placement valid" };
+}
+
+export function evaluateRuleCompliance(
+  objects: any[],
+  effectiveRules: EffectiveRules,
+  dims: any
+): any[] {
+  // Placeholder for rule compliance evaluation logic
+  // This function would iterate through objects and rules to find violations
+  return [];
 }

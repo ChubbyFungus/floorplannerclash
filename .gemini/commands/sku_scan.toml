@@ -1,0 +1,32 @@
+description = "Scan GLB/GLTF and TSX cabinet sources for families/widths and flag issues."
+prompt = """
+Scan GLB/GLTF files and TSX cabinet components. Infer families/widths. Flag likely scale/pivot issues. Plain text only.
+
+GLB files:
+!{ls -1 assets/**/*.glb assets/**/*.gltf 2>/dev/null || ls -1 assets/*.glb assets/*.gltf 2>/dev/null || true}
+
+TSX components (common paths):
+!{ls -1 src/**/*Cabinet*.tsx src/**/cabinets/**/*.tsx 2>/dev/null || true}
+
+TSX width extraction (ripgrep preferred; falls back to grep):
+!{rg -n --no-heading "(WIDTHS\\s*=\\s*\\[[^\\]]+\\])|(widthOptions\\s*:\\s*\\[[^\\]]+\\])|\\bW(\\d{2})\\b" src 2>/dev/null || grep -RInE "(WIDTHS\\s*=\\s*\\[[^\\]]+\\])|(widthOptions\\s*:\\s*\\[[^\\]]+\\])|\\bW(\\d{2})\\b" src 2>/dev/null || true}
+
+TSX pivot/center hints:
+!{rg -n --no-heading "(geometry\\.center\\(|\\.position\\.set\\(|pivot|origin)" src 2>/dev/null || grep -RInE "(geometry\\.center\\(|\\.position\\.set\\(|pivot|origin)" src 2>/dev/null || true}
+
+Output format EXACTLY:
+FAMILIES:
+<family>: [w1,w2,...] (source=glb|tsx)
+
+TSX_WIDTHS:
+<component.tsx>: [w1,w2,...]
+
+PIVOT_HINTS:
+<file.tsx>: center|position.set|none
+
+ANOMALIES:
+<file>: <issue>
+- missing width variants
+- inconsistent family naming
+- suspected scale/origin/pivot problem
+"""

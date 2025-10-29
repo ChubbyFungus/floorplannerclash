@@ -1,0 +1,7 @@
+description = "Generate minimal Vitest tests for a file. Output only test code."
+prompt = """
+Generate three table-driven Vitest tests for {{args}} targeting core behavior. Output ONLY the .test.ts code.
+
+Input:
+!{cat "{{args}}" || true}
+"""

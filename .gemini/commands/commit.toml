@@ -1,0 +1,13 @@
+description = "Generate a Conventional Commit from staged diff. Output plain text only."
+prompt = """
+Create a Conventional Commit message from the staged diff. Output plain text only.
+
+Diff:
+!{git diff --staged || true}
+
+Output format EXACTLY:
+type(scope): summary
+Blank line.
+body lines...
+Footer lines if any, including BREAKING CHANGE: ...
+"""

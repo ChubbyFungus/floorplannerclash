@@ -1,0 +1,12 @@
+description = "Show changed files in working tree."
+prompt = """
+List changed files. No markdown.
+
+Changes:
+!{git status --porcelain 2>&1 || true}
+
+Output format EXACTLY:
+CHANGED:
+<status> <path>
+(one per line; show nothing after CHANGED: if clean)
+"""

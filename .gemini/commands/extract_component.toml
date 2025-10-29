@@ -1,0 +1,8 @@
+description = "Extract a reusable TSX component. Output only TSX code."
+prompt = """
+Extract a reusable TSX component from {{args}}. Props must be typed. Avoid hidden state.
+Output ONLY the component code. No commentary.
+
+Input:
+!{cat "{{args}}" || true}
+"""

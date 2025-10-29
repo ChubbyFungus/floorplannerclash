@@ -1,0 +1,16 @@
+description = "Run Jest/Vitest tests and summarize failures."
+prompt = """
+Execute project tests and summarize results in compact text. No markdown.
+
+Test run output:
+!{npm test --silent -- --reporter dot 2>&1 || true}
+
+Output format EXACTLY:
+RESULT: <passed>/<total> passed; <failed> failed
+FAILURES:
+<file>:<line> <message>
+<file>:<line> <message>
+(omit FAILURES section if none)
+NEXT:
+npm test -- <pattern-for-fast-retry>
+"""

@@ -2,16 +2,33 @@ import React, { useState, useCallback, useRef, useEffect } from 'react';
 import ControlPanel from './components/ControlPanel';
 import Canvas3D from './components/Canvas3D';
 import Loader from './components/Loader';
-import { generateFloorplan, startDesignChat, sendMessageInChat, generateStyleImage, modifyFloorplan, summarizeChoices } from './services/geminiService';
-import type { Floorplan, FloorplanObject, ObjectType, ConversationTurn, Choice } from './types';
-import type { Chat } from '@google/genai';
+import { getInitialDesign, askQuestion as askLlmQuestion } from './services/localLlmService';
+import { buildFloorplanFromState } from './services/floorplanBuilder';
+import { exportToGlb } from './services/exportService'; // New import
+import type { ConversationTurn, Choice, StyleTemplate, RoomState, Cmd, Item } from './types';
 import { Vector3 } from 'three';
 
-type AppState = 'INITIAL' | 'CONVERSATION' | 'CHOICE_PREVIEW' | 'GENERATING' | 'DISPLAYING';
+type AppState = 'INITIAL' | 'AWAITING_STYLE_CHOICE' | 'GATHERING_INFO' | 'GENERATING' | 'DISPLAYING';
+
+// Helper to create a default state
+const createInitialRoomState = (styleTemplateId: string, params: Record<string, unknown> = {}): RoomState => ({
+  id: `room-${Date.now()}`,
+  version: '1.0',
+  styleTemplateId,
+  params,
+  room: {
+    widthIn: 144,
+    depthIn: 168,
+    heightIn: 96,
+    wallThicknessIn: 4.5,
+    openings: [],
+  },
+  items: [],
+  seed: `seed-${Date.now()}`,
+});
 
 const App: React.FC = () => {
-  const [description, setDescription] = useState<string>('');
-  const [floorplan, setFloorplan] = useState<Floorplan | null>(null);
+  const [description, setDescription] = useState<string>('A modern kitchen with an island');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [loadingMessage, setLoadingMessage] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
@@ -20,147 +37,180 @@ const App: React.FC = () => {
   const [appState, setAppState] = useState<AppState>('INITIAL');
   const [conversation, setConversation] = useState<ConversationTurn[]>([]);
   const [currentChoices, setCurrentChoices] = useState<Choice[] | null>(null);
-  const [isGeneratingImages, setIsGeneratingImages] = useState<boolean>(false);
-  const designChatRef = useRef<Chat | null>(null);
-  const [designSummary, setDesignSummary] = useState<string | null>(null);
-  const finalPromptRef = useRef<string | null>(null);
+  
+  const [roomState, setRoomState] = useState<RoomState | null>(null);
+
   const [isStateLoaded, setIsStateLoaded] = useState(false);
   const [showWorkTriangle, setShowWorkTriangle] = useState<boolean>(true);
+  const styleTemplateCache = useRef<Record<string, StyleTemplate>>({});
 
   useEffect(() => {
     fetch('./state.json')
-      .then(response => {
-        if (!response.ok) {
-          throw new Error(`Could not load state.json: ${response.statusText}`);
-        }
-        return response.json();
-      })
-      .then(initialState => {
-        setDescription(initialState.description || '');
-        // The default state.json has floorplan: null, so no special object hydration is needed.
-        // If a user were to add a floorplan with objects to state.json, those objects'
-        // position/rotation properties would need to be converted to Vector3 instances here.
-        setFloorplan(initialState.floorplan || null);
-        setAppState(initialState.appState || 'INITIAL');
-        setConversation(initialState.conversation || []);
-      })
-      .catch(e => {
-        console.error("Failed to load or parse state.json:", e);
-        setError("Could not load initial state. Starting with a blank slate.");
-      })
-      .finally(() => {
-        setIsStateLoaded(true);
-      });
-  }, []);
-  
-  const handleToggleWorkTriangle = useCallback(() => {
-    setShowWorkTriangle(prev => !prev);
+      .then(response => response.json())
+      .then(initialState => setDescription(initialState.description || ''))
+      .catch(e => console.error("Could not load initial description.", e))
+      .finally(() => setIsStateLoaded(true));
   }, []);
 
-  const handleFinalPrompt = useCallback(async (text: string) => {
-    const finalPrompt = text.replace('FINAL_PROMPT:', '').trim();
-    finalPromptRef.current = finalPrompt;
+  const askNextQuestion = useCallback(async (currentRoomState: RoomState, styleTemplate: StyleTemplate) => {
+    const nextParam = Object.keys(styleTemplate.properties).find(key => !(key in currentRoomState.params));
 
-    setAppState('GENERATING');
-    setLoadingMessage('Finalizing design choices...');
-    setIsLoading(true);
-    setDesignSummary(null);
+    if (!nextParam) {
+      setAppState('GENERATING');
+      setLoadingMessage('Building your 3D floor plan...');
+      setIsLoading(true);
+      try {
+        const legacyPrompt = `A ${styleTemplate.style} ${currentRoomState.params.roomType} with a ${currentRoomState.params.primaryColor} and ${currentRoomState.params.accentColor} color scheme.`;
+        const generatedPlan = await buildFloorplanFromState(currentRoomState);
 
-    try {
-        const summary = await summarizeChoices(finalPrompt);
-        setDesignSummary(summary);
-        
-        setLoadingMessage('Building your 3D floor plan...');
-        const generatedPlan = await generateFloorplan(finalPrompt);
-        setFloorplan(generatedPlan);
         setAppState('DISPLAYING');
-    } catch (e: any) {
+      } catch (e: any) {
         setError(e.message || "An unknown error occurred during final generation.");
-        setAppState('CONVERSATION'); 
-    } finally {
+        setAppState('GATHERING_INFO');
+      } finally {
         setIsLoading(false);
-        setDesignSummary(null);
-        finalPromptRef.current = null;
+        setLoadingMessage('');
+      }
+      return;
     }
+
+    const question = styleTemplate.questions[nextParam as keyof typeof styleTemplate.questions];
+    const choices = styleTemplate.constraints[nextParam as keyof typeof styleTemplate.constraints];
+    const expectsFreeFormInput = !Array.isArray(choices);
+
+    const modelResponse = await askLlmQuestion(question, expectsFreeFormInput ? [] : choices.map(c => ({ name: c, description: c, material: c })));
+    
+    const newModelTurn: ConversationTurn = { 
+      role: 'model', 
+      text: modelResponse.text, 
+      choices: expectsFreeFormInput ? undefined : modelResponse.choices, 
+      expectsFreeFormInput 
+    };
+
+    setConversation(prev => [...prev, newModelTurn]);
+    setCurrentChoices(modelResponse.choices || null);
+    setAppState('GATHERING_INFO');
   }, []);
-  
-  const processModelResponse = useCallback(async (responseText: string) => {
-    let text = responseText;
-    let choices: Choice[] | undefined = undefined;
 
-    const choiceMarker = 'CHOICES:';
-    if (responseText.includes(choiceMarker)) {
-        const choiceMarkerIndex = responseText.indexOf(choiceMarker);
-        text = responseText.substring(0, choiceMarkerIndex).trim();
-        const potentialJsonString = responseText.substring(choiceMarkerIndex + choiceMarker.length);
+  const processCommand = useCallback((cmd: Cmd) => {
+    if (!roomState && cmd.t !== 'set_param') return; // Only set_param can happen before roomState is initialized
 
-        const jsonStartIndex = potentialJsonString.indexOf('[');
-        const jsonEndIndex = potentialJsonString.lastIndexOf(']');
+    let newRoomState: RoomState = roomState!;
 
-        if (jsonStartIndex !== -1 && jsonEndIndex > jsonStartIndex) {
-            const jsonString = potentialJsonString.substring(jsonStartIndex, jsonEndIndex + 1);
-            try {
-                choices = JSON.parse(jsonString);
-            } catch (e) {
-                console.error("Failed to parse choices JSON", e, "Raw string:", jsonString);
-                text = responseText; // Revert to full text if JSON is bad
+    switch (cmd.t) {
+      case 'set_param':
+        newRoomState = {
+            ...roomState!,
+            params: {
+                ...roomState!.params,
+                [cmd.k]: cmd.v,
             }
-        }
+        };
+        break;
+      case 'add_item':
+        const newItem: Item = {
+          id: `${cmd.sku}-${Date.now()}`,
+          sku: cmd.sku,
+          anchor: 'floor',
+          x: cmd.at.x,
+          y: cmd.at.y,
+          rotDeg: cmd.rotDeg || 0,
+          meta: {},
+        };
+        newRoomState = { ...roomState!, items: [...roomState!.items, newItem] };
+        break;
+      case 'move_item':
+        newRoomState = {
+          ...roomState!,
+          items: roomState!.items.map(item => 
+            item.id === cmd.id ? { ...item, x: cmd.to.x, y: cmd.to.y } : item
+          ),
+        };
+        break;
+      // Other commands like rotate, delete would go here
+    }
+    
+    setRoomState(newRoomState);
+
+    // Continue Q&A loop only if we are in that phase
+    if (appState === 'GATHERING_INFO' && cmd.t === 'set_param') {
+      const styleTemplate = styleTemplateCache.current[newRoomState.styleTemplateId];
+      if (styleTemplate) {
+          askNextQuestion(newRoomState, styleTemplate);
+      }
+    }
+  }, [roomState, appState, askNextQuestion]);
+
+  const handleResponse = useCallback(async (response: string) => {
+    if (appState === 'AWAITING_STYLE_CHOICE') {
+      // When in AWAITING_STYLE_CHOICE, the response is the chosen style name
+      await handleStyleChoice(response, {}); // Pass an empty object for initialParams
+      return;
     }
 
-    const newModelMessage: ConversationTurn = { role: 'model', text };
-    setConversation(prev => [...prev, newModelMessage]);
+    if (!roomState || appState !== 'GATHERING_INFO') return;
 
-    if (choices && choices.every(c => c.material.startsWith('style_'))) {
-        setAppState('CHOICE_PREVIEW');
-        setIsGeneratingImages(true);
-        setCurrentChoices(choices);
+    const styleTemplate = styleTemplateCache.current[roomState.styleTemplateId];
+    if (!styleTemplate) return setError('Style template not found!');
 
-        try {
-            const imagePromises = choices.map(choice => {
-                const styleName = choice.material.replace('style_', '');
-                return generateStyleImage(description, styleName);
-            });
-            const imageUrls = await Promise.all(imagePromises);
-            const choicesWithImages = choices.map((choice, index) => ({
-                ...choice,
-                imageUrl: imageUrls[index],
-            }));
-            setCurrentChoices(choicesWithImages);
-        } catch (e) {
-            console.error("Failed to generate style images", e);
-            setError("Sorry, I couldn't generate the inspirational images. Please choose based on the text.");
-            setCurrentChoices(choices); // Show choices without images as a fallback
-        } finally {
-            setIsGeneratingImages(false);
-        }
-    } else if (choices) {
-        setCurrentChoices(choices);
-        setAppState('CHOICE_PREVIEW');
+    const nextParam = Object.keys(styleTemplate.properties).find(key => !(key in roomState.params));
+    if (nextParam) {
+      const userTurn: ConversationTurn = { role: 'user', text: response };
+      setConversation(prev => [...prev, userTurn]);
+      processCommand({ t: 'set_param', k: nextParam, v: response });
     }
+  }, [appState, roomState, processCommand]);
 
-    if (responseText.startsWith('FINAL_PROMPT:')) {
-        await handleFinalPrompt(responseText);
+  const handleStyleChoice = useCallback(async (style: string, initialParams: any) => {
+    try {
+      const response = await fetch(`./styles/${style.toLowerCase()}.json`);
+      if (!response.ok) throw new Error(`Could not load style: ${style}`);
+      const template: StyleTemplate = await response.json();
+      styleTemplateCache.current[template.id] = template;
+
+      const initialDesignDetails = styleTemplateCache.current.initialDesignDetails || {};
+      const newState = createInitialRoomState(template.id || template.style, { ...initialDesignDetails, ...initialParams });
+      setRoomState(newState);
+      setConversation(prev => [...prev, { role: 'user', text: `Let's go with a ${style} style.`}]);
+      await askNextQuestion(newState, template);
+
+    } catch (e: any) {
+      setError(e.message);
+      setAppState('INITIAL');
     }
-}, [handleFinalPrompt, description]);
+  }, [askNextQuestion]);
 
   const handleStartGeneration = useCallback(async () => {
     if (!description.trim()) return;
 
-    setFloorplan(null);
+
+
     setSelectedObjectId(null);
     setError(null);
+    setCurrentChoices(null);
     
     const initialUserMessage: ConversationTurn = { role: 'user', text: description };
     setConversation([initialUserMessage]);
-    setAppState('CONVERSATION');
+    setAppState('AWAITING_STYLE_CHOICE');
     setIsLoading(true);
-    setLoadingMessage('Thinking...');
+    setLoadingMessage('Analyzing your request...');
 
     try {
-        designChatRef.current = startDesignChat();
-        const responseText = await sendMessageInChat(designChatRef.current, description);
-        await processModelResponse(responseText);
+      const initialDesign = await getInitialDesign(description); 
+      const styleChoices = initialDesign.styleChoices.map(s => ({ name: s, description: `A ${s} style design.`, material: s }));
+      
+      const modelResponse = { role: 'model', text: 'What style would you like for your design?', choices: styleChoices };
+      setConversation(prev => [...prev, modelResponse]);
+      setCurrentChoices(styleChoices);
+
+      // Store initial design details to be used when style is chosen
+      styleTemplateCache.current.initialDesignDetails = { 
+        roomType: initialDesign.roomType,
+        style: initialDesign.style,
+        primaryColor: initialDesign.primaryColor,
+        accentColor: initialDesign.accentColor,
+      };
+
     } catch (e: any) {
         setError(e.message || "An unknown error occurred.");
         setAppState('INITIAL');
@@ -168,130 +218,60 @@ const App: React.FC = () => {
         setIsLoading(false);
         setLoadingMessage('');
     }
-  }, [description, processModelResponse]);
+  }, [description]);
 
-  const handleSendMessage = useCallback(async (message: string) => {
-    if (!designChatRef.current || !message.trim()) return;
+  const handleObjectChange = useCallback((updatedObject: FloorplanObject) => {
+    if (!roomState) return;
+    setRoomState(prev => {
+      if (!prev) return prev;
+      return {
+        ...prev,
+        items: prev.items.map(item =>
+          item.id === updatedObject.id ? { ...item, x: updatedObject.position.x * 12, y: updatedObject.position.y * 12 } : item // Assuming x, y are in feet and need to be converted to inches
+        ),
+      };
+    });
+  }, [roomState]);
 
-    const newUserMessage: ConversationTurn = { role: 'user', text: message };
-    setConversation(prev => [...prev, newUserMessage]);
-    setIsLoading(true);
-    setLoadingMessage('Thinking...');
+  const handleAddNewObject = useCallback((type: ObjectType) => {
+    if (!roomState) return;
 
-    try {
-        const responseText = await sendMessageInChat(designChatRef.current, message);
-        await processModelResponse(responseText);
-    } catch (e: any) {
-        setError(e.message || "An unknown error occurred.");
-    } finally {
-        setIsLoading(false);
-        setLoadingMessage('');
-    }
-  }, [processModelResponse]);
-
-  const handleChoiceMade = useCallback((choice: Choice) => {
-    setCurrentChoices(null);
-    setAppState('CONVERSATION');
-    handleSendMessage(choice.name);
-  }, [handleSendMessage]);
-
-  const handleSelectObject = (id: string | null) => {
-    setSelectedObjectId(id);
-  };
-
-  const handleObjectChange = (updatedObject: FloorplanObject) => {
-    if (floorplan) {
-      const newObjects = floorplan.objects.map(obj => 
-        obj.id === updatedObject.id ? updatedObject : obj
-      );
-      setFloorplan({ ...floorplan, objects: newObjects });
-    }
-  };
-
-  const handleAddNewObject = (type: ObjectType) => {
-    if (!floorplan) return;
-
-    const newObject: FloorplanObject = {
-        id: `${type}-${Date.now()}`,
-        type,
-        position: new Vector3(0, 1.5, -floorplan.room.dimensions.depth / 2),
-        rotation: new Vector3(0, 0, 0),
-        dimensions: { width: 2.5, height: 3, depth: 2 },
-        color: '#ffffff',
-        material: 'white_laminate',
-        countertopMaterial: 'white_marble',
-        countertopColor: '#ffffff'
+    const newItem: Item = {
+      id: `${type}-${Date.now()}`,
+      sku: type,
+      anchor: 'floor',
+      x: roomState.room.widthIn / 2, // Default to center of the room
+      y: roomState.room.depthIn / 2, // Default to center of the room
+      rotDeg: 0,
+      meta: {},
     };
 
-    switch (type) {
-        case 'cabinet_wall':
-            newObject.position.y = 5.5;
-            break;
-        case 'dishwasher':
-            newObject.material = 'stainless_steel';
-            newObject.dimensions.width = 2;
-            break;
-        case 'vent_hood':
-            newObject.position.y = 6.5;
-            newObject.material = 'stainless_steel';
-            newObject.dimensions = { width: 2.5, height: 2.5, depth: 1.5 };
-            break;
-        case 'island':
-            newObject.dimensions.depth = 3;
-            newObject.position.z = 0; // Center it
-            break;
-        case 'toilet':
-        case 'vanity':
-        case 'shower':
-        case 'bathtub':
-            newObject.position.y = newObject.dimensions.height / 2;
-            break;
-        case 'window':
-            newObject.dimensions = { width: 4, height: 3, depth: 0.2 };
-            newObject.position.y = 4.5; // Center of window at 4.5ft high
-            newObject.material = 'glass';
-            break;
-        case 'opening':
-            newObject.dimensions = { width: 3, height: 7, depth: 0.2 };
-            newObject.position.y = 3.5; // Center of opening at 3.5ft high
-            newObject.material = 'none';
-            break;
-        case 'cooktop':
-            newObject.dimensions = { width: 2.5, height: 0.1, depth: 2 };
-            // Place it on top of a standard 3ft base cabinet
-            newObject.position.y = 3 + (0.1 / 2); 
-            newObject.material = 'black_glass'; // Not a real material but will fallback to color
-            newObject.color = '#111111';
-            break;
-    }
-
-
-    setFloorplan({
-        ...floorplan,
-        objects: [...floorplan.objects, newObject],
+    setRoomState(prev => {
+      if (!prev) return prev;
+      return {
+        ...prev,
+        items: [...prev.items, newItem],
+      };
     });
-    setSelectedObjectId(newObject.id);
-  };
+  }, [roomState]);
 
-  const handleModifyFloorplan = useCallback(async (prompt: string) => {
-    if (!floorplan) return;
+  const handleExport = useCallback(async () => {
+    if (!roomState) return;
     setIsLoading(true);
-    setLoadingMessage("Updating your floor plan with AI...");
-    setError(null);
+    setLoadingMessage('Exporting GLB...');
     try {
-        const newPlan = await modifyFloorplan(floorplan, prompt);
-        setFloorplan(newPlan);
-        setSelectedObjectId(null); // Deselect object after modification
+        const glbBuffer = await exportToGlb(roomState);
+        console.log('GLB Exported:', glbBuffer);
+        alert('GLB export initiated. Check console for buffer.');
     } catch (e: any) {
-        setError(e.message || "An unknown error occurred during modification.");
+        setError(e.message || 'Failed to export GLB.');
     } finally {
         setIsLoading(false);
         setLoadingMessage('');
     }
-  }, [floorplan]);
+  }, [roomState]);
 
 
-  const selectedObject = floorplan?.objects.find(obj => obj.id === selectedObjectId) || null;
 
   if (!isStateLoaded) {
     return <Loader message="Initializing app..." />;
@@ -308,18 +288,17 @@ const App: React.FC = () => {
         </div>
       )}
       
-      {(isLoading && appState === 'GENERATING') && <Loader message={loadingMessage} summary={designSummary} finalPrompt={finalPromptRef.current} />}
+      {isLoading && <Loader message={loadingMessage} />}
       
       <main className="flex-1 relative">
         <Canvas3D
-          floorplan={floorplan}
+          roomState={roomState}
           selectedObjectId={selectedObjectId}
-          onSelectObject={handleSelectObject}
+          onSelectObject={setSelectedObjectId}
           onObjectChange={handleObjectChange}
           appState={appState}
           choices={currentChoices}
-          onChoiceMade={handleChoiceMade}
-          isGeneratingImages={isGeneratingImages}
+          onChoiceMade={(choice) => handleResponse(choice.name)}
           showWorkTriangle={showWorkTriangle}
         />
       </main>
@@ -329,18 +308,19 @@ const App: React.FC = () => {
           setDescription={setDescription}
           onGenerate={handleStartGeneration}
           isGenerating={isLoading}
-          floorplan={floorplan}
-          selectedObject={selectedObject}
-          onObjectChange={handleObjectChange}
+          roomState={roomState}
+          selectedObjectId={selectedObjectId}
           onDeselect={() => setSelectedObjectId(null)}
-          onAddNewObject={handleAddNewObject}
           appState={appState}
           conversation={conversation}
-          onSendConversationMessage={handleSendMessage}
-          onChoiceSelected={handleChoiceMade}
-          onModifyFloorplan={handleModifyFloorplan}
+          onSendConversationMessage={handleResponse}
+          onChoiceSelected={(choice) => handleResponse(choice.name)}
           showWorkTriangle={showWorkTriangle}
-          onToggleWorkTriangle={handleToggleWorkTriangle}
+          onToggleWorkTriangle={() => setShowWorkTriangle(p => !p)}
+          onModifyFloorplan={() => {}} // To be refactored
+          onObjectChange={handleObjectChange}
+          onAddNewObject={handleAddNewObject}
+          onExport={handleExport} // New prop
         />
       </aside>
     </div>

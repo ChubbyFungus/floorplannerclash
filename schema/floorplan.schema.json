@@ -126,12 +126,12 @@
             "properties": {
               "refrigerator": {
                 "properties": {
-                  "finish": { "enum": ["panel-ready", "stainless-steel"] }
+                  "finish": { "enum": ["panel-ready", "stainless-steel", "matte-black"] }
                 }
               },
               "oven": {
                 "properties": {
-                  "finish": { "enum": ["panel-ready", "stainless-steel"] }
+                  "finish": { "enum": ["panel-ready", "stainless-steel", "matte-black"] }
                 }
               }
             }
@@ -160,12 +160,12 @@
             "properties": {
               "refrigerator": {
                 "properties": {
-                  "finish": { "enum": ["stainless-steel", "black", "white"] }
+                  "finish": { "enum": ["stainless-steel", "black", "white", "matte-black"] }
                 }
               },
               "oven": {
                 "properties": {
-                  "finish": { "enum": ["stainless-steel", "black", "white"] }
+                  "finish": { "enum": ["stainless-steel", "black", "white", "matte-black"] }
                 }
               }
             }
@@ -194,12 +194,12 @@
             "properties": {
               "refrigerator": {
                 "properties": {
-                  "finish": { "enum": ["stainless-steel", "panel-ready", "black"] }
+                  "finish": { "enum": ["stainless-steel", "panel-ready", "black", "matte-black"] }
                 }
               },
               "oven": {
                 "properties": {
-                  "finish": { "enum": ["stainless-steel", "panel-ready", "black"] }
+                  "finish": { "enum": ["stainless-steel", "panel-ready", "black", "matte-black"] }
                 }
               }
             }

@@ -1,0 +1,15 @@
+description = "List staged files and a short diffstat."
+prompt = """
+Show staged files and short diffstat. No markdown.
+
+Staged:
+!{git diff --name-only --cached 2>&1 || true}
+Diffstat:
+!{git diff --cached --stat 2>&1 || true}
+
+Output format EXACTLY:
+STAGED:
+<path>
+DIFFSTAT:
+<stat-lines>
+"""

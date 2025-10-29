@@ -1,12 +1,42 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import * as THREE from 'three';
-import type { Floorplan, FloorplanObject, ObjectType, ConversationTurn, Choice } from '../types';
+import type { Floorplan, FloorplanObject, ObjectType, ConversationTurn, Choice, RoomState, Item } from '../types';
+
+// Temporary conversion function until all components use RoomState directly
+const convertRoomStateToFloorplan = (roomState: RoomState | null): Floorplan | null => {
+  if (!roomState) return null;
+
+  const inchToFeet = (val: number) => val / 12;
+
+  const floorplanObjects: FloorplanObject[] = roomState.items.map(item => ({
+    id: item.id,
+    type: item.sku as ObjectType, // This is a simplification
+    position: new THREE.Vector3(inchToFeet(item.x), inchToFeet(item.y), 0), // Z is missing
+    rotation: new THREE.Vector3(0, item.rotDeg * (Math.PI / 180), 0),
+    dimensions: { width: 3, height: 3, depth: 2 }, // Placeholder
+    color: '#ffffff',
+    material: 'white_laminate',
+  }));
+
+  return {
+    room: {
+      type: roomState.params.roomType as 'kitchen' | 'bathroom' || 'kitchen',
+      dimensions: {
+        width: inchToFeet(roomState.room.widthIn),
+        depth: inchToFeet(roomState.room.depthIn),
+      },
+      floorMaterial: 'light_wood_plank',
+    },
+    objects: floorplanObjects,
+  };
+};
+
 
 interface ConversationViewProps {
     conversation: ConversationTurn[];
     onSendMessage: (message: string) => void;
     isReceiving: boolean;
-    appState: 'INITIAL' | 'CONVERSATION' | 'CHOICE_PREVIEW' | 'GENERATING' | 'DISPLAYING';
+    appState: 'INITIAL' | 'AWAITING_STYLE_CHOICE' | 'GATHERING_INFO' | 'GENERATING' | 'DISPLAYING';
 }
 
 const ConversationView: React.FC<ConversationViewProps> = ({ conversation, onSendMessage, isReceiving, appState }) => {
@@ -24,13 +54,15 @@ const ConversationView: React.FC<ConversationViewProps> = ({ conversation, onSen
         }
     };
     
-    const isChoiceMode = appState === 'CHOICE_PREVIEW';
+    const lastTurn = conversation[conversation.length - 1];
+    const expectsFreeFormInput = lastTurn?.role === 'model' && lastTurn.expectsFreeFormInput;
+    const isChoiceMode = lastTurn?.role === 'model' && !lastTurn.expectsFreeFormInput;
 
     return (
         <div className="flex flex-col h-full bg-gray-800 rounded-lg p-4">
             <div className="flex-1 overflow-y-auto space-y-4 pr-2">
                 {conversation.map((turn, index) => (
-                    <div key={index}>
+                    <div key={index}> 
                         <div className={`flex ${turn.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                             <div className={`max-w-xs lg:max-w-sm px-4 py-2 rounded-lg break-words ${turn.role === 'user' ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-200'}`}>
                                <p className="text-sm">{turn.text}</p>
@@ -56,14 +88,14 @@ const ConversationView: React.FC<ConversationViewProps> = ({ conversation, onSen
                     type="text"
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
-                    onKeyPress={(e) => e.key === 'Enter' && !isReceiving && !isChoiceMode && handleSend()}
+                    onKeyPress={(e) => e.key === 'Enter' && !isReceiving && expectsFreeFormInput && handleSend()}
                     placeholder={isReceiving ? "Waiting for response..." : isChoiceMode ? "Select an option in the 3D view" : "Type your answer..."}
-                    disabled={isReceiving || isChoiceMode}
+                    disabled={isReceiving || !expectsFreeFormInput}
                     className="flex-grow bg-gray-700 border-gray-600 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 p-3 text-white placeholder-gray-500 disabled:cursor-not-allowed disabled:opacity-50"
                 />
                 <button
                     onClick={handleSend}
-                    disabled={isReceiving || !input.trim() || isChoiceMode}
+                    disabled={isReceiving || !input.trim() || !expectsFreeFormInput}
                     className="py-3 px-5 bg-blue-600 hover:bg-blue-700 rounded-lg text-white font-medium disabled:bg-gray-500 disabled:cursor-not-allowed transition-colors"
                 >
                     Send
@@ -79,18 +111,20 @@ interface ControlPanelProps {
   setDescription: (value: string) => void;
   onGenerate: () => void;
   isGenerating: boolean;
-  floorplan: Floorplan | null;
-  selectedObject: FloorplanObject | null;
-  onObjectChange: (updatedObject: FloorplanObject) => void;
+  roomState: RoomState | null;
+  selectedObjectId: string | null;
   onDeselect: () => void;
-  onAddNewObject: (type: ObjectType) => void;
-  appState: 'INITIAL' | 'CONVERSATION' | 'CHOICE_PREVIEW' | 'GENERATING' | 'DISPLAYING';
+  appState: 'INITIAL' | 'AWAITING_STYLE_CHOICE' | 'GATHERING_INFO' | 'GENERATING' | 'DISPLAYING';
   conversation: ConversationTurn[];
   onSendConversationMessage: (message: string) => void;
   onChoiceSelected: (choice: Choice) => void;
-  onModifyFloorplan: (prompt: string) => void;
   showWorkTriangle: boolean;
   onToggleWorkTriangle: () => void;
+  // To be replaced by command dispatcher
+  onModifyFloorplan: (prompt: string) => void;
+  onObjectChange: (updatedObject: FloorplanObject) => void;
+  onAddNewObject: (type: ObjectType) => void;
+  onExport: () => void; // New prop
 }
 
 const AVAILABLE_MATERIALS = [
@@ -144,7 +178,7 @@ const WorkTriangleAnalysis: React.FC<{
 
         const p1 = new THREE.Vector2(sink.position.x, sink.position.z);
         const p2 = new THREE.Vector2(refrigerator.position.x, refrigerator.position.z);
-        const p3 = new THREE.Vector2(cooktop.position.x, cooktop.position.z);
+        const p3 = new THREE.Vector2(cooktop.position.x, cooktop.position.y, cooktop.position.z);
         
         const distA = p1.distanceTo(p2);
         const distB = p2.distanceTo(p3);
@@ -223,7 +257,8 @@ const WorkTriangleAnalysis: React.FC<{
 const AIModifyPanel: React.FC<{
     onModify: (prompt: string) => void;
     isGenerating: boolean;
-}> = ({ onModify, isGenerating }) => {
+    canModify: boolean;
+}> = ({ onModify, isGenerating, canModify }) => {
     const [prompt, setPrompt] = useState('');
 
     const handleModify = () => {
@@ -243,15 +278,20 @@ const AIModifyPanel: React.FC<{
                 placeholder="e.g., 'Make all the cabinets dark wood' or 'add a window on the back wall'"
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
-                disabled={isGenerating}
+                disabled={isGenerating || !canModify}
             />
             <button
                 onClick={handleModify}
-                disabled={isGenerating || !prompt.trim()}
+                disabled={isGenerating || !prompt.trim() || !canModify}
                 className="w-full mt-2 flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:bg-gray-500 disabled:cursor-not-allowed transition-colors"
             >
                 {isGenerating ? 'Applying...' : 'Apply Change'}
             </button>
+            {!canModify && (
+                <p className="mt-2 text-xs text-yellow-300">
+                    Generate a final floor plan before requesting modifications.
+                </p>
+            )}
         </div>
     );
 };
@@ -341,16 +381,21 @@ const EditPanel: React.FC<{
     );
 };
 
-const ControlPanel: React.FC<ControlPanelProps> = ({ 
-    description, setDescription, onGenerate, isGenerating, floorplan, 
-    selectedObject, onObjectChange, onDeselect, onAddNewObject, 
+const ControlPanel: React.FC<ControlPanelProps> = ({
+    description, setDescription, onGenerate, isGenerating, roomState, 
+    selectedObjectId, onDeselect, onAddNewObject, 
     appState, conversation, onSendConversationMessage, onModifyFloorplan,
-    showWorkTriangle, onToggleWorkTriangle
+    showWorkTriangle, onToggleWorkTriangle, onObjectChange
 }) => {
   
+  const floorplan = useMemo(() => convertRoomStateToFloorplan(roomState), [roomState]);
+  const selectedObject = useMemo(() => floorplan?.objects.find(o => o.id === selectedObjectId), [floorplan, selectedObjectId]);
+
   const showInitialView = appState === 'INITIAL';
-  const showConversationView = appState === 'CONVERSATION' || appState === 'GENERATING' || appState === 'CHOICE_PREVIEW';
+  const showConversationView = appState === 'AWAITING_STYLE_CHOICE' || appState === 'GATHERING_INFO' || appState === 'GENERATING';
   const showEditTools = appState === 'DISPLAYING';
+
+  const canModifyWithAI = roomState !== null;
 
   return (
     <div className="w-full max-w-sm flex-shrink-0 p-6 bg-gray-900 overflow-y-auto flex flex-col h-screen">
@@ -421,7 +466,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
                     onToggleShowIn3D={onToggleWorkTriangle}
                 />
             )}
-            <AIModifyPanel onModify={onModifyFloorplan} isGenerating={isGenerating} />
+            <AIModifyPanel onModify={onModifyFloorplan} isGenerating={isGenerating} canModify={canModifyWithAI} />
             
             <div className="border-t border-gray-700 my-6"></div>
             
@@ -447,6 +492,15 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
                     </div>
                 </div>
             )}
+            <div className="mt-6">
+                <button
+                    onClick={onExport}
+                    disabled={!floorplan}
+                    className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:bg-gray-500 disabled:cursor-not-allowed transition-colors"
+                >
+                    Export GLB
+                </button>
+            </div>
         </>
       )}
     </div>

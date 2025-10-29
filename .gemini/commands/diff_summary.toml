@@ -1,0 +1,10 @@
+description = "Produce a one-line summary per changed file. Output plain text."
+prompt = """
+Summarize staged diff into one line per file. No markdown, no bullets.
+
+Diff:
+!{git diff --staged || true}
+
+Output format EXACTLY:
+<path>: <short-summary-of-change>
+"""

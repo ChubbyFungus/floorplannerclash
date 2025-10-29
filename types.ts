@@ -1,4 +1,114 @@
-import { Vector3 } from "three";
+import { Vector3 } from 'three';
+
+// --- Canonical Schemas (Artifact #1) ---
+
+export interface Frame {
+  roomType: 'kitchen' | 'bathroom';
+  style: string;
+  layout: string;
+  dimensions: {
+    width: number;
+    depth: number;
+    height?: number;
+  };
+  appliances: any;
+  cabinets: any;
+  countertops: any;
+  floorMaterial: string;
+}
+
+export type ID = string;
+
+export interface Question {
+  id: string;
+  prompt: string;
+  type: 'enum' | 'string' | 'number' | 'bool';
+  choices?: string[];
+  next?: (ans: unknown) => string; // Defines branching logic
+}
+
+export interface StyleTemplate {
+  id: ID;
+  version: string;
+  roomType: 'kitchen' | 'bath';
+  questions: Question[];
+  defaults: Record<string, unknown>;
+}
+
+export interface RoomState {
+  id: ID;
+  version: string;
+  styleTemplateId: ID;
+  params: Record<string, unknown>;
+  room: {
+    widthIn: number;
+    depthIn: number;
+    heightIn: number;
+    wallThicknessIn: number;
+    openings: Opening[];
+  };
+  items: Item[];
+  seed: string;
+}
+
+export interface Opening {
+  id: ID;
+  kind: 'door' | 'window';
+  x: number; // Position along the wall in inches
+  y: number; // Elevation from floor to center in inches
+  wallId: ID; // e.g., 'W0', 'W1', 'W2', 'W3'
+  widthIn: number;
+  heightIn: number;
+  sillIn?: number;
+  swing?: 'L' | 'R' | 'SL' | 'SR';
+}
+
+export interface Item {
+  id: ID;
+  sku: string;
+  anchor: 'wall' | 'floor';
+  x: number; // Position in inches
+  y: number; // Position in inches
+  rotDeg: number;
+  meta: Record<string, unknown>;
+}
+
+// --- Command Set (Artifact #2) ---
+
+export type Cmd =
+ | {
+     t: 'set_param';
+     k: string;
+     v: unknown;
+   }
+ | {
+     t: 'add_item';
+     sku: string;
+     at: { x: number; y: number };
+     rotDeg?: number;
+   }
+ | {
+     t: 'move_item';
+     id: string;
+     to: { x: number; y: number };
+   }
+ | {
+     t: 'rotate_item';
+     id: string;
+     rotDeg: number;
+   }
+ | {
+     t: 'delete_item';
+     id: string;
+   }
+ | {
+     t: 'set_opening';
+     opening: Opening;
+   };
+
+
+// --- Legacy & UI-Specific Types ---
+// These types are used by the current UI and will be phased out or adapted.
 
 export interface Dimensions {
   width: number;
@@ -15,7 +125,7 @@ export interface FloorplanObject {
   rotation: Vector3;
   dimensions: Dimensions;
   color: string;
-  material: string; // e.g., 'light_wood', 'stainless_steel'
+  material: string;
   countertopMaterial?: string;
   countertopColor?: string;
 }
@@ -26,7 +136,7 @@ export interface Room {
     width: number;
     depth: number;
   };
-  floorMaterial: string; // e.g., 'light_wood_plank', 'gray_tile'
+  floorMaterial: string;
 }
 
 export interface Floorplan {
@@ -37,12 +147,13 @@ export interface Floorplan {
 export interface Choice {
   name: string;
   description: string;
-  material: string; // The material key to be used for texturing
-  imageUrl?: string; // Optional URL for generated style images
+  material: string;
+  imageUrl?: string;
 }
 
 export interface ConversationTurn {
   role: 'user' | 'model';
   text: string;
   choices?: Choice[];
+  expectsFreeFormInput?: boolean;
 }

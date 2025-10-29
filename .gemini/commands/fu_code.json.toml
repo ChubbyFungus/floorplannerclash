@@ -1,0 +1,20 @@
+description = "FU: code file to compact JSON. No prose paragraphs."
+prompt = """
+Fully understand {{args}} and emit compact JSON fields. Keep values short.
+
+Code:
+!{cat "{{args}}" || true}
+
+Output ONLY valid JSON with this schema:
+{
+  "answer": "<one-sentence>",
+  "assumptions": ["..."],
+  "controls": ["..."],
+  "edges": ["..."],
+  "model_150w": "<<=150 words>",
+  "transfer": ["..."],
+  "prediction_plan": ["..."],
+  "evidence_k": 0,
+  "rubric": {"scope":95,"prediction":50,"retrodiction":95,"counterfactuals":95,"control":95,"compression":95,"transfer":95,"calibration":50,"edge":95,"teachability":95}
+}
+"""

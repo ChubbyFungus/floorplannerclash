@@ -1,0 +1,12 @@
+description = "Evaluate room JSON against numeric rules and emit JSON Patch only."
+prompt = """
+Read room JSON at {{args}}. Identify hard/soft violations per numeric rules and produce a JSON Patch to fix the minimal set of issues. No prose.
+
+Room JSON:
+!{cat "{{args}}" || echo "{}"}
+
+Output ONLY valid JSON array for RFC 6902 JSON Patch. Example shape:
+[
+  {"op":"replace","path":"/placements/0/x","value":12}
+]
+"""

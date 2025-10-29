@@ -1,0 +1,9 @@
+description = "FU: remote URL to compact JSON. No prose paragraphs."
+prompt = """
+Fetch and fully understand the document at {{args}}. Emit compact JSON only.
+
+Content:
+!{curl -L "{{args}}" 2>&1 || true}
+
+Output ONLY valid JSON with the same schema as fu_code.json.toml.
+"""

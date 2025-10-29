@@ -1,0 +1,18 @@
+description = "CPU profile a run and list hotspots in plain text."
+prompt = """
+Profile deterministic run for {{args}}. No markdown.
+
+Profiler:
+!{node --cpu-prof scripts/trace-run.js "{{args}}" 2>&1 || true}
+
+Output format EXACTLY:
+HOTSPOTS:
+1) <fn-or-path> ~<percent>% suspected-cause
+2) <fn-or-path> ~<percent>% suspected-cause
+3) <fn-or-path> ~<percent>% suspected-cause
+PLAN:
+1) step
+2) step
+3) step
+EXPECTED: CPU ~<percent>% MEM ~<percent>%
+"""

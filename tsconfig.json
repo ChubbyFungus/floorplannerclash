@@ -9,6 +9,8 @@
       "DOM",
       "DOM.Iterable"
     ],
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "skipLibCheck": true,
     "types": [
       "node"
@@ -23,6 +25,7 @@
         "./*"
       ]
     },
+    "resolveJsonModule": true,
     "allowImportingTsExtensions": true,
     "noEmit": true
   }

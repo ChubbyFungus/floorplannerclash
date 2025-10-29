@@ -34,6 +34,10 @@ export interface Frame {
       type: string;
       finish?: string;
     };
+    dishwasher?: {
+      type: string;
+      finish?: string;
+    };
   };
   cabinets?: {
     style?: string;
@@ -52,12 +56,60 @@ class FrameManager {
   private validate: any;
 
   constructor() {
-    this.ajv = new Ajv({ allErrors: true });
+    this.ajv = new Ajv({ allErrors: true, strict: false });
     this.validate = this.ajv.compile(schema);
   }
 
   apply(fills: Partial<Frame>): void {
-    this.frame = { ...this.frame, ...fills };
+    const next: Frame = { ...this.frame };
+
+    if (fills.dimensions) {
+      next.dimensions = {
+        ...(next.dimensions ?? {}),
+        ...fills.dimensions,
+      };
+    }
+
+    if (fills.appliances) {
+      next.appliances = { ...(next.appliances ?? {}) };
+      for (const [key, value] of Object.entries(fills.appliances)) {
+        const typedKey = key as keyof NonNullable<Frame['appliances']>;
+        next.appliances[typedKey] = {
+          type: '',
+          ...(next.appliances[typedKey] ?? {}),
+          ...(value ?? {}),
+        };
+      }
+    }
+
+    if (fills.cabinets) {
+      next.cabinets = {
+        ...(next.cabinets ?? {}),
+        ...fills.cabinets,
+      };
+    }
+
+    if (fills.countertops) {
+      next.countertops = {
+        ...(next.countertops ?? {}),
+        ...fills.countertops,
+      };
+    }
+
+    if (typeof fills.roomType !== 'undefined') {
+      next.roomType = fills.roomType;
+    }
+    if (typeof fills.style !== 'undefined') {
+      next.style = fills.style;
+    }
+    if (typeof fills.floorMaterial !== 'undefined') {
+      next.floorMaterial = fills.floorMaterial;
+    }
+    if (typeof fills.layout !== 'undefined') {
+      next.layout = fills.layout;
+    }
+
+    this.frame = next;
   }
 
   validateWithAjv(): { valid: boolean; errors?: string[] } {
@@ -92,51 +144,51 @@ class FrameManager {
     // Style-specific requirements
     if (style === 'modern') {
       if (this.frame.appliances?.refrigerator && !this.frame.appliances.refrigerator.finish) {
-        missing.push('appliances.refrigerator.finish (panel-ready or stainless-steel)');
+        missing.push('appliances.refrigerator.finish');
       }
       if (this.frame.appliances?.oven && !this.frame.appliances.oven.finish) {
-        missing.push('appliances.oven.finish (panel-ready or stainless-steel)');
+        missing.push('appliances.oven.finish');
       }
       if (this.frame.cabinets && !this.frame.cabinets.style) {
-        missing.push('cabinets.style (flat-panel or sleek)');
+        missing.push('cabinets.style');
       }
       if (this.frame.cabinets && !this.frame.cabinets.color) {
-        missing.push('cabinets.color (white, black, or gray)');
+        missing.push('cabinets.color');
       }
       if (this.frame.countertops && !this.frame.countertops.material) {
-        missing.push('countertops.material (quartz, concrete, or stainless-steel)');
+        missing.push('countertops.material');
       }
     } else if (style === 'traditional') {
       if (this.frame.appliances?.refrigerator && !this.frame.appliances.refrigerator.finish) {
-        missing.push('appliances.refrigerator.finish (stainless-steel, black, or white)');
+        missing.push('appliances.refrigerator.finish');
       }
       if (this.frame.appliances?.oven && !this.frame.appliances.oven.finish) {
-        missing.push('appliances.oven.finish (stainless-steel, black, or white)');
+        missing.push('appliances.oven.finish');
       }
       if (this.frame.cabinets && !this.frame.cabinets.style) {
-        missing.push('cabinets.style (shaker or raised-panel)');
+        missing.push('cabinets.style');
       }
       if (this.frame.cabinets && !this.frame.cabinets.color) {
-        missing.push('cabinets.color (wood, cream, or navy)');
+        missing.push('cabinets.color');
       }
       if (this.frame.countertops && !this.frame.countertops.material) {
-        missing.push('countertops.material (granite, marble, or butcher-block)');
+        missing.push('countertops.material');
       }
     } else if (style === 'transitional') {
       if (this.frame.appliances?.refrigerator && !this.frame.appliances.refrigerator.finish) {
-        missing.push('appliances.refrigerator.finish (stainless-steel, panel-ready, or black)');
+        missing.push('appliances.refrigerator.finish');
       }
       if (this.frame.appliances?.oven && !this.frame.appliances.oven.finish) {
-        missing.push('appliances.oven.finish (stainless-steel, panel-ready, or black)');
+        missing.push('appliances.oven.finish');
       }
       if (this.frame.cabinets && !this.frame.cabinets.style) {
-        missing.push('cabinets.style (shaker or flat-panel)');
+        missing.push('cabinets.style');
       }
       if (this.frame.cabinets && !this.frame.cabinets.color) {
-        missing.push('cabinets.color (gray, white, or wood)');
+        missing.push('cabinets.color');
       }
       if (this.frame.countertops && !this.frame.countertops.material) {
-        missing.push('countertops.material (quartz, granite, or marble)');
+        missing.push('countertops.material');
       }
     }
 
@@ -144,7 +196,7 @@ class FrameManager {
   }
 
   getFrame(): Frame {
-    return { ...this.frame };
+    return { ...this.frame, roomType: this.frame.roomType ?? 'kitchen' };
   }
 
   reset(): void {

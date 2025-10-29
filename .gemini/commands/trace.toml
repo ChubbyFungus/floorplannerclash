@@ -1,0 +1,16 @@
+description = "Run a deterministic trace case and propose a JSON Patch."
+prompt = """
+Run trace for case {{args}}. Analyze first failing rule. No markdown.
+
+Trace output:
+!{node scripts/trace-run.js "{{args}}" 2>&1 || true}
+
+Output format EXACTLY:
+CASE: {{args}}
+ACTION: stop|nudge|relax-soft
+RULE: <id> <number>
+PATCH:
+[
+  {"op":"replace","path":"/...","value":"..."}
+]
+"""
