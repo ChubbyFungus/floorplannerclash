@@ -191,13 +191,29 @@ function evaluateKitchenGeometry(
     }
   }
 
+  // Check NKBA aisle width requirements
+  // Calculate aisle width: room depth minus counter depths on both sides
+  const aisleWidth = dims.depth - (COUNTER_DEPTH_IN * 2);
+  const minAisleWidth = 36; // NKBA minimum walkway width
+
+  if (aisleWidth < minAisleWidth) {
+    warnings.push({
+      message: `Aisle width of ${aisleWidth.toFixed(1)} inches is below NKBA minimum of ${minAisleWidth} inches for safe maneuvering.`,
+      severity: 'high',
+      code: 'NKBA_AISLE_WIDTH',
+    });
+  }
+
   if (requireAdaClearances) {
-    // Basic ADA check: ensure there's a 60-inch turning circle.
-    // This is a simplified check. A real implementation would be more complex.
-    if (dims.width < ADA_CLEAR_FLOOR_MIN || dims.depth < ADA_CLEAR_FLOOR_MIN) {
-       warnings.push({
-        message: `Room does not meet ADA minimum clear floor space of ${ADA_CLEAR_FLOOR_MIN} inches.`,
+    // ADA clearance check: ensure adequate aisle width for wheelchair access
+    const adaMinAisleWidth = 60; // ADA minimum aisle width for wheelchair turning
+
+    // Check aisle width for ADA compliance (60" diameter turning circle)
+    if (aisleWidth < adaMinAisleWidth) {
+      warnings.push({
+        message: `Aisle width of ${aisleWidth.toFixed(1)} inches does not meet ADA minimum requirement of ${adaMinAisleWidth} inches for wheelchair access and turning.`,
         severity: 'high',
+        code: 'ADA_CLEARANCE',
       });
     }
   }
@@ -211,10 +227,10 @@ function evaluateKitchenGeometry(
     const clearance = southCaseworkFrontZ - islandEdgeZ;
 
     if (clearance < ISLAND_CLEARANCE_IN) {
-       warnings.push({
-        message: `Island clearance to south wall is insufficient. Minimum ${ISLAND_CLEARANCE_IN} inches required. Found ${clearance.toFixed(1)} inches.`,
-        severity: 'high',
-      });
+        warnings.push({
+          message: `Island clearance to south wall is insufficient. Minimum ${ISLAND_CLEARANCE_IN} inches required. Found ${clearance.toFixed(1)} inches.`,
+          severity: 'high',
+        });
     }
   }
 
