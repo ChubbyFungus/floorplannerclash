@@ -52,6 +52,13 @@ const App: React.FC = () => {
       .then(text => setDesignBrief(text))
       .catch(e => console.error("Could not load design brief.", e));
   }, []);
+
+  // Clear currentChoices when not in choice-displaying states
+  useEffect(() => {
+    if (appState !== 'AWAITING_STYLE_CHOICE' && appState !== 'GATHERING_INFO') {
+      setCurrentChoices(null);
+    }
+  }, [appState]);
   const styleTemplateCache = useRef<Record<string, StyleTemplate>>({});
   const initialDesignDetailsCache = useRef<any>({});
 
@@ -91,7 +98,9 @@ const App: React.FC = () => {
 
     const staticChoices = expectsFreeFormInput ? undefined : choices.map(c => ({ name: c, description: c, material: c }));
 
+    setLoadingMessage('Generating next question...');
     const { text: llmQuestion, choices: llmChoices } = await askLlmQuestion(question, staticChoices || [], designBrief);
+    setLoadingMessage('');
 
     const newModelTurn: ConversationTurn = {
       role: 'model',
@@ -101,10 +110,7 @@ const App: React.FC = () => {
     };
 
         setConversation(prev => [...prev, newModelTurn]);
-
-    
-
-    
+        setCurrentChoices(llmChoices || null);
 
         setAppState('GATHERING_INFO');
   }, [conversation, designBrief, appState, roomState, setFloorplan]);
@@ -213,9 +219,11 @@ const App: React.FC = () => {
     setLoadingMessage('Analyzing your request...');
 
     try {
-      const initialDesign = await getInitialDesign(description); 
+      setLoadingMessage('Analyzing your design requirements...');
+      const initialDesign = await getInitialDesign(description);
+      setLoadingMessage('Preparing style options...');
       const styleChoices = initialDesign.styleChoices.map(s => ({ name: s, description: `A ${s} style design.`, material: s }));
-      
+
        const modelResponse: ConversationTurn = { role: 'model', text: 'What style would you like for your design?', choices: styleChoices };
        setConversation(prev => [...prev, modelResponse]);
     setCurrentChoices(styleChoices || null);

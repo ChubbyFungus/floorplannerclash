@@ -2,7 +2,7 @@ const OLLAMA_ENDPOINT = process.env.LLM_ENDPOINT || 'http://localhost:11434/v1';
 const OLLAMA_API_KEY = 'ollama'; // Ollama doesn't require a real API key
 const DEFAULT_TIMEOUT_MS = process.env.LLM_REQUEST_TIMEOUT_MS
   ? Number(process.env.LLM_REQUEST_TIMEOUT_MS)
-  : 60000;
+  : 30000; // Reduced from 60s to 30s for faster responses
 
 export interface ChatMessage {
   role: 'system' | 'user' | 'assistant';

@@ -7,10 +7,17 @@ const fetchImpl: FetchLike | undefined = (globalThis as any).fetch?.bind(globalT
 const CONVERSATION_LLM_URL = process.env.CONVERSATION_LLM_URL ?? 'http://localhost:11434/api/chat';
 const REASONING_LLM_URL = process.env.REASONING_LLM_URL ?? 'http://localhost:11434/api/generate';
 
-const CONVERSATION_LLM_MODEL = process.env.CONVERSATION_LLM_MODEL ?? 'qwen2.5:7b-instruct';
-const REASONING_LLM_MODEL = process.env.REASONING_LLM_MODEL ?? 'deepseek-r1:7b-qwen-distill-q4_K_M';
+const CONVERSATION_LLM_MODEL = process.env.CONVERSATION_LLM_MODEL ?? 'qwen2.5:3b-instruct';
+const REASONING_LLM_MODEL = process.env.REASONING_LLM_MODEL ?? 'qwen2.5:3b-instruct';
 
 const isReasoningDisabled = () => false;
+
+// Simple in-memory cache for LLM responses
+const llmCache = new Map<string, any>();
+
+function getCacheKey(functionName: string, ...args: any[]): string {
+  return `${functionName}:${JSON.stringify(args)}`;
+}
 
 function ensureFetch(): FetchLike {
   if (!fetchImpl) {
@@ -65,6 +72,11 @@ async function postGenerate<TResponse>(url: string, prompt: string, model: strin
 }
 
 export async function getInitialDesign(description: string): Promise<{ style: string; roomType: string; styleChoices: string[]; primaryColor?: string; accentColor?: string; }> {
+  const cacheKey = getCacheKey('getInitialDesign', description);
+  if (llmCache.has(cacheKey)) {
+    return llmCache.get(cacheKey);
+  }
+
   const messages = [
     { role: 'user', content: `You are a helpful design assistant. Analyze the user's request: '${description}'. Identify the 'roomType' (must be either "Kitchen" or "Bathroom"), the most likely 'style', and if specified, the 'primaryColor' and 'accentColor'. Return a JSON object with 'roomType', 'style', 'primaryColor' (optional), 'accentColor' (optional), and 'styleChoices' which should be a list of styles relevant to the user's request. The possible styles are [Modern, Traditional, Industrial, Farmhouse].` }
   ];
@@ -103,6 +115,10 @@ export async function getInitialDesign(description: string): Promise<{ style: st
       accentColor: undefined,
     };
   }
+
+  // Cache the result
+  llmCache.set(cacheKey, result);
+  return result;
 }
 
 export async function askQuestion(question: string, choices: Choice[], designBrief: string): Promise<{ text: string; choices: Choice[] }> {
