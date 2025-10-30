@@ -1335,14 +1335,26 @@ const ChoiceObject: React.FC<{ choice: Choice; onSelect: () => void }> = ({ choi
 const Canvas3D: React.FC<Canvas3DProps> = (props) => {
   const floorplan = useMemo(() => convertRoomStateToFloorplan(props.roomState), [props.roomState]);
 
+  // Show floorplan if we have collected parameters, otherwise show choices
+  const hasCollectedParams = props.roomState && Object.keys(props.roomState.params).length > 0;
+  const showFloorplan = hasCollectedParams && props.appState === 'GATHERING_INFO';
+
   return (
     <div className="w-full h-full bg-gray-800 rounded-lg shadow-inner" onClick={() => props.onSelectObject(null)}>
       <Canvas shadows camera={{ position: [0, 5, 20], fov: 50 }}>
         <Suspense fallback={null}>
-          {(props.appState === 'AWAITING_STYLE_CHOICE' || props.appState === 'GATHERING_INFO') && props.choices ? (
+          {showFloorplan ? (
+            <FloorplanScene
+              floorplan={floorplan}
+              selectedObjectId={props.selectedObjectId}
+              onSelectObject={props.onSelectObject}
+              onObjectChange={props.onObjectChange}
+              showWorkTriangle={props.showWorkTriangle}
+            />
+          ) : (props.appState === 'AWAITING_STYLE_CHOICE' || (props.appState === 'GATHERING_INFO' && !hasCollectedParams)) && props.choices ? (
             <ChoicePreviewScene choices={props.choices} onChoiceMade={props.onChoiceMade} isGeneratingImages={props.isGeneratingImages} />
           ) : (
-            <FloorplanScene 
+            <FloorplanScene
               floorplan={floorplan}
               selectedObjectId={props.selectedObjectId}
               onSelectObject={props.onSelectObject}
