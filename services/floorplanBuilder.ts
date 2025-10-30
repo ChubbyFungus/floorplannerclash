@@ -14,6 +14,7 @@ export const buildFloorplanFromState = async (
   roomState: RoomState,
   options: BuildFloorplanOptions = {}
 ): Promise<Floorplan> => {
+  console.log('Building floorplan from roomState:', roomState);
 
   // Step 1: Convert the new RoomState into the legacy Frame format that buildScene expects.
   // This is a temporary bridge during refactoring.
@@ -32,16 +33,22 @@ export const buildFloorplanFromState = async (
   };
 
   // Step 2: Call the scene builder with the converted frame.
+  console.time('buildScene');
   const { scene, warnings } = buildScene(frame, {
     requireAdaClearances: options.requireAdaClearances ?? false,
   });
+  console.timeEnd('buildScene');
 
   if (warnings.length > 0) {
     console.warn('Deterministic builder warnings:', warnings);
   }
 
   // Step 3: Convert the generated scene into the Floorplan format for the UI.
-  return convertSceneToFloorplan(scene, frame, roomState);
+  console.time('convertSceneToFloorplan');
+  const result = convertSceneToFloorplan(scene, frame, roomState);
+  console.timeEnd('convertSceneToFloorplan');
+
+  return result;
 };
 
 // ... The rest of the file contains the `convertSceneToFloorplan` and its helpers.

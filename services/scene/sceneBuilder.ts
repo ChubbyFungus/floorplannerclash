@@ -87,18 +87,23 @@ interface WallRun {
 }
 
 export function buildScene(frame: Frame, options: SceneBuilderOptions = {}): SceneBuildResult {
+  console.log('Building scene with frame:', frame);
   const widthIn = frame.dimensions.width * 12;
   const depthIn = frame.dimensions.depth * 12;
   const heightIn = options.roomHeightIn ?? (frame.dimensions.height ? frame.dimensions.height * 12 : DEFAULT_ROOM_HEIGHT_IN);
   const dims: DimensionsInches = { width: widthIn, depth: depthIn, height: heightIn };
+  console.log('Scene dimensions:', dims);
 
   const roomType = (frame.roomType as 'kitchen' | 'bathroom') || 'kitchen';
   const style = (frame.style as Style) || 'modern';
 
+  console.time('buildObjects');
   const { objects, warnings: geometryWarnings } =
     roomType === 'bathroom'
       ? buildBathroomObjects(frame, dims)
       : buildKitchenObjects(frame, dims, options);
+  console.timeEnd('buildObjects');
+  console.log('Built', objects.length, 'objects');
 
   const skuRefs = objects.filter(obj => knownSkus.has(obj.sku)).map(obj => obj.sku);
   const effectiveRules = mergeRules(roomType, style, skuRefs);

@@ -16,7 +16,7 @@ import { buildScene, Scene, SceneWarning } from '../scene/sceneBuilder';
 import type { Choice, Frame } from '../../types';
 
 const MODEL_NAME =
-  process.env.LLM_MODEL_NAME || 'deepseek-r1:7b-qwen-distill-q4_K_M'; // Default local reasoning model
+  process.env.LLM_MODEL_NAME || 'gemma2:2b-instruct-q4_K_M'; // Default local reasoning model
 
 const sanitizeModelOutput = (text: string): string =>
   text.replace(/<think>[\s\S]*?<\/think>/gi, '').trim();

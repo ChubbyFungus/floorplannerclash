@@ -7,10 +7,11 @@ const fetchImpl: FetchLike | undefined = (globalThis as any).fetch?.bind(globalT
 const CONVERSATION_LLM_URL = process.env.CONVERSATION_LLM_URL ?? 'http://localhost:11434/api/chat';
 const REASONING_LLM_URL = process.env.REASONING_LLM_URL ?? 'http://localhost:11434/api/generate';
 
-const CONVERSATION_LLM_MODEL = process.env.CONVERSATION_LLM_MODEL ?? 'qwen2.5:7b-instruct';
+const CONVERSATION_LLM_MODEL = process.env.CONVERSATION_LLM_MODEL ?? 'gemma2:2b-instruct-q4_K_M';
 const REASONING_LLM_MODEL = process.env.REASONING_LLM_MODEL ?? 'deepseek-r1:7b-qwen-distill-q4_K_M';
 
 const isReasoningDisabled = () => false;
+const isQuestionRephrasingDisabled = () => process.env.DISABLE_QUESTION_REPHRASING === 'true';
 
 function ensureFetch(): FetchLike {
   if (!fetchImpl) {
@@ -105,16 +106,250 @@ export async function getInitialDesign(description: string): Promise<{ style: st
   }
 }
 
+// Cache for rephrased questions to avoid repeated LLM calls
+const questionCache = new Map<string, string>();
+
+// Parameter parsing utilities
+export interface ParsedParameter {
+  value: any;
+  isValid: boolean;
+  error?: string;
+  originalInput: string;
+}
+
+export function parseParameter(paramName: string, userInput: string, constraints?: any[]): ParsedParameter {
+  const result: ParsedParameter = {
+    value: null,
+    isValid: false,
+    originalInput: userInput
+  };
+
+  // Handle constrained parameters (multiple choice) - delegate to specific parser
+  if (constraints && Array.isArray(constraints)) {
+    return parseConstrainedChoice(userInput, constraints);
+  }
+
+  // Handle specific parameter types
+  switch (paramName) {
+    case 'roomType':
+      return parseRoomType(userInput);
+    case 'primaryColor':
+    case 'accentColor':
+      return parseColor(userInput);
+    case 'widthIn':
+    case 'depthIn':
+    case 'heightIn':
+      return parseDimension(userInput);
+    case 'cabinetFinish':
+    case 'countertopMaterial':
+    case 'flooringType':
+    case 'lightingStyle':
+      return parseConstrainedChoice(userInput, constraints);
+    default:
+      // For unconstrained parameters, accept any non-empty input
+      if (userInput.trim().length > 0) {
+        result.value = userInput.trim();
+        result.isValid = true;
+      } else {
+        result.error = 'Please provide a response';
+      }
+      return result;
+  }
+}
+
+function parseRoomType(input: string): ParsedParameter {
+  const result: ParsedParameter = {
+    value: null,
+    isValid: false,
+    originalInput: input
+  };
+
+  const normalized = input.toLowerCase().trim();
+  if (normalized.includes('kitchen')) {
+    result.value = 'kitchen';
+    result.isValid = true;
+  } else if (normalized.includes('bathroom') || normalized.includes('bath')) {
+    result.value = 'bathroom';
+    result.isValid = true;
+  } else {
+    result.error = 'Please specify either "kitchen" or "bathroom"';
+  }
+
+  return result;
+}
+
+function parseColor(input: string): ParsedParameter {
+  const result: ParsedParameter = {
+    value: null,
+    isValid: false,
+    originalInput: input
+  };
+
+  const normalized = input.toLowerCase().trim();
+
+  // Common color names
+  const commonColors = [
+    'white', 'black', 'gray', 'grey', 'blue', 'red', 'green', 'yellow',
+    'brown', 'beige', 'cream', 'navy', 'maroon', 'olive', 'purple',
+    'orange', 'pink', 'tan', 'ivory', 'charcoal', 'stainless', 'chrome'
+  ];
+
+  const colorMatch = commonColors.find(color =>
+    normalized.includes(color) || color.includes(normalized)
+  );
+
+  if (colorMatch) {
+    result.value = colorMatch.charAt(0).toUpperCase() + colorMatch.slice(1);
+    result.isValid = true;
+  } else if (input.trim().length > 0) {
+    // Accept any non-empty input as a custom color
+    result.value = input.trim();
+    result.isValid = true;
+  } else {
+    result.error = 'Please specify a color';
+  }
+
+  return result;
+}
+
+function parseConstrainedChoice(input: string, constraints?: any[]): ParsedParameter {
+  const result: ParsedParameter = {
+    value: null,
+    isValid: false,
+    originalInput: input
+  };
+
+  if (!constraints || !Array.isArray(constraints)) {
+    result.error = 'No valid options available';
+    return result;
+  }
+
+  const normalizedInput = input.toLowerCase().trim();
+  const match = constraints.find(option =>
+    option.toLowerCase().includes(normalizedInput) ||
+    normalizedInput.includes(option.toLowerCase())
+  );
+
+  if (match) {
+    result.value = match;
+    result.isValid = true;
+  } else {
+    result.error = `Please choose from: ${constraints.join(', ')}`;
+  }
+
+  return result;
+}
+
+function parseDimension(input: string): ParsedParameter {
+  const result: ParsedParameter = {
+    value: null,
+    isValid: false,
+    originalInput: input
+  };
+
+  // Parse dimensions like "12 feet", "144 inches", "12'", "12 ft", "10 feet 6 inches", etc.
+  const feetMatch = input.match(/(\d+)(?:\s*(?:feet|foot|ft|'|′))/i);
+  const inchMatch = input.match(/(\d+)(?:\s*(?:inches|inch|in|"|″))/i);
+  const combinedMatch = input.match(/(\d+)(?:\s*(?:feet|foot|ft|'|′))\s*(\d+)(?:\s*(?:inches|inch|in|"|″))?/i);
+
+  let totalInches = 0;
+
+  if (combinedMatch) {
+    // "10 feet 6 inches" format
+    const feet = parseInt(combinedMatch[1]);
+    const inches = parseInt(combinedMatch[2]);
+    totalInches = (feet * 12) + inches;
+  } else if (feetMatch) {
+    // "12 feet" format
+    const feet = parseInt(feetMatch[1]);
+    totalInches = feet * 12;
+  } else if (inchMatch) {
+    // "144 inches" format
+    totalInches = parseInt(inchMatch[1]);
+  } else {
+    // Try to parse as just a number (assume feet if no unit)
+    const numberMatch = input.match(/(\d+)/);
+    if (numberMatch) {
+      const num = parseInt(numberMatch[1]);
+      // If it's a reasonable number for room dimensions, assume feet
+      if (num >= 5 && num <= 50) {
+        totalInches = num * 12;
+      } else if (num >= 60 && num <= 600) {
+        // Already in inches
+        totalInches = num;
+      } else {
+        result.error = 'Please specify dimensions in feet or inches (e.g., "12 feet" or "144 inches")';
+        return result;
+      }
+    } else {
+      result.error = 'Please specify dimensions in feet or inches (e.g., "12 feet" or "144 inches")';
+      return result;
+    }
+  }
+
+  // Validate reasonable room dimensions
+  if (totalInches < 60 || totalInches > 600) {
+    result.error = 'Room dimensions should be between 5-50 feet (60-600 inches)';
+    return result;
+  }
+
+  result.value = totalInches;
+  result.isValid = true;
+  return result;
+}
+
 export async function askQuestion(question: string, choices: Choice[], designBrief: string): Promise<{ text: string; choices: Choice[] }> {
-    const messages = [
-      { role: 'system', content: `You are a design assistant. Your goal is to gather information for a 3D floor plan. Here is a brief of the information you need to collect:\n\n${designBrief}` },
-      { role: 'user', content: `Ask the user the following question in a conversational way. Question: "${question}"` }
-    ];
+  // Check cache first
+  const cacheKey = `${question}|${choices.map(c => c.name).join(',')}`;
+  if (questionCache.has(cacheKey)) {
+    return { text: questionCache.get(cacheKey)!, choices };
+  }
 
-    const data = await postChat<any>(CONVERSATION_LLM_URL, messages, CONVERSATION_LLM_MODEL);
+  // Skip rephrasing entirely if disabled
+  if (isQuestionRephrasingDisabled()) {
+    questionCache.set(cacheKey, question);
+    return { text: question, choices };
+  }
+
+  // For simple questions, skip LLM rephrasing to speed up
+  const isSimpleQuestion = question.length < 50 && !question.includes('?') && !question.includes(' or ');
+
+  // Skip LLM entirely for very common patterns
+  const commonPatterns = [
+    /^What is the (width|depth|height)/i,
+    /^What style/i,
+    /^What layout/i,
+    /^What color/i,
+    /^What material/i
+  ];
+
+  const isCommonPattern = commonPatterns.some(pattern => pattern.test(question));
+
+  if (isSimpleQuestion || isCommonPattern) {
+    questionCache.set(cacheKey, question);
+    return { text: question, choices };
+  }
+
+  const messages = [
+    { role: 'system', content: `You are a design assistant. Your goal is to gather information for a 3D floor plan. Keep responses brief and conversational.` },
+    { role: 'user', content: `Rephrase this question conversationally: "${question}"` }
+  ];
+
+  try {
+    const data = await Promise.race([
+      postChat<any>(CONVERSATION_LLM_URL, messages, CONVERSATION_LLM_MODEL),
+      new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error('Question rephrasing timed out')), 5000)
+      )
+    ]);
     const text = data.message.content || question;
-
+    questionCache.set(cacheKey, text);
     return { text, choices };
+  } catch (error) {
+    console.warn('Question rephrasing failed, using original:', error);
+    questionCache.set(cacheKey, question);
+    return { text: question, choices };
+  }
 }
 
 export async function getRoomStateFromConversation(conversation: any[], designBrief: string): Promise<any> {
@@ -158,14 +393,30 @@ interface Item {
 }
 `;
 
-  const messages = [
-    { role: 'system', content: `You are a helpful design assistant. Your task is to analyze the following conversation and the design brief and extract all the parameters for a room design. The output must be a JSON object that conforms to the RoomState interface. The RoomState interface is defined as:\n\n${roomStateInterface}\n\nHere is the design brief:\n\n${designBrief}\n\nIMPORTANT: The widthIn and depthIn properties in the room object must be in inches, and they must be greater than or equal to 60. The roomType must be one of ["kitchen", "bathroom"]. The style must be one of ["modern", "traditional", "transitional"]. Return only the JSON object.` },
-    ...conversation
-  ];
+  const prompt = `You are a helpful design assistant. Your task is to analyze the following conversation and the design brief and extract all the parameters for a room design. The output must be a JSON object that conforms to the RoomState interface. The RoomState interface is defined as:
 
-  const data = await postChat<any>(REASONING_LLM_URL, messages, REASONING_LLM_MODEL);
+${roomStateInterface}
+
+Here is the design brief:
+
+${designBrief}
+
+IMPORTANT: The widthIn and depthIn properties in the room object must be in inches, and they must be greater than or equal to 60. The roomType must be one of ["kitchen", "bathroom"]. The style must be one of ["modern", "traditional", "transitional"]. Return only the JSON object.
+
+Conversation:
+${conversation.map(msg => `${msg.role}: ${msg.content}`).join('\n')}`;
+
+  const data = await Promise.race([
+    postGenerate<any>(REASONING_LLM_URL, prompt, REASONING_LLM_MODEL),
+    new Promise<never>((_, reject) =>
+      setTimeout(() => reject(new Error('LLM request timed out after 30 seconds')), 30000)
+    )
+  ]);
+  console.log('LLM response:', data);
   try {
-    const rawContent = data.message.content;
+    const rawContent = data.response;
+    console.log('Raw LLM content:', rawContent);
+
     const jsonStartIndex = rawContent.indexOf('{');
     const jsonEndIndex = rawContent.lastIndexOf('}');
 
@@ -174,7 +425,18 @@ interface Item {
     }
 
     const jsonString = rawContent.substring(jsonStartIndex, jsonEndIndex + 1);
+    console.log('Extracted JSON string:', jsonString);
     const parsed = JSON.parse(jsonString);
+    console.log('Parsed RoomState:', parsed);
+
+    // Basic validation
+    if (!parsed.room || typeof parsed.room.widthIn !== 'number' || typeof parsed.room.depthIn !== 'number') {
+      throw new Error('Invalid RoomState: missing or invalid room dimensions');
+    }
+    if (parsed.room.widthIn < 60 || parsed.room.depthIn < 60) {
+      throw new Error('Invalid RoomState: room dimensions too small');
+    }
+
     return parsed;
   } catch (e) {
     console.error("Failed to parse RoomState from LLM", e);

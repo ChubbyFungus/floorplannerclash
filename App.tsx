@@ -2,7 +2,7 @@ import React, { useState, useCallback, useRef, useEffect } from 'react';
 import ControlPanel from './components/ControlPanel';
 import Canvas3D from './components/Canvas3D';
 import Loader from './components/Loader';
-import { getInitialDesign, askQuestion as askLlmQuestion, getRoomStateFromConversation } from './services/localLlmService';
+import { getInitialDesign, askQuestion as askLlmQuestion, getRoomStateFromConversation, parseParameter, ParsedParameter } from './services/localLlmService';
 import { buildFloorplanFromState } from './services/floorplanBuilder';
 import { exportToGlb } from './services/exportService'; // New import
 import type { ConversationTurn, Choice, StyleTemplate, RoomState, Cmd, Item, FloorplanObject, ObjectType, Floorplan } from './types';
@@ -71,7 +71,9 @@ const App: React.FC = () => {
       setLoadingMessage('Building your 3D floor plan...');
       setIsLoading(true);
       try {
+        setLoadingMessage('Analyzing your requirements...');
         const roomState = await getRoomStateFromConversation(conversation, designBrief);
+        setLoadingMessage('Designing your floor plan layout...');
         const generatedPlan = await buildFloorplanFromState(roomState);
         setFloorplan(generatedPlan);
         setAppState('DISPLAYING');
@@ -172,9 +174,24 @@ const App: React.FC = () => {
 
     const nextParam = Object.keys(styleTemplate.properties).find(key => !(key in roomState.params));
     if (nextParam) {
+      // Parse the user input before storing it
+      const constraints = styleTemplate.constraints?.[nextParam as keyof typeof styleTemplate.constraints];
+      const parsed: ParsedParameter = parseParameter(nextParam, response, constraints);
+
+      console.log(`Parsed parameter ${nextParam}:`, parsed);
+
+      if (!parsed.isValid) {
+        // Show parsing error to user
+        setError(parsed.error || 'Invalid input. Please try again.');
+        return;
+      }
+
+      // Clear any previous error
+      setError('');
+
       const userTurn: ConversationTurn = { role: 'user', text: response };
       setConversation(prev => [...prev, userTurn]);
-      processCommand({ t: 'set_param', k: nextParam, v: response });
+      processCommand({ t: 'set_param', k: nextParam, v: parsed.value });
     }
   }, [appState, roomState, processCommand]);
 
